@@ -3,17 +3,16 @@ import { NestFactory } from '@nestjs/core';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { FastifyAdapter } from '@nestjs/platform-fastify/adapters';
 import { AppModule } from './app.module';
+import { MongoErrorFilter } from './filters/mongo-error.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter(),
+    new FastifyAdapter({ logger: true }),
   );
 
-  const port: string | number = process.env.PORT || 3000;
+  await app.listen(process.env.PORT || 3000);
 
-  await app.listen(port);
-
-  Logger.log(`Listening on port: ${port}`);
+  Logger.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
