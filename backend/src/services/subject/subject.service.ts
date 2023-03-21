@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Subject } from '../../repositories/subject/schema';
-import { SubjectsRepository } from 'src/repositories/subject/repository';
-import { CreatedModel, UpdatedModel } from 'src/repositories/helper-types';
+import { SubjectsRepository } from '../../repositories/subject/repository';
+import { CreatedModel, UpdatedModel } from '../../repositories/helper-types';
 
 @Injectable()
 export class SubjectService {

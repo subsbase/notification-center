@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Schema as MongoSchema } from 'mongoose';
-import { Topic } from 'src/repositories/topic/schema';
+import { Topic } from '../../topic/schema';
 
 @Schema()
 export class Notification {
