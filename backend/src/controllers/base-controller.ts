@@ -1,29 +1,28 @@
-import { HttpStatus } from "@nestjs/common";
-import { FastifyReply } from 'fastify';
+import { BadRequestObjectResult } from "./response-helpers/bad-request-result";
+import { CreatedObjectResult } from "./response-helpers/created-result";
+import { InternalServerErrorObjectResult } from "./response-helpers/internal-server-error-result";
+import { NotFoundObjectResult } from "./response-helpers/notfound-result";
+import { OkObjectResult } from "./response-helpers/ok-result";
 
 export abstract class BaseController {
 
-    internalServerError(response:  FastifyReply): void {
-       response.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
+    ok(body?: object): OkObjectResult {
+        return new OkObjectResult(body)
     }
 
-    badRequest(response: FastifyReply, body?: object): void {
-        response.status(HttpStatus.BAD_REQUEST).send(body)
+    created(body?: object): CreatedObjectResult {
+        return new CreatedObjectResult(body)
     }
 
-    badRequestMessage(response: FastifyReply, message?: string): void {
-        response.status(HttpStatus.BAD_REQUEST).send({ message })
+    notFound(body?: object): NotFoundObjectResult {
+        return new NotFoundObjectResult(body)
     }
 
-    notFound(response: FastifyReply){
-        response.status(HttpStatus.NOT_FOUND).send()
+    badRequest(body?: object): BadRequestObjectResult {
+        return new BadRequestObjectResult(body)
     }
 
-    ok(response: FastifyReply, body?: object) : void {
-        response.status(HttpStatus.OK).send(body)
-    }
-
-    created(response: FastifyReply, body?: object): void {
-        response.status(HttpStatus.CREATED).send(body)
+    internalServerError(body?: object) : InternalServerErrorObjectResult {
+        return new InternalServerErrorObjectResult(body)
     }
 }
