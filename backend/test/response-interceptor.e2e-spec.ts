@@ -1,4 +1,3 @@
-import { FastifyReply } from 'fastify';
 import { lastValueFrom, of, tap } from "rxjs";
 import { HttpStatus } from "@nestjs/common";
 import { ExecutionContext } from "@nestjs/common/interfaces/features/execution-context.interface";
