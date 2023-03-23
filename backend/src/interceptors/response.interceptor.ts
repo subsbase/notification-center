@@ -1,10 +1,10 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
-import { map, Observable, tap } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { IActionResult } from '../controllers/response-helpers/action-result.interface';
 import { FastifyReply } from 'fastify';
 
 export class ResponseInterceptor implements NestInterceptor<IActionResult,any> {
-    intercept(context: ExecutionContext, next: CallHandler<IActionResult>): Observable<any> | Promise<Observable<any>> {
+    intercept(context: ExecutionContext, next: CallHandler<IActionResult>): Observable<any> {
         const ctx = context.switchToHttp()
         const response = ctx.getResponse<FastifyReply>()
 
