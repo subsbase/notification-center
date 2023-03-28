@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import { BaseRepository } from '../base-repository';
 import { NotificationTemplate, NotificationTemplateDocument } from './schema';
 
-export class NotificationsTemplatesRepository extends BaseRepository<NotificationTemplateDocument> {
+export class NotificationsTemplatesRepository extends BaseRepository<NotificationTemplateDocument, NotificationTemplate> {
   constructor(
     @InjectModel(NotificationTemplate.name)
     protected model: Model<NotificationTemplateDocument>,
