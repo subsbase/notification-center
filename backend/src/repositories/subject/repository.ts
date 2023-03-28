@@ -5,7 +5,7 @@ import { BaseRepository } from '../base-repository';
 import { Subject, SubjectDocument } from './schema';
 
 @Injectable()
-export class SubjectsRepository extends BaseRepository<SubjectDocument> {
+export class SubjectsRepository extends BaseRepository<SubjectDocument,Subject> {
   constructor(
     @InjectModel(Subject.name)
     protected readonly model: Model<SubjectDocument>,
