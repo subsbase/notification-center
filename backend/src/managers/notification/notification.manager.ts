@@ -1,13 +1,11 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { Notification } from "../../repositories/subscriber/notification/schema";
 import { NotificationService } from "../../services/notification/notification.service";
-import { NotificationTemplateService } from "../../services/notification-template/notification-template.service";
 import { TopicService } from "../../services/topic/topic.service";
 
 @Injectable()
 export class NotificationManager {
     constructor(
-            private readonly notificationTemplateService: NotificationTemplateService,
             private readonly notificationService: NotificationService,
             private readonly topicsService: TopicService) { }
 
