@@ -15,9 +15,9 @@ export class SubscriberController extends BaseController {
     async listNotifications(
         @Param('subscriberId') 
         subscriberId: string,
-        @Query('pageNum', NumberPipeTransform) 
+        @Query('pageNum', new NumberPipeTransform(1)) 
         pageNum: number,
-        @Query('pageSize', NumberPipeTransform)
+        @Query('pageSize', new NumberPipeTransform(5))
         pageSize: number
         ) : Promise<IActionResult> {
 

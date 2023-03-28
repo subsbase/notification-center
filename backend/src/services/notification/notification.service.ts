@@ -12,7 +12,7 @@ export class NotificationService {
         ) {}
 
 
-    async getNotifications(subscriberId: string, pageNum: number = 1, pageSize: number = 5) : Promise<Array<Notification> | undefined> {
+    async getNotifications(subscriberId: string, pageNum: number, pageSize: number) : Promise<Array<Notification> | undefined> {
         const subscribers =  await this.subscribersRepository.aggregate ([
             { $match: { subscriberId: subscriberId } },
             {
