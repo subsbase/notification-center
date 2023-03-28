@@ -1,17 +1,22 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MongoSchema } from 'mongoose';
 import { BaseModel } from '../base-model';
+import { SchemaOptions } from '../schema.options';
 import { Subject } from '../subject/schema';
+import {NotificationTemplate} from "../notification-template/schema";
 
 export type TopicDocument = HydratedDocument<Topic>;
 
-@Schema()
+@Schema(SchemaOptions)
 export class Topic extends BaseModel {
-  @Prop({ required: true, index: true })
-  name: string;
+  @Prop({ index: true, unique: true, required: true })
+  event: string;
 
   @Prop({ required: true, type: MongoSchema.Types.ObjectId, ref: 'Subject' })
   subject: Subject;
+
+  @Prop({ index: true, required: true, type: MongoSchema.Types.ObjectId, ref: 'NotificationTemplate' })
+  notificationTemplate: NotificationTemplate;
 
   @Prop({ type: MongoSchema.Types.ObjectId, ref: 'Topic' })
   parentTopic?: Topic;

@@ -16,4 +16,3 @@ export class ResponseInterceptor implements NestInterceptor<IActionResult,any> {
         )
     }
 }
-

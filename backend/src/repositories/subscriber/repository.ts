@@ -1,4 +1,24 @@
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { AggregateOptions, Model, PipelineStage } from 'mongoose';
 import { BaseRepository } from '../base-repository';
-import { SubscriberDocument } from './schema';
+import { Subscriber, SubscriberDocument } from './schema';
 
-export class SubscribersRepository extends BaseRepository<SubscriberDocument> {}
+@Injectable()
+export class SubscribersRepository extends BaseRepository<SubscriberDocument, Subscriber> {
+    
+    constructor(
+    @InjectModel(Subscriber.name)
+    protected readonly model: Model<SubscriberDocument>) {
+        super(model);
+    }
+
+    createOrUpdate(subscriber: Subscriber):Promise<any>{
+        let model = new this.model(subscriber);
+        return model.save();
+    }
+
+    async aggregate(pipeline?: PipelineStage[], options?: AggregateOptions) : Promise<Subscriber[]> {
+        return this.model.aggregate(pipeline, options );
+    }
+}
