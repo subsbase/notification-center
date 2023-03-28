@@ -3,26 +3,24 @@ import {
   Controller,
   Post,
   Put,
-  Res,
 } from '@nestjs/common';
+import { SubjectManager } from '../../managers/subject/subject.manager';
 import { Subject } from '../../repositories/subject/schema'; 
-import { SubjectService } from '../../services/subject/subject.service';
 import { BaseController } from '../base-controller';
-import { FastifyReply } from 'fastify';
 import { IActionResult } from '../response-helpers/action-result.interface';
 
 @Controller('subjects')
 export class SubjectController extends BaseController {
 
-  constructor(private readonly subjectsService: SubjectService) {
+  constructor(private readonly subjectManager: SubjectManager) {
     super();
   }
 
   @Post()
-  async create(@Body() subject: Subject, @Res() response: FastifyReply): Promise<IActionResult> {
+  async create(@Body() subject: Subject): Promise<IActionResult> {
     try {
-      const result = await this.
-      subjectsService.create(subject);
+
+      const result = await this.subjectManager.create(subject);
       
       if(!result.created) {
        return this.badRequest(result);
@@ -36,14 +34,14 @@ export class SubjectController extends BaseController {
   }
 
   @Put()
-  async update(@Body() subject: Subject, @Res() response: FastifyReply) {
+  async update(@Body() subject: Subject): Promise<IActionResult> {
     try{
-      const result = await this.subjectsService.update(subject)
+      const result = await this.subjectManager.update(subject)
       if(result.modifiedCount < 1){
-        return this.notFound(response)
+        return this.notFound()
       }
       else{
-        return this.ok(response)
+        return this.ok()
       }
     }catch(error){
       return this.internalServerError(error)
