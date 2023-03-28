@@ -7,10 +7,10 @@ import mongoose, {
   UpdateWithAggregationPipeline,
 } from 'mongoose';
 import { Document } from 'mongoose';
-
+import { AnyBulkWriteOperation } from 'mongodb'
 import { CreatedModel, RemovedModel, UpdatedModel } from './helper-types';
 
-export abstract class BaseRepository<T extends Document> {
+export abstract class BaseRepository<T extends Document, TSchema> {
   constructor(protected readonly model: Model<T>) {}
 
   async create(doc: object, saveOptions?: SaveOptions): Promise<CreatedModel> {
@@ -20,11 +20,15 @@ export abstract class BaseRepository<T extends Document> {
     return { id: savedResult.id, created: !!savedResult.id };
   }
 
-  async find(filter: FilterQuery<T>, options?: QueryOptions): Promise<T[]> {
+  async find(filter: FilterQuery<T>, options?: QueryOptions): Promise<TSchema[]> {
     return await this.model.find(filter, null, options);
   }
 
-  async findById(id: string): Promise<T | null> {
+  async findOne(filter: FilterQuery<T>, options?: QueryOptions): Promise<TSchema | null> {
+    return await this.model.findOne(filter, null, options);
+  }
+
+  async findById(id: string): Promise<TSchema | null> {
     return await this.model.findById(id);
   }
 
@@ -59,5 +63,11 @@ export abstract class BaseRepository<T extends Document> {
     options?: QueryOptions,
   ): Promise<UpdatedModel> {
     return await this.model.updateMany(filter, updated, options);
+  }
+
+  async bulkWrite(
+      writeOperations: Array<AnyBulkWriteOperation<T extends Document ? any : (T extends {} ? T : any)>>
+  ) {
+     return await this.model.bulkWrite(writeOperations)
   }
 }
