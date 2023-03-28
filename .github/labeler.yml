@@ -1,0 +1,4 @@
+'Requires Configurations Change' :
+ - '**/.env'
+ - '**/.env.**'
+ - '**/**.env.**'
