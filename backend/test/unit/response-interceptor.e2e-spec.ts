@@ -3,11 +3,11 @@ import { HttpStatus } from "@nestjs/common";
 import { ExecutionContext } from "@nestjs/common/interfaces/features/execution-context.interface";
 import { CallHandler } from "@nestjs/common/interfaces/features/nest-interceptor.interface";
 import { createMock } from '@golevelup/ts-jest';
-import { ResponseInterceptor } from "../src/interceptors/response.interceptor"
-import { IActionResult } from "../src/controllers/response-helpers/action-result.interface";
-import { NotFoundObjectResult } from "../src/controllers/response-helpers/notfound-result";
-import { InternalServerErrorObjectResult } from "../src/controllers/response-helpers/internal-server-error-result";
-import { CreatedObjectResult } from "../src/controllers/response-helpers/created-result";
+import { ResponseInterceptor } from "../../src/interceptors/response.interceptor"
+import { IActionResult } from "../../src/controllers/response-helpers/action-result.interface";
+import { NotFoundObjectResult } from "../../src/controllers/response-helpers/notfound-result";
+import { InternalServerErrorObjectResult } from "../../src/controllers/response-helpers/internal-server-error-result";
+import { CreatedObjectResult } from "../../src/controllers/response-helpers/created-result";
 
 describe('Response Interceptor', () => {
     let interceptor: ResponseInterceptor
