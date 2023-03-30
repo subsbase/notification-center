@@ -1,6 +1,8 @@
 import mongoose, {
+  AggregateOptions,
   FilterQuery,
   Model,
+  PipelineStage,
   QueryOptions,
   SaveOptions,
   UpdateQuery,
@@ -20,7 +22,7 @@ export abstract class BaseRepository<T extends Document, TSchema> {
     return { id: savedResult.id, created: !!savedResult.id };
   }
 
-  async find(filter: FilterQuery<T>, options?: QueryOptions): Promise<TSchema[]> {
+  async find(filter: FilterQuery<T>, options?: QueryOptions): Promise<Array<TSchema>> {
     return await this.model.find(filter, null, options);
   }
 
@@ -32,7 +34,7 @@ export abstract class BaseRepository<T extends Document, TSchema> {
     return await this.model.findById(id);
   }
 
-  async findAll(): Promise<T[]> {
+  async findAll(): Promise<Array<T>> {
     return await this.model.find();
   }
 
@@ -63,6 +65,10 @@ export abstract class BaseRepository<T extends Document, TSchema> {
     options?: QueryOptions,
   ): Promise<UpdatedModel> {
     return await this.model.updateMany(filter, updated, options);
+  }
+
+  async aggregate(pipeline?: PipelineStage[], options?: AggregateOptions) : Promise<Array<TSchema>> {
+    return this.model.aggregate(pipeline, options );
   }
 
   async bulkWrite(
