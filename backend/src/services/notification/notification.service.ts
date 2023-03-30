@@ -37,8 +37,8 @@ export class NotificationService {
         );
     }
 
-    async notifyAll(subscribersIds: [string], notification: Notification) {
-        const operations = subscribersIds.map(subscriberId => {
+    async notifyAll(subscribersIds: Array<string>, notification: Notification) {
+        await this.subscribersRepository.bulkWrite(subscribersIds.map(subscriberId => {
             return {
                 updateOne: {
                     filter: { subscriberId: subscriberId },
@@ -49,8 +49,7 @@ export class NotificationService {
                     upsert: true
                 }
             } as any
-        });
-        await this.subscribersRepository.bulkWrite(operations as Array<AnyBulkWriteOperation<any>>)
+        }))
     }
 
     async markAsRead(subscriberId: string, notificationId: string) {
@@ -61,7 +60,7 @@ export class NotificationService {
         )
     }
 
-    async markManyRead(subscriberId: string, notificationsIds: [string]) {
+    async markManyRead(subscriberId: string, notificationsIds: Array<string>) {
         await this.subscribersRepository.updateOne(
             { subscriberId: subscriberId, "notifications._id": notificationsIds },
             { $set: {"notifications.$[notification].read": true}},
