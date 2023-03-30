@@ -1,5 +1,5 @@
 export class NotificationDto {
-    to: [string];
+    to: Array<string>;
     payload: any;
     actionUrl: string
 }

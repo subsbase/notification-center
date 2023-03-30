@@ -18,7 +18,7 @@ export class NotificationManager {
         await this.notificationService.markAsRead(subscriberId, notificationId);
     }
 
-    async markSomeAsRead(subscriberId: string, notificationsIds: [string]) {
+    async markSomeAsRead(subscriberId: string, notificationsIds: Array<string>) {
         await this.notificationService.markManyRead(subscriberId, notificationsIds);
     }
 
@@ -30,7 +30,7 @@ export class NotificationManager {
         event: string,
         actionUrl: string,
         payload: any,
-        subscribersIds: [string]
+        subscribersIds: Array<string>
         ) {
 
         const topic = await  this.topicsService.getByEvent(event);
