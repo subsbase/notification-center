@@ -5,9 +5,9 @@ describe('notification processor', () => {
     test.each([
         { template: 'this is my template name: {{templateName}}', payload: { templateName:'Notification Center Template' } , expectedResult: 'this is my template name: Notification Center Template'},
         { template: 'this is my template Id: {{templateId}}', payload: { templateName:'Notification Center Template' } , expectedResult: 'this is my template Id: '},
-        { template: 'This is Template Without placeholders', payload: { templateName: 'Dummy Name' }, expectedResult: 'This is Template Without placeholders' }
+        { template: 'This is template Without placeholders', payload: { templateName: 'Dummy Name' }, expectedResult: 'This is template Without placeholders' }
     ])
-    ('test notification templaye \'$template\' compilation with payload $payload', async ({ template, payload, expectedResult }) => {
+    ('test notification template \'$template\' compilation with payload $payload', async ({ template, payload, expectedResult }) => {
 
         //Arrange
         let notificationProcessor = new NotificationProcessor()
