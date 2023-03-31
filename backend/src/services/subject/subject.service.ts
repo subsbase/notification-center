@@ -6,6 +6,14 @@ import { CreatedModel, UpdatedModel } from '../../repositories/helper-types';
 @Injectable()
 export class SubjectService {
   constructor(private readonly subjectsRepository: SubjectsRepository) {}
+  
+  getAll(pageNum: number, pageSize: number): Promise<Array<Subject>> {
+    return this.subjectsRepository.find({}, { 
+        skip: (pageNum - 1) * pageSize,
+        limit: pageSize
+      })
+  }
+  
   async create(subject: Subject): Promise<CreatedModel> {
     return await this.subjectsRepository.create(subject);
   }
