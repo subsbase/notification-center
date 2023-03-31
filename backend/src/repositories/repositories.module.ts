@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Subject, SubjectSchema } from './subject/schema';
 import { SubjectsRepository } from './subject/repository';
@@ -11,47 +11,47 @@ import {
 import { NotificationsTemplatesRepository } from './notification-template/repository';
 import { Subscriber, SubscriberSchema } from './subscriber/schema';
 import { SubscribersRepository } from './subscriber/repository';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 
-@Module({
-  imports: [
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_CONNECTION'),
-      }),
-      inject: [ConfigService],
-    }),
-    MongooseModule.forFeature([
-      {
-        name: Subject.name,
-        schema: SubjectSchema,
-      },
-      {
-        name: Topic.name,
-        schema: TopicSchema,
-      },
-      {
-        name: NotificationTemplate.name,
-        schema: NotificationTemplateSchema,
-      },
-      {
-        name: Subscriber.name,
-        schema: SubscriberSchema,
-      },
-    ]),
-  ],
-  providers: [
-    SubjectsRepository,
-    TopicsRepository,
-    NotificationsTemplatesRepository,
-    SubscribersRepository,
-  ],
-  exports: [
-    SubjectsRepository,
-    TopicsRepository,
-    NotificationsTemplatesRepository,
-    SubscribersRepository,
-  ],
-})
-export class RepositoriesModule {}
+@Module({})
+export class RepositoriesModule {
+  static withUri(
+    uri: string,
+  ): DynamicModule {
+    return {
+      module: RepositoriesModule,
+      imports: [
+        MongooseModule.forRoot(uri),
+        MongooseModule.forFeature([
+          {
+            name: Subject.name,
+            schema: SubjectSchema,
+          },
+          {
+            name: Topic.name,
+            schema: TopicSchema,
+          },
+          {
+            name: NotificationTemplate.name,
+            schema: NotificationTemplateSchema,
+          },
+          {
+            name: Subscriber.name,
+            schema: SubscriberSchema,
+          },
+        ]),
+      ],
+      providers: [
+        SubjectsRepository,
+        TopicsRepository,
+        NotificationsTemplatesRepository,
+        SubscribersRepository,
+      ],
+      exports: [
+        SubjectsRepository,
+        TopicsRepository,
+        NotificationsTemplatesRepository,
+        SubscribersRepository,
+      ],
+    };
+  }
+}
