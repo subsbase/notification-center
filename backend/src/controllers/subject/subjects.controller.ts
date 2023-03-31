@@ -1,19 +1,35 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { SubjectManager } from '../../managers/subject/subject.manager';
 import { Subject } from '../../repositories/subject/schema'; 
 import { BaseController } from '../base-controller';
 import { IActionResult } from '../response-helpers/action-result.interface';
+import { NumberPipeTransform } from '../pipes/number.pipe-transform';
 
 @Controller('subjects')
 export class SubjectController extends BaseController {
 
   constructor(private readonly subjectManager: SubjectManager) {
     super();
+  }
+
+  @Get()
+  async listSubjects(
+  @Query('pageNum', new NumberPipeTransform(1)) 
+  pageNum: number,
+  @Query('pageSize', new NumberPipeTransform(50))
+  pageSize: number
+  ) : Promise<IActionResult> {
+
+    const subjects = await this.subjectManager.getAll(pageNum, pageSize)
+    
+    return this.ok(subjects?? new Array())
   }
 
   @Post()
