@@ -1,4 +1,5 @@
 import * as request from 'supertest';
+import mongoose from 'mongoose';
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import { Test } from '@nestjs/testing'
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
@@ -7,7 +8,7 @@ import { MongoErrorFilter } from '../../../src/filters/mongo-error.filter';
 import { ValidationErrorFilter } from '../../../src/filters/validation-error.filter';
 import { ControllersModule } from '../../../src/controllers/controllers.module';
 import { ConfigModule } from '@nestjs/config';
-import mongoose from 'mongoose';
+import { Subject } from '../../../src/repositories/subject/schema';
 
 describe('subjects', () => {
     let app: INestApplication;
@@ -27,13 +28,13 @@ describe('subjects', () => {
         await app.getHttpAdapter().getInstance().ready();
     });
   
-    afterEach(async () => {
+    afterAll(async () => {
         await app.close();
         const mongodb = await mongoose.connect(process.env.MONGODB_CONNECTION as string)
         await mongodb.connection.db.dropDatabase();
     });
     
-    it(`/POST subjects`, () => {
+    it('/POST subjects', () => {
        return request(app.getHttpServer())
             .post('/subjects')
             .send({ name: 'Invoice' })
@@ -42,4 +43,14 @@ describe('subjects', () => {
                 expect(response.body.created).toBeTruthy()
             })
     });
+
+    it('/GET subjects', () => {
+        return request(app.getHttpServer())
+            .get('/subjects')
+            .then(response => {
+                expect(response.statusCode).toBe(HttpStatus.OK)
+                expect(response.body instanceof Array<Subject>).toBeTruthy()
+                expect(response.body[0].name).toBe('Invoice')
+            })
+    })
 });
