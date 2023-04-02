@@ -14,7 +14,7 @@ export class ServicesModule {
       module: ServicesModule,
       imports: [RepositoriesModule.withUri(uri)],
       providers: [SubjectService, TopicService, SubscriberService, NotificationProcessor, NotificationService , NotificationTemplateService, TopicService],
-      exports: [SubjectService, TopicService, NotificationService, NotificationTemplateService],
+      exports: [SubjectService, TopicService, NotificationService, NotificationTemplateService, SubscriberService]
     }
   }
 }
