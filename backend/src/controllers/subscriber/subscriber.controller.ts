@@ -9,29 +9,31 @@ import { IActionResult } from '../response-helpers/action-result.interface';
 @Controller('subscriber')
 export class SubscriberController extends BaseController {
 
-    constructor(private readonly notificationManager: NotificationManager, private readonly subscriberManager: SubscriberManager) {
+    constructor(
+        private readonly notificationManager: NotificationManager,
+        private readonly subscriberManager: SubscriberManager) {
         super();
     }
 
     @Post()
-    async create(@Body() subscriber: Subscriber) : Promise<IActionResult> {
-       const result = await  this.subscriberManager.create(subscriber)
-       return this.ok(result);
+    async create(@Body() subscriber: Subscriber): Promise<IActionResult> {
+        const result = await this.subscriberManager.create(subscriber)
+        return this.ok(result);
     }
 
     @Get(':subscriberId/notifications')
     async listNotifications(
-        @Param('subscriberId') 
+        @Param('subscriberId')
         subscriberId: string,
-        @Query('pageNum', new NumberPipeTransform(1)) 
+        @Query('pageNum', new NumberPipeTransform(1))
         pageNum: number,
         @Query('pageSize', new NumberPipeTransform(5))
         pageSize: number
-        ) : Promise<IActionResult> {
+    ): Promise<IActionResult> {
 
         const notifications = await this.notificationManager.getAllNotifications(subscriberId, pageNum, pageSize)
 
-        return this.ok(notifications);        
+        return this.ok(notifications);
     }
 
 
