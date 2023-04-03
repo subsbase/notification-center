@@ -17,9 +17,4 @@ export class SubscribersRepository extends BaseRepository<SubscriberDocument, Su
         let model = new this.model(subscriber);
         return model.save();
     }
-
-    create(subscriber: Subscriber):Promise<any>{
-        let model = new this.model(subscriber);
-        return model.save();
-    }
 }
