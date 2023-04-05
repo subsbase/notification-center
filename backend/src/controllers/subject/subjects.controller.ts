@@ -5,12 +5,14 @@ import {
   Post,
   Put,
   Query,
+  UseGuards
 } from '@nestjs/common';
 import { SubjectManager } from '../../managers/subject/subject.manager';
 import { Subject } from '../../repositories/subject/schema'; 
 import { BaseController } from '../base-controller';
 import { IActionResult } from '../response-helpers/action-result.interface';
 import { NumberPipeTransform } from '../pipes/number.pipe-transform';
+import { AuthGuard } from '../../auth.guard';
 
 @Controller('subjects')
 export class SubjectController extends BaseController {
@@ -18,7 +20,7 @@ export class SubjectController extends BaseController {
   constructor(private readonly subjectManager: SubjectManager) {
     super();
   }
-
+  @UseGuards(AuthGuard)
   @Get()
   async listSubjects(
   @Query('pageNum', new NumberPipeTransform(1)) 

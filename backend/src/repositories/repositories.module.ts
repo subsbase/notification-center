@@ -12,6 +12,7 @@ import { NotificationsTemplatesRepository } from './notification-template/reposi
 import { Subscriber, SubscriberSchema } from './subscriber/schema';
 import { SubscribersRepository } from './subscriber/repository';
 
+
 @Module({})
 export class RepositoriesModule {
   static withUri(
@@ -19,7 +20,7 @@ export class RepositoriesModule {
   ): DynamicModule {
     return {
       module: RepositoriesModule,
-      imports: [
+      imports: [    
         MongooseModule.forRoot(uri),
         MongooseModule.forFeature([
           {

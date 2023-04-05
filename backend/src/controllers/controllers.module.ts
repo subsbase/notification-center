@@ -4,6 +4,7 @@ import { SubjectController } from './subject/subjects.controller';
 import { NotificationController } from './notification/notification.controller';
 import { SubscriberController } from './subscriber/subscriber.controller';
 import { TopicController } from './topic/topic.controller';
+import { AuthController } from './auth/auth.controller';
 
 @Module({})
 export class ControllersModule {
@@ -11,7 +12,7 @@ export class ControllersModule {
     return {
       module: ControllersModule,
       imports: [ManagersModule.withConfig(dbConnection)],
-      controllers: [SubjectController, TopicController, NotificationController, SubscriberController, TopicController],
+      controllers: [SubjectController, TopicController, NotificationController, SubscriberController, TopicController, AuthController],
     }
   }
 }

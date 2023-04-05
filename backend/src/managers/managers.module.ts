@@ -3,6 +3,7 @@ import { ServicesModule } from '../services/services.module';
 import { NotificationManager } from './notification/notification.manager';
 import { SubjectManager } from './subject/subject.manager';
 import { TopicsManager } from './topic/topics.manager';
+import { AuthManager } from './auth/auth.manager';
 
 @Module({})
 export class ManagersModule {
@@ -10,8 +11,8 @@ export class ManagersModule {
         return {
             module: ManagersModule,
             imports: [ServicesModule.withDbonnection(dbConnection)],
-            providers: [SubjectManager,TopicsManager, NotificationManager],
-            exports: [SubjectManager ,TopicsManager, NotificationManager]
+            providers: [SubjectManager,TopicsManager, NotificationManager, AuthManager],
+            exports: [SubjectManager ,TopicsManager, NotificationManager, AuthManager]
         };
     }
 }
