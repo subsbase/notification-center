@@ -25,8 +25,8 @@ export class ServicesModule {
           audience: process.env.JWT_AUDIENCE,
         },
       })],
-      providers: [SubjectService, TopicService, NotificationService, NotificationTemplateService, SubscriberService, NotificationProcessor, AccessTokenProcessor , AuthService],
-      exports: [SubjectService, TopicService, NotificationService, NotificationTemplateService, AuthService],
+      providers: [SubjectService, TopicService, NotificationService, NotificationTemplateService, SubscriberService, AuthService, NotificationProcessor, AccessTokenProcessor],
+      exports: [SubjectService, TopicService, NotificationService, NotificationTemplateService, SubscriberService, AuthService],
     }
   }
 }

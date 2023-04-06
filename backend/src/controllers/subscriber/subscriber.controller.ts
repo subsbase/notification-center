@@ -1,6 +1,8 @@
 import { REQUEST } from '@nestjs/core';
-import { Body, Controller, Get, Inject, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { NotificationManager } from '../../managers/notification/notification.manager';
+import { SubscriberManager } from '../../managers/subscriber/subscriber.manager';
+import { Subscriber } from '../../repositories/subscriber/schema';
 import { BaseController } from '../base-controller';
 import { NumberPipeTransform } from '../pipes/number.pipe-transform';
 import { IActionResult } from '../response-helpers/action-result.interface';
@@ -12,23 +14,30 @@ export class SubscriberController extends BaseController {
 
     constructor(
         @Inject(REQUEST) protected readonly request: FastifyRequest,
-        private readonly notificationManager: NotificationManager) {
+        private readonly notificationManager: NotificationManager,
+        private readonly subscriberManager: SubscriberManager) {
         super(request);
+    }
+
+    @Post()
+    async create(@Body() subscriber: Subscriber): Promise<IActionResult> {
+        const result = await this.subscriberManager.create(subscriber)
+        return this.ok(result);
     }
 
     @Get(':subscriberId/notifications')
     async listNotifications(
-        @Param('subscriberId') 
+        @Param('subscriberId')
         subscriberId: string,
-        @Query('pageNum', new NumberPipeTransform(1)) 
+        @Query('pageNum', new NumberPipeTransform(1))
         pageNum: number,
         @Query('pageSize', new NumberPipeTransform(5))
         pageSize: number
-        ) : Promise<IActionResult> {
+    ): Promise<IActionResult> {
 
         const notifications = await this.notificationManager.getAllNotifications(subscriberId, pageNum, pageSize)
 
-        return this.ok(notifications);        
+        return this.ok(notifications);
     }
 
 
