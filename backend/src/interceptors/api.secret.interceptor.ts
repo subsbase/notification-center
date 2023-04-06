@@ -1,5 +1,5 @@
 import { CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor } from "@nestjs/common"
-import { FastifyRequest } from 'fastify';
+import { FastifyRequest } from '../types/global-types';
 import { IncomingHttpHeaders } from "http";
 import { Observable } from "rxjs";
 import { AuthService } from "../services/auth/auth.service";
