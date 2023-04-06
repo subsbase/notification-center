@@ -1,16 +1,31 @@
-import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { RealmRepository } from '../../repositories/realm/repository';
+import { AccessTokenProcessor } from './access.token.processor';
+import { Realm } from '../../repositories/realm/schema';
+
 @Injectable()
 export class AuthService {
-  constructor(
-    private jwtService: JwtService
-  ) {}
 
-  async signIn() {
-    const userSecretKey = process.env.USER_SECRET_KEY
-    const payload = { userSecretKey: userSecretKey };
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+  constructor(
+    private readonly realmRepository: RealmRepository,
+    private readonly accessTokenProcessor: AccessTokenProcessor) {
+
+  }
+
+  async authenticateWithApiSecret(apiSecret: string) : Promise<string>{
+
+    const realm = await this.realmRepository.findOne({ secret: apiSecret })
+
+    if(!realm){
+      throw new UnauthorizedException()
+    }
+
+    const payload = {
+      id: realm._id.toString(),
+      name: realm.name,
+      type: Realm.name
+    }
+
+    return await this.accessTokenProcessor.generate(payload)
   }
 }
