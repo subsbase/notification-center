@@ -1,10 +1,16 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { AuthService } from "../../services/auth/auth.service";
 
 @Injectable()
 export class AuthManager {
     constructor(private readonly authService: AuthService) {}
-    async signIn() {
-        return await this.authService.signIn();
+
+    async signIn(apiSecret: string): Promise<any> {
+        
+        const access_token = await this.authService.authenticateWithApiSecret(apiSecret);
+
+        return { 
+            access_token
+        };
     }
 }
