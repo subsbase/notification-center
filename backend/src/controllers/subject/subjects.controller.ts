@@ -13,7 +13,7 @@ import { IActionResult } from '../response-helpers/action-result.interface';
 import { NumberPipeTransform } from '../pipes/number.pipe-transform';
 
 @Controller('subjects')
-export class SubjectController extends BaseController {
+export class SubjectsController extends BaseController {
 
   constructor(private readonly subjectManager: SubjectManager) {
     super();
