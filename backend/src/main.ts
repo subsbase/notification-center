@@ -11,8 +11,9 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter({ logger: true }),
   );
-
-  app.useGlobalFilters(new MongoErrorFilter(), new ValidationErrorFilter());
+  
+  app.setGlobalPrefix('notifc')
+  app.useGlobalFilters(new MongoErrorFilter(),new ValidationErrorFilter());
 
   await app.listen(process.env.PORT || 3000);
 

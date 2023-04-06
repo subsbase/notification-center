@@ -16,7 +16,7 @@ import { REQUEST } from '@nestjs/core';
 import { FastifyRequest } from '../../types/global-types';
 
 @Controller('subjects')
-export class SubjectController extends BaseController {
+export class SubjectsController extends BaseController {
 
   constructor(
     @Inject(REQUEST) protected readonly request: FastifyRequest,

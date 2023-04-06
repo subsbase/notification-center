@@ -7,8 +7,8 @@ import { REQUEST } from '@nestjs/core';
 import { FastifyRequest } from '../../types/global-types';
 import { Authorize } from '../decorators/authorize.decorator';
 
-@Controller()
-export class NotificationController extends BaseController {
+@Controller('notifications')
+export class NotificationsController extends BaseController {
 
     constructor(
         @Inject(REQUEST) protected readonly request: FastifyRequest,

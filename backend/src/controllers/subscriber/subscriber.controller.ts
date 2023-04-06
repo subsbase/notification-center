@@ -9,8 +9,8 @@ import { IActionResult } from '../response-helpers/action-result.interface';
 import { FastifyRequest } from '../../types/global-types';
 
 
-@Controller('subscriber')
-export class SubscriberController extends BaseController {
+@Controller('subscribers')
+export class SubscribersController extends BaseController {
 
     constructor(
         @Inject(REQUEST) protected readonly request: FastifyRequest,

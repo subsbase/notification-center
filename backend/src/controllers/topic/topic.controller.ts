@@ -6,8 +6,8 @@ import { IActionResult } from '../response-helpers/action-result.interface';
 import { REQUEST } from '@nestjs/core';
 import { FastifyRequest } from '../../types/global-types';
 
-@Controller('topic')
-export class TopicController extends BaseController {
+@Controller('topics')
+export class TopicsController extends BaseController {
 
     constructor(
         @Inject(REQUEST) protected readonly request: FastifyRequest,
