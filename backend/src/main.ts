@@ -12,7 +12,8 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter({ logger: true }),
   );
-
+  
+  app.setGlobalPrefix('notifc')
   app.useGlobalInterceptors(new ResponseInterceptor())
   app.useGlobalFilters(new MongoErrorFilter(),new ValidationErrorFilter());
 
