@@ -4,8 +4,8 @@ import { BaseController } from '../base-controller';
 import { IActionResult } from '../response-helpers/action-result.interface';
 import { NotificationDto } from './notification.dto';
 
-@Controller()
-export class NotificationController extends BaseController {
+@Controller('notifications')
+export class NotificationsController extends BaseController {
 
     constructor(private readonly notificationManager: NotificationManager) {
         super();

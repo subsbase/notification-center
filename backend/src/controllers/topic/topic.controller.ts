@@ -4,8 +4,8 @@ import { Topic } from '../../repositories/topic/schema';
 import { BaseController } from '../base-controller';
 import { IActionResult } from '../response-helpers/action-result.interface';
 
-@Controller('topic')
-export class TopicController extends BaseController {
+@Controller('topics')
+export class TopicsController extends BaseController {
 
     constructor(private readonly topicManager: TopicsManager) {
         super();

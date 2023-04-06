@@ -6,8 +6,8 @@ import { BaseController } from '../base-controller';
 import { NumberPipeTransform } from '../pipes/number.pipe-transform';
 import { IActionResult } from '../response-helpers/action-result.interface';
 
-@Controller('subscriber')
-export class SubscriberController extends BaseController {
+@Controller('subscribers')
+export class SubscribersController extends BaseController {
 
     constructor(
         private readonly notificationManager: NotificationManager,
