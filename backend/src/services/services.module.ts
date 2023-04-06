@@ -8,6 +8,7 @@ import { SubscriberService } from './subscriber/subscriber.service';
 import { TopicService } from './topic/topic.service';
 import { AuthService } from './auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
+import { AccessTokenProcessor } from './auth/access.token.processor';
 
 @Module({})
 export class ServicesModule {
@@ -17,10 +18,14 @@ export class ServicesModule {
       imports: [RepositoriesModule.withUri(uri), 
       JwtModule.register({
         global: true,
-        secret: process.env.API_SECRET_KEY,
-        signOptions: { expiresIn: '1d' },
-      }),],
-      providers: [SubjectService, TopicService, SubscriberService, NotificationProcessor, NotificationService , NotificationTemplateService, TopicService, AuthService],
+        secret: process.env.JWT_SECRET,
+        signOptions: { 
+          expiresIn: '1d',
+          issuer: process.env.JWT_ISSUER,
+          audience: process.env.JWT_AUDIENCE,
+        },
+      })],
+      providers: [SubjectService, TopicService, NotificationService, NotificationTemplateService, SubscriberService, NotificationProcessor, AccessTokenProcessor , AuthService],
       exports: [SubjectService, TopicService, NotificationService, NotificationTemplateService, AuthService],
     }
   }
