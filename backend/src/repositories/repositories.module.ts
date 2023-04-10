@@ -11,6 +11,9 @@ import {
 import { NotificationsTemplatesRepository } from './notification-template/repository';
 import { Subscriber, SubscriberSchema } from './subscriber/schema';
 import { SubscribersRepository } from './subscriber/repository';
+import { Realm, RealmSchema } from './realm/schema';
+import { RealmRepository } from './realm/repository';
+
 
 @Module({})
 export class RepositoriesModule {
@@ -19,9 +22,13 @@ export class RepositoriesModule {
   ): DynamicModule {
     return {
       module: RepositoriesModule,
-      imports: [
+      imports: [    
         MongooseModule.forRoot(uri),
         MongooseModule.forFeature([
+          {
+            name: Realm.name,
+            schema: RealmSchema
+          },
           {
             name: Subject.name,
             schema: SubjectSchema,
@@ -41,12 +48,14 @@ export class RepositoriesModule {
         ]),
       ],
       providers: [
+        RealmRepository,
         SubjectsRepository,
         TopicsRepository,
         NotificationsTemplatesRepository,
         SubscribersRepository,
       ],
       exports: [
+        RealmRepository,
         SubjectsRepository,
         TopicsRepository,
         NotificationsTemplatesRepository,
