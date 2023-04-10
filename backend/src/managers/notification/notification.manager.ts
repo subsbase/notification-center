@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { EventsGateway } from "../../events/events.gateway";
 import { Notification } from "../../repositories/subscriber/notification/schema";
 import { NotificationService } from "../../services/notification/notification.service";
 import { TopicService } from "../../services/topic/topic.service";
@@ -6,8 +7,10 @@ import { TopicService } from "../../services/topic/topic.service";
 @Injectable()
 export class NotificationManager {
     constructor(
+            private readonly eventsGateway: EventsGateway,
             private readonly notificationService: NotificationService,
             private readonly topicsService: TopicService) { }
+            
 
     async getAllNotifications(subscriberId: string, pageNum: number, pageSize: number) : Promise<Array<Notification>> {
         const notifications = await this.notificationService.getNotifications(subscriberId, pageNum, pageSize)
@@ -42,7 +45,9 @@ export class NotificationManager {
         const notificationTemplate = topic.notificationTemplate;
 
         const content = this.notificationService.compileContent(notificationTemplate.template!, payload)
-        
-        await this.notificationService.notifyAll(subscribersIds, Notification.create(topic, content, actionUrl))
+        const notification =  Notification.create(topic, content, actionUrl)
+
+        await this.notificationService.notifyAll(subscribersIds, notification)
+        this.eventsGateway.notifySubscribers(notification, subscribersIds )
     }
 }
