@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  notification-center:
+    build: .
+    ports:
+      - 8080:8080
+    depends_on:
+      - subsbase-notification-center
+    expose:
+      - 8080
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      MONGODB_CONNECTION: mongodb://subsbase-notification-center:27017/subsbase-notification-center
+      JWT_SECRET: secret
+      JWT_ISSUER: http://localhost:8080/
+      JWT_AUDIENCE: http://localhost:8080/
+  subsbase-notification-center:
+    image: mongo:6.0.5
+    restart: always
+    ports:
+      - '27017:27017'
