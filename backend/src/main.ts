@@ -12,6 +12,10 @@ async function bootstrap() {
     new FastifyAdapter({ logger: true }),
   );
   
+  app.enableCors({
+   origin: (process.env.CORS_ORIGINS as string).split(',')
+  })
+
   app.setGlobalPrefix('notifc')
   app.useGlobalFilters(new MongoErrorFilter(),new ValidationErrorFilter());
 
