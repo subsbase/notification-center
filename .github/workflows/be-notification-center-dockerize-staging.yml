@@ -25,7 +25,7 @@ jobs:
       - id: image-name
         run: echo "::set-output name=image-name::subsbase.azurecr.io/${{ steps.container-name.outputs.container-name }}:${{ steps.short-sha.outputs.short-sha }}"
       - id: deployment-name
-        run: echo "::set-output name=deployment-name::fe-${{ steps.container-name.outputs.container-name }}-deployment"
+        run: echo "::set-output name=deployment-name::be-${{ steps.container-name.outputs.container-name }}-deployment"
       - id: tag
         run: echo "::set-output name=tag::staging/${{ steps.deployment-name.outputs.deployment-name }}"
 
