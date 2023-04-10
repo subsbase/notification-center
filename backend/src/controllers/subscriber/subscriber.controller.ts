@@ -1,18 +1,22 @@
-import { Body, Controller, Get, Param, Patch, Query, Post } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import { Body, Controller, Get, Inject, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { NotificationManager } from '../../managers/notification/notification.manager';
 import { SubscriberManager } from '../../managers/subscriber/subscriber.manager';
 import { Subscriber } from '../../repositories/subscriber/schema';
 import { BaseController } from '../base-controller';
 import { NumberPipeTransform } from '../pipes/number.pipe-transform';
 import { IActionResult } from '../response-helpers/action-result.interface';
+import { FastifyRequest } from '../../types/global-types';
 
-@Controller('subscriber')
-export class SubscriberController extends BaseController {
+
+@Controller('subscribers')
+export class SubscribersController extends BaseController {
 
     constructor(
+        @Inject(REQUEST) protected readonly request: FastifyRequest,
         private readonly notificationManager: NotificationManager,
         private readonly subscriberManager: SubscriberManager) {
-        super();
+        super(request);
     }
 
     @Post()

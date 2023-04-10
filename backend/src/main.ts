@@ -5,18 +5,17 @@ import { FastifyAdapter } from '@nestjs/platform-fastify/adapters';
 import { AppModule } from './app.module';
 import { MongoErrorFilter } from './filters/mongo-error.filter';
 import { ValidationErrorFilter } from './filters/validation-error.filter';
-import { ResponseInterceptor } from './interceptors/response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter({ logger: true }),
   );
-
-  app.useGlobalInterceptors(new ResponseInterceptor())
+  
+  app.setGlobalPrefix('notifc')
   app.useGlobalFilters(new MongoErrorFilter(),new ValidationErrorFilter());
 
-  await app.listen(process.env.PORT || 3000);
+  await app.listen(process.env.PORT || 3000, '0.0.0.0');
 
   Logger.log(`Application is running on: ${await app.getUrl()}`);
 }
