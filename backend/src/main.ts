@@ -5,7 +5,6 @@ import { FastifyAdapter } from '@nestjs/platform-fastify/adapters';
 import { AppModule } from './app.module';
 import { MongoErrorFilter } from './filters/mongo-error.filter';
 import { ValidationErrorFilter } from './filters/validation-error.filter';
-import { ResponseInterceptor } from './interceptors/response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -14,7 +13,6 @@ async function bootstrap() {
   );
   
   app.setGlobalPrefix('notifc')
-  app.useGlobalInterceptors(new ResponseInterceptor())
   app.useGlobalFilters(new MongoErrorFilter(),new ValidationErrorFilter());
 
   await app.listen(process.env.PORT || 3000);

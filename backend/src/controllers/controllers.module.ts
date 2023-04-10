@@ -1,5 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { ManagersModule } from '../managers/managers.module';
+import { AuthController } from './auth/auth.controller';
 import { SubjectsController } from './subject/subjects.controller';
 import { NotificationsController } from './notification/notification.controller';
 import { SubscribersController } from './subscriber/subscriber.controller';
@@ -11,7 +12,7 @@ export class ControllersModule {
     return {
       module: ControllersModule,
       imports: [ManagersModule.withConfig(dbConnection)],
-      controllers: [SubjectsController, TopicsController, NotificationsController, SubscribersController, TopicsController],
+      controllers: [SubjectsController, TopicsController, NotificationsController, SubscribersController, TopicsController, AuthController],
     }
   }
 }
