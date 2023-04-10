@@ -87,3 +87,6 @@ test/jest/components/__snapshots__
 
 ## IDEA/Webstorm
 .idea/
+
+## DS STORE
+.DS_Store
