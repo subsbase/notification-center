@@ -5,15 +5,16 @@ import { SubjectManager } from './subject/subject.manager';
 import { TopicsManager } from './topic/topics.manager';
 import { AuthManager } from './auth/auth.manager';
 import { SubscriberManager } from './subscriber/subscriber.manager';
+import { EventsModule } from '../events/events.module';
 
 @Module({})
 export class ManagersModule {
     static withConfig(dbConnection: string) : DynamicModule {
         return {
             module: ManagersModule,
-            imports: [ServicesModule.withDbonnection(dbConnection)],
-            providers: [SubjectManager,TopicsManager, NotificationManager, SubscriberManager,AuthManager],
-            exports: [SubjectManager ,TopicsManager, NotificationManager, SubscriberManager,AuthManager]
+            imports: [ServicesModule.withDbonnection(dbConnection), EventsModule],
+            providers: [SubjectManager,TopicsManager, NotificationManager, SubscriberManager, AuthManager],
+            exports: [SubjectManager ,TopicsManager, NotificationManager, SubscriberManager, AuthManager]
         };
     }
 }
