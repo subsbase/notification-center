@@ -103,5 +103,18 @@ dist
 # TernJS port file
 .tern-port
 
-# DS Store
+# DS Store Mac OSx
 .DS_Store
+
+# Service worker
+sw.*
+
+# Vim swap files
+*.swp
+
+# Tests unwanted dirs
+test/e2e/media
+test/jest/components/__snapshots__
+
+## IDEA/Webstorm
+.idea/
