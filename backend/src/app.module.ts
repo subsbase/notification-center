@@ -3,8 +3,6 @@ import { ConfigModule } from '@nestjs/config';
 import { ControllersModule } from './controllers/controllers.module';
 import { InterceptorsModule } from './interceptors/interceptors.module';
 
-
-
 @Module({
   imports: [
     ConfigModule.forRoot(),
