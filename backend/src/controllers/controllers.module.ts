@@ -5,6 +5,7 @@ import { SubjectsController } from './subject/subjects.controller';
 import { NotificationsController } from './notification/notification.controller';
 import { SubscribersController } from './subscriber/subscriber.controller';
 import { TopicsController } from './topic/topic.controller';
+import { HealthController } from './health/health.controller';
 
 @Module({})
 export class ControllersModule {
@@ -12,7 +13,7 @@ export class ControllersModule {
     return {
       module: ControllersModule,
       imports: [ManagersModule.withConfig(dbConnection)],
-      controllers: [SubjectsController, TopicsController, NotificationsController, SubscribersController, TopicsController, AuthController],
+      controllers: [SubjectsController, TopicsController, NotificationsController, SubscribersController, TopicsController, AuthController, HealthController],
     }
   }
 }
