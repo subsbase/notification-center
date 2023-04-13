@@ -13,7 +13,7 @@ async function bootstrap() {
   );
   
   app.enableCors({
-   origin: (process.env.CORS_ORIGINS as string).split(',')
+   origin: (process.env.ALLOWED_ORIGINS as string).split(',')
   })
 
   app.setGlobalPrefix('notifc')
