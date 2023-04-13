@@ -19,6 +19,30 @@ export class NotificationService {
                 $project: {
                     notifications: { $slice: ['$notifications', (pageNum - 1) * pageSize, pageSize] }
                 }
+            },
+            {
+                $unwind: '$notifications'
+            },
+            {
+                $lookup: {
+                    from: 'topics',
+                    let: { referenceId: '$notifications.topic' },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ['$_id', '$$referenceId'] } } }
+                    ],
+                    as: 'topic'
+                }
+            },
+            {
+                $addFields: {
+                    'notifications.topic': { $arrayElemAt: ['$topic', 0] }
+                }
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    notifications: { $push: '$notifications' }
+                }
             }
         ]);
 
