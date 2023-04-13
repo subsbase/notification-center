@@ -14,7 +14,7 @@ export class AuthorizationInterceptor implements NestInterceptor {
 
     async intercept(context: ExecutionContext, next: CallHandler<any>): Promise<Observable<any>> {
         
-        const requireAuthorization = this.reflector.get<boolean>('authRequired', context.getHandler());;
+        const requireAuthorization = this.reflector.get<boolean>('authRequired', context.getHandler());
         
         if(requireAuthorization){
             await this.verifyRequestAuthorization(context);
