@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, RequestMethod } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { FastifyAdapter } from '@nestjs/platform-fastify/adapters';
@@ -16,7 +16,12 @@ async function bootstrap() {
    origin: (process.env.ALLOWED_ORIGINS as string).split(',')
   })
 
-  app.setGlobalPrefix('notifc')
+  app.setGlobalPrefix('notifc', {
+    exclude: [{
+      path: '/healthz',
+      method: RequestMethod.GET
+    }]
+  })
   app.useGlobalFilters(new MongoErrorFilter(),new ValidationErrorFilter());
 
   await app.listen(process.env.PORT || 3000, '0.0.0.0');
