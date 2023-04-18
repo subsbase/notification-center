@@ -12,33 +12,40 @@ export class NotificationService {
     ) { }
 
 
-    async getNotifications(subscriberId: string, pageNum: number, pageSize: number): Promise < Array < Notification > | undefined > {
-        const subscribers = await this.subscribersRepository.aggregate([{
-            $match: {
-                subscriberId: subscriberId
+    async getNotifications(subscriberId: string, pageNum: number, pageSize: number) : Promise<Array<Notification> | undefined> {
+        const subscribers =  await this.subscribersRepository.aggregate ([
+            { $match: { subscriberId: subscriberId } },
+            {
+                $project: {
+                    notifications: { $slice: ['$notifications', (pageNum - 1) * pageSize, pageSize] }
+                }
+            },
+            {
+                $unwind: '$notifications'
+            },
+            {
+                $lookup: {
+                    from: 'topics',
+                    let: { referenceId: '$notifications.topic' },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ['$_id', '$$referenceId'] } } }
+                    ],
+                    as: 'topic'
+                }
+            },
+            {
+                $addFields: {
+                    'notifications.topic': { $arrayElemAt: ['$topic', 0] }
+                }
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    notifications: { $push: '$notifications' }
+                }
             }
-        }, {
-            $project: {
-                notifications: {
-                    $slice: ['$notifications', (pageNum - 1) * pageSize, pageSize],
-                },
-            },
-        }, {
-            $lookup: {
-                from: 'topics',
-                localField: 'notifications.topic',
-                foreignField: '_id',
-                as: 'notifications.topic',
-            },
-        },
-        {
-            $addFields: {
-                'notifications.topic': {
-                    $arrayElemAt: ['$topic', 0]
-                },
-            },
-        }
-    ]);
+        ]);
+
         return subscribers[0].notifications;
     }
 
