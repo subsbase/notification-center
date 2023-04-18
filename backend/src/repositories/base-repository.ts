@@ -15,7 +15,7 @@ import { CreatedModel, RemovedModel, UpdatedModel } from './helper-types';
 export abstract class BaseRepository<T extends Document, TSchema> {
   constructor(protected readonly model: Model<T>) {}
 
-  async create(doc: object, saveOptions?: SaveOptions): Promise<CreatedModel> {
+  async create(doc: TSchema, saveOptions?: SaveOptions): Promise<CreatedModel> {
     const createdEntity = new this.model(doc);
     const savedResult = await createdEntity.save(saveOptions);
 
