@@ -16,7 +16,7 @@ export class NotificationsController extends BaseController {
         super(request);
     }
 
-    @Authorize()
+    // @Authorize()
     @Post('trigger/:event')
     async trigger(@Param('event') event: string, @Body() notificationDto: NotificationDto ) : Promise<IActionResult> {
         await this.notificationManager.notify(event, notificationDto.actionUrl, notificationDto.payload ,notificationDto.to)

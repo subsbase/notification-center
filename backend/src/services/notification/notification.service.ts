@@ -7,21 +7,38 @@ import { AnyBulkWriteOperation } from 'mongodb'
 @Injectable()
 export class NotificationService {
     constructor(
-        private readonly notificationProcessor: NotificationProcessor, 
+        private readonly notificationProcessor: NotificationProcessor,
         private readonly subscribersRepository: SubscribersRepository
-        ) {}
+    ) { }
 
 
-    async getNotifications(subscriberId: string, pageNum: number, pageSize: number) : Promise<Array<Notification> | undefined> {
-        const subscribers =  await this.subscribersRepository.aggregate ([
-            { $match: { subscriberId: subscriberId } },
-            {
-                $project: {
-                    notifications: { $slice: ['$notifications', (pageNum - 1) * pageSize, pageSize] }
-                }
+    async getNotifications(subscriberId: string, pageNum: number, pageSize: number): Promise < Array < Notification > | undefined > {
+        const subscribers = await this.subscribersRepository.aggregate([{
+            $match: {
+                subscriberId: subscriberId
             }
-        ]);
-
+        }, {
+            $project: {
+                notifications: {
+                    $slice: ['$notifications', (pageNum - 1) * pageSize, pageSize],
+                },
+            },
+        }, {
+            $lookup: {
+                from: 'topics',
+                localField: 'notifications.topic',
+                foreignField: '_id',
+                as: 'notifications.topic',
+            },
+        },
+        {
+            $addFields: {
+                'notifications.topic': {
+                    $arrayElemAt: ['$topic', 0]
+                },
+            },
+        }
+    ]);
         return subscribers[0].notifications;
     }
 
@@ -32,7 +49,7 @@ export class NotificationService {
     async notify(subscriberId: string, notification: Notification) {
         await this.subscribersRepository.updateOne(
             { subscriberId: subscriberId },
-            { $push: { notifications: notification }},
+            { $push: { notifications: notification } },
             { upsert: true, new: true, setDefaultsOnInsert: true }
         );
     }
@@ -42,7 +59,7 @@ export class NotificationService {
             return {
                 updateOne: {
                     filter: { subscriberId: subscriberId },
-                    update: { 
+                    update: {
                         $push: { notifications: notification },
                         $setOnInsert: { subscriberId: subscriberId }
                     },
@@ -55,23 +72,31 @@ export class NotificationService {
     async markAsRead(subscriberId: string, notificationId: string) {
         await this.subscribersRepository.updateOne(
             { subscriberId: subscriberId, "notifications._id": notificationId },
-            { $set: {"notifications.$[notification].read": true}},
-            { arrayFilters: [{ "notification._id": notificationId }]}
+            { $set: { "notifications.$[notification].read": true } },
+            { arrayFilters: [{ "notification._id": notificationId }] }
+        )
+    }
+
+    async markAsUnRead(subscriberId: string, notificationId: string) {
+        await this.subscribersRepository.updateOne(
+            { subscriberId: subscriberId, "notifications._id": notificationId },
+            { $set: { "notifications.$[notification].read": false } },
+            { arrayFilters: [{ "notification._id": notificationId }] }
         )
     }
 
     async markManyRead(subscriberId: string, notificationsIds: Array<string>) {
         await this.subscribersRepository.updateOne(
             { subscriberId: subscriberId, "notifications._id": notificationsIds },
-            { $set: {"notifications.$[notification].read": true}},
-            { arrayFilters: [{ "notification._id": notificationsIds }]}
+            { $set: { "notifications.$[notification].read": true } },
+            { arrayFilters: [{ "notification._id": notificationsIds }] }
         )
     }
 
     async markAllAsRead(subscriberId: string) {
         await this.subscribersRepository.updateMany(
             { subscriberId: subscriberId },
-            { $set: {"notifications.$.read": true}},
+            { $set: { "notifications.$.read": true } },
         )
     }
 }

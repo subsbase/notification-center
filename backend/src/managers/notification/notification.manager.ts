@@ -21,6 +21,10 @@ export class NotificationManager {
         await this.notificationService.markAsRead(subscriberId, notificationId);
     }
 
+    async markAsUnRead(subscriberId: string, notificationId: string) {
+        await this.notificationService.markAsUnRead(subscriberId, notificationId);
+    }
+
     async markSomeAsRead(subscriberId: string, notificationsIds: Array<string>) {
         await this.notificationService.markManyRead(subscriberId, notificationsIds);
     }

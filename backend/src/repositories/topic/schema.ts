@@ -24,6 +24,9 @@ export class Topic extends BaseModel {
 
   @Prop({ type: MongoSchema.Types.ObjectId, ref: 'Topic' })
   parentTopic?: Topic;
+
+  @Prop({required: true})
+  displayText: String;
 }
 
 export const TopicSchema = SchemaFactory.createForClass(Topic);

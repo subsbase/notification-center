@@ -52,6 +52,17 @@ export class SubscribersController extends BaseController {
         return this.ok();
     }
 
+    @Patch(':subscriberId/notification/:notificationId/markasunread')
+    async markAsUnRead(
+        @Param('subscriberId')
+        subscriberId: string,
+        @Param('notificationId')
+        notificationId: string
+    ): Promise<IActionResult> {
+        await this.notificationManager.markAsRead(subscriberId, notificationId);
+        return this.ok();
+    }
+
     @Patch(':subscriberId/notifications/markasread')
     async markAllAsRead(@Param('subscriberId') subscriberId: string): Promise<IActionResult> {
         await this.notificationManager.markAllAsRead(subscriberId);
