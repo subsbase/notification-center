@@ -11,3 +11,4 @@ declare module 'fastify' {
 }
 export { FastifyRequest };
 
+export type Payload = string | object 
