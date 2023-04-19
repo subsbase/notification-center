@@ -4,6 +4,7 @@ import { NotificationManager } from '../../../../src/managers/notification/notif
 import { TopicService } from '../../../../src/services/topic/topic.service'
 import { NotificationService } from '../../../../src/services/notification/notification.service'
 import { NotFoundException } from '@nestjs/common'
+import { EventsGateway } from 'src/events/events.gateway'
 
 
 describe('test notificationManager.getAllNotifications', () => {
@@ -21,7 +22,8 @@ describe('test notificationManager.getAllNotifications', () => {
             return returnedNotifications;
           })
         })
-        const notificationManager = new NotificationManager(mockedNotificationService, mockedTopicsService);
+        const mockedEventsGateway = createMock<EventsGateway>()
+        const notificationManager = new NotificationManager(mockedEventsGateway,mockedNotificationService, mockedTopicsService);
         
         //Act
         const result = await notificationManager.getAllNotifications(subscriberId, pageNum, pageSize);
@@ -43,7 +45,8 @@ describe('test notificationManager.notify', () => {
             return topic;
         }) });
         const mockedNotificationService = createMock<NotificationService>()
-        const notificationManager = new NotificationManager(mockedNotificationService, mockedTopicsService);
+        const mockedEventsGateway = createMock<EventsGateway>()
+        const notificationManager = new NotificationManager(mockedEventsGateway,mockedNotificationService, mockedTopicsService);
         
         //Act
         const promisResult = notificationManager.notify(event, actionUrl, null, subscribersIds)
