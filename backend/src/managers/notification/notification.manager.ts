@@ -22,12 +22,24 @@ export class NotificationManager {
         await this.notificationService.markAsRead(subscriberId, notificationId);
     }
 
-    async markSomeAsRead(subscriberId: string, notificationsIds: Array<string>) {
-        await this.notificationService.markManyRead(subscriberId, notificationsIds);
+    async markManyAsRead(subscriberId: string, notificationsIds: Array<string>) {
+        await this.notificationService.markManyAsRead(subscriberId, notificationsIds);
     }
 
     async markAllAsRead(subscriberId: string) {
         await this.notificationService.markAllAsRead(subscriberId);
+    }
+
+    async markAsUnread(subscriberId: string, notificationId: string) {
+        await this.notificationService.markAsUnread(subscriberId, notificationId);
+    }
+
+    async markManyAsUnread(subscriberId: string, notificationsIds: Array<string>) {
+        await this.notificationService.markManyAsUnread(subscriberId, notificationsIds);
+    }
+
+    async markAllAsUnread(subscriberId: string) {
+        await this.notificationService.markAllAsUnread(subscriberId);
     }
 
     async notify(
@@ -51,6 +63,6 @@ export class NotificationManager {
 
         await this.notificationService.notifyAll(subscribersIds, notification)
 
-        this.eventsGateway.notifySubscribers(notification, subscribersIds )
+        this.eventsGateway.notifySubscribers(notification, subscribersIds)
     }
 }
