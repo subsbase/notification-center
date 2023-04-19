@@ -2,7 +2,7 @@ import { SubscribersRepository } from "../../repositories/subscriber/repository"
 import { NotificationProcessor } from "./notification.processor";
 import { Notification } from '../../repositories/subscriber/notification/schema'
 import { Injectable } from "@nestjs/common";
-import { AnyBulkWriteOperation } from 'mongodb'
+import { Payload } from "../../types/global-types";
 
 @Injectable()
 export class NotificationService {
@@ -49,7 +49,7 @@ export class NotificationService {
         return subscribers[0].notifications;
     }
 
-    compileContent(template: string, payload: any): string {
+    compileContent(template: string | undefined, payload: Payload): string {
         return this.notificationProcessor.compileContent(template, payload);
     }
 
