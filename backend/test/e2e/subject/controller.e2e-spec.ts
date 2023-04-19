@@ -9,6 +9,7 @@ import { ValidationErrorFilter } from '../../../src/filters/validation-error.fil
 import { ControllersModule } from '../../../src/controllers/controllers.module';
 import { ConfigModule } from '@nestjs/config';
 import { Subject } from '../../../src/repositories/subject/schema';
+import { Reflector } from '@nestjs/core/services/reflector.service';
 
 describe('subjects', () => {
     let app: INestApplication;
@@ -22,7 +23,8 @@ describe('subjects', () => {
         .compile();
   
         app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
-        await app.useGlobalInterceptors(new ResponseInterceptor())
+        const reflector = new Reflector()
+        await app.useGlobalInterceptors(new ResponseInterceptor(reflector))
         await app.useGlobalFilters(new MongoErrorFilter(), new ValidationErrorFilter());
         await app.init();
         await app.getHttpAdapter().getInstance().ready();

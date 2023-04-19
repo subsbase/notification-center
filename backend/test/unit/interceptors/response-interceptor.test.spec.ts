@@ -8,12 +8,16 @@ import { IActionResult } from "../../../src/controllers/response-helpers/action-
 import { NotFoundObjectResult } from "../../../src/controllers/response-helpers/notfound-result";
 import { InternalServerErrorObjectResult } from "../../../src/controllers/response-helpers/internal-server-error-result";
 import { CreatedObjectResult } from "../../../src/controllers/response-helpers/created-result";
+import { Reflector } from "@nestjs/core/services/reflector.service";
 
 describe('Response Interceptor', () => {
     let interceptor: ResponseInterceptor
+    let reflector: Reflector;
   
     beforeEach(() => {
-      interceptor = new ResponseInterceptor()
+        reflector = new Reflector();
+        reflector.get = jest.fn().mockReturnValue(false);
+        interceptor = new ResponseInterceptor(reflector)
     })
   
 
