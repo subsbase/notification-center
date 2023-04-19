@@ -1,6 +1,5 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { RepositoriesModule } from '../repositories/repositories.module';
-import { NotificationTemplateService } from './notification-template/notification-template.service';
 import { NotificationProcessor } from './notification/notification.processor';
 import { NotificationService } from './notification/notification.service';
 import { SubjectService } from './subject/subject.service';
@@ -25,8 +24,8 @@ export class ServicesModule {
           audience: process.env.JWT_AUDIENCE,
         },
       })],
-      providers: [SubjectService, TopicService, NotificationService, NotificationTemplateService, SubscriberService, AuthService, NotificationProcessor, AccessTokenProcessor],
-      exports: [SubjectService, TopicService, NotificationService, NotificationTemplateService, SubscriberService, AuthService],
+      providers: [SubjectService, TopicService, NotificationService, SubscriberService, AuthService, NotificationProcessor, AccessTokenProcessor],
+      exports: [SubjectService, TopicService, NotificationService, SubscriberService, AuthService],
     }
   }
 }

@@ -3,6 +3,7 @@ import { EventsGateway } from "../../events/events.gateway";
 import { Notification } from "../../repositories/subscriber/notification/schema";
 import { NotificationService } from "../../services/notification/notification.service";
 import { TopicService } from "../../services/topic/topic.service";
+import { Payload } from "../../types/global-types";
 
 @Injectable()
 export class NotificationManager {
@@ -32,7 +33,7 @@ export class NotificationManager {
     async notify(
         event: string,
         actionUrl: string,
-        payload: any,
+        payload: Payload,
         subscribersIds: Array<string>
         ) {
 
@@ -44,10 +45,12 @@ export class NotificationManager {
 
         const notificationTemplate = topic.notificationTemplate;
 
-        const content = this.notificationService.compileContent(notificationTemplate.template!, payload)
+        const content = this.notificationService.compileContent(notificationTemplate?.template, payload)
+        
         const notification =  Notification.create(topic, content, actionUrl)
 
         await this.notificationService.notifyAll(subscribersIds, notification)
+
         this.eventsGateway.notifySubscribers(notification, subscribersIds )
     }
 }

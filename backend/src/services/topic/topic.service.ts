@@ -13,6 +13,6 @@ export class TopicService {
     }
 
     async getByEvent(event: string) : Promise<Topic | null>{
-        return await this.topicsRepository.findOne({ event: event }, { populate: 'notificationTemplate' });
+        return await this.topicsRepository.findOne({ event: event });
     }
 }
