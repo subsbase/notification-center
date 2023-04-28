@@ -8,7 +8,7 @@ export class SubjectService {
   constructor(private readonly subjectsRepository: SubjectsRepository) {}
   
   getAll(pageNum: number, pageSize: number): Promise<Array<Subject>> {
-    return this.subjectsRepository.find({}, { 
+    return this.subjectsRepository.find({}, {} , { 
         skip: (pageNum - 1) * pageSize,
         limit: pageSize
       })
