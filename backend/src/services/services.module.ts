@@ -8,6 +8,7 @@ import { TopicService } from './topic/topic.service';
 import { AuthService } from './auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenProcessor } from './auth/access.token.processor';
+import { ArchivedNotificationService } from './archived-notifications/archived-notifications.service';
 
 @Module({})
 export class ServicesModule {
@@ -24,8 +25,8 @@ export class ServicesModule {
           audience: process.env.JWT_AUDIENCE,
         },
       })],
-      providers: [SubjectService, TopicService, NotificationService, SubscriberService, AuthService, NotificationProcessor, AccessTokenProcessor],
-      exports: [SubjectService, TopicService, NotificationService, SubscriberService, AuthService],
+      providers: [SubjectService, TopicService, NotificationService, SubscriberService, AuthService, NotificationProcessor, AccessTokenProcessor, ArchivedNotificationService],
+      exports: [SubjectService, TopicService, NotificationService, SubscriberService, AuthService, ArchivedNotificationService],
     }
   }
 }

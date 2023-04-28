@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { EventsGateway } from "../../events/events.gateway";
-import { Notification } from "../../repositories/subscriber/notification/schema";
-import { NotificationService } from "../../services/notification/notification.service";
-import { TopicService } from "../../services/topic/topic.service";
+import { EventsGateway } from '../../events/events.gateway';
+import { Notification } from '../../repositories/subscriber/notification/schema';
+import { NotificationService } from '../../services/notification/notification.service';
+import { TopicService } from '../../services/topic/topic.service';
 import { Payload } from "../../types/global-types";
+import { UpdatedModel } from '../../repositories/helper-types';
 
 @Injectable()
 export class NotificationManager {
@@ -16,6 +17,14 @@ export class NotificationManager {
     async getAllNotifications(subscriberId: string, pageNum: number, pageSize: number) : Promise<Array<Notification>> {
         const notifications = await this.notificationService.getNotifications(subscriberId, pageNum, pageSize)
         return notifications?? new Array()
+    }
+
+    archive(subscriberId: string, notificationsIds: Array<string>) : Promise<UpdatedModel> {
+        return this.notificationService.archive(subscriberId, notificationsIds)
+    }
+
+    unarchive(subscriberId: string, archivedNotificationsIds: Array<string>) : Promise<UpdatedModel> {
+        return this.notificationService.unarchive(subscriberId, archivedNotificationsIds)
     }
 
     async markAsRead(subscriberId: string, notificationId: string) {
@@ -59,7 +68,7 @@ export class NotificationManager {
 
         const content = this.notificationService.compileContent(notificationTemplate?.template, payload)
         
-        const notification =  Notification.create(topic, content, actionUrl)
+        const notification =  this.notificationService.buildNotification(topic, content, actionUrl)
 
         await this.notificationService.notifyAll(subscribersIds, notification)
 

@@ -17,17 +17,6 @@ export class Notification extends BaseModel {
 
   @Prop({ required: true, default: false, type: Boolean })
   read: boolean;
-
-
-  static create(topic: Topic, content: string, actionUrl: string ): Notification {
-    let notification = new Notification();
-
-    notification.topic = topic;
-    notification.actionUrl = actionUrl
-    notification.content = content
-
-    return notification;
-  }
 }
 
 export const NotificationSchema = SchemaFactory.createForClass(Notification);

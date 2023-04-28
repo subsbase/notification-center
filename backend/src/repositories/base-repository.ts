@@ -1,15 +1,21 @@
 import mongoose, {
   AggregateOptions,
   FilterQuery,
+  HydratedDocument,
+  InsertManyOptions,
+  MergeType,
   Model,
   PipelineStage,
+  ProjectionType,
   QueryOptions,
+  Require_id,
   SaveOptions,
   UpdateQuery,
   UpdateWithAggregationPipeline,
+  MongooseBulkWriteOptions
 } from 'mongoose';
 import { Document } from 'mongoose';
-import { AnyBulkWriteOperation } from 'mongodb'
+import { AnyBulkWriteOperation, BulkWriteOptions } from 'mongodb'
 import { CreatedModel, RemovedModel, UpdatedModel } from './helper-types';
 
 export abstract class BaseRepository<T extends Document, TSchema> {
@@ -22,12 +28,16 @@ export abstract class BaseRepository<T extends Document, TSchema> {
     return { id: savedResult.id, created: !!savedResult.id };
   }
 
-  async find(filter: FilterQuery<T>, options?: QueryOptions): Promise<Array<TSchema>> {
-    return await this.model.find(filter, null, options);
+  async insertMany(docs: Array<TSchema>, options: InsertManyOptions): Promise<HydratedDocument<MergeType<MergeType<T, TSchema[]>, Require_id<T>>, {}, {}>[]> {
+    return await this.model.insertMany(docs, options)
   }
 
-  async findOne(filter: FilterQuery<T>, options?: QueryOptions): Promise<TSchema | null> {
-    return await this.model.findOne(filter, null, options);
+  async find(filter: FilterQuery<T>, projection?: ProjectionType<T> ,options?: QueryOptions): Promise<Array<TSchema>> {
+    return await this.model.find(filter, projection , options);
+  }
+
+  async findOne(filter: FilterQuery<T>, projection?: ProjectionType<T> , options?: QueryOptions): Promise<TSchema | null> {
+    return await this.model.findOne(filter, projection, options);
   }
 
   async findById(id: string): Promise<TSchema | null> {
@@ -72,7 +82,8 @@ export abstract class BaseRepository<T extends Document, TSchema> {
   }
 
   async bulkWrite(
-      writeOperations: Array<AnyBulkWriteOperation<T extends Document ? any : (T extends {} ? T : any)>>
+      writeOperations: Array<AnyBulkWriteOperation<T extends Document ? object : (T extends {} ? T : object)>>,
+      bulkWriteOptions?: BulkWriteOptions & MongooseBulkWriteOptions
   ) {
      return await this.model.bulkWrite(writeOperations)
   }

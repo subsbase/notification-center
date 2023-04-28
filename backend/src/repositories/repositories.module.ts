@@ -8,6 +8,8 @@ import { Subscriber, SubscriberSchema } from './subscriber/schema';
 import { SubscribersRepository } from './subscriber/repository';
 import { Realm, RealmSchema } from './realm/schema';
 import { RealmRepository } from './realm/repository';
+import { ArchivedNotification, ArchivedNotificationSchema } from './archived-notifications/schema';
+import { ArchivedNotificationsRepository } from './archived-notifications/repositorty';
 
 
 @Module({})
@@ -36,6 +38,10 @@ export class RepositoriesModule {
             name: Subscriber.name,
             schema: SubscriberSchema,
           },
+          {
+            name: ArchivedNotification.name,
+            schema: ArchivedNotificationSchema
+          }
         ]),
       ],
       providers: [
@@ -43,12 +49,14 @@ export class RepositoriesModule {
         SubjectsRepository,
         TopicsRepository,
         SubscribersRepository,
+        ArchivedNotificationsRepository
       ],
       exports: [
         RealmRepository,
         SubjectsRepository,
         TopicsRepository,
         SubscribersRepository,
+        ArchivedNotificationsRepository
       ],
     };
   }

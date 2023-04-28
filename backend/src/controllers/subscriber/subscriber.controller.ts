@@ -1,5 +1,5 @@
 import { REQUEST } from '@nestjs/core';
-import { Body, Controller, Get, Inject, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { NotificationManager } from '../../managers/notification/notification.manager';
 import { SubscriberManager } from '../../managers/subscriber/subscriber.manager';
 import { Subscriber } from '../../repositories/subscriber/schema';
@@ -85,5 +85,17 @@ export class SubscribersController extends BaseController {
     async markManyAsUnread(@Param('subscriberId') subscriberId: string, @Body() notificationsIds: Array<string>) {
         await this.notificationManager.markManyAsUnread(subscriberId, notificationsIds);
         return this.ok();
+    }
+
+    @Put(':subscriberId/notifications/archive')
+    async archive(@Param('subscriberId') subscriberId: string, @Body() notificationsIds: Array<string>) {
+        const result =  await this.notificationManager.archive(subscriberId, notificationsIds);
+        return this.ok(result);
+    }
+
+    @Put(':subscriberId/notifications/unarchive')
+    async unarchive(@Param('subscriberId') subscriberId: string, @Body() archivedNotificationsIds: Array<string>) {
+        const result =  await this.notificationManager.unarchive(subscriberId, archivedNotificationsIds);
+        return this.ok(result);
     }
 }
