@@ -59,7 +59,7 @@ export class NotificationManager {
 
         const content = this.notificationService.compileContent(notificationTemplate?.template, payload)
         
-        const notification =  Notification.create(topic, content, actionUrl)
+        const notification =  this.notificationService.buildNotification(topic, content, actionUrl)
 
         await this.notificationService.notifyAll(subscribersIds, notification)
 
