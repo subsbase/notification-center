@@ -1,5 +1,5 @@
 import { REQUEST } from '@nestjs/core';
-import { Body, Controller, Get, Inject, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { NotificationManager } from '../../managers/notification/notification.manager';
 import { SubscriberManager } from '../../managers/subscriber/subscriber.manager';
 import { Subscriber } from '../../repositories/subscriber/schema';
@@ -51,6 +51,17 @@ export class SubscribersController extends BaseController {
         await this.notificationManager.markAsRead(subscriberId, notificationId);
         return this.ok();
     }
+    
+    @Patch(':subscriberId/notification/:notificationId/markasunread')
+    async markAsUnread(
+        @Param('subscriberId')
+        subscriberId: string,
+        @Param('notificationId')
+        notificationId: string
+    ): Promise<IActionResult> {
+        await this.notificationManager.markAsUnread(subscriberId, notificationId);
+        return this.ok();
+    }
 
     @Patch(':subscriberId/notification/:notificationId/markasunread')
     async markAsUnRead(
@@ -69,9 +80,33 @@ export class SubscribersController extends BaseController {
         return this.ok();
     }
 
-    @Patch(':subscriberId/notifications/marksomeasread')
-    async markSomeAsRead(@Param('subscriberId') subscriberId: string, @Body() notificationsIds: Array<string>) {
-        await this.notificationManager.markSomeAsRead(subscriberId, notificationsIds);
+    @Patch(':subscriberId/notifications/markasunread')
+    async markAllAsUnread(@Param('subscriberId') subscriberId: string): Promise<IActionResult> {
+        await this.notificationManager.markAllAsUnread(subscriberId);
         return this.ok();
+    }
+
+    @Patch(':subscriberId/notifications/markmanyasread')
+    async markManyAsRead(@Param('subscriberId') subscriberId: string, @Body() notificationsIds: Array<string>) {
+        await this.notificationManager.markManyAsRead(subscriberId, notificationsIds);
+        return this.ok();
+    }
+
+    @Patch(':subscriberId/notifications/markmanyasunread')
+    async markManyAsUnread(@Param('subscriberId') subscriberId: string, @Body() notificationsIds: Array<string>) {
+        await this.notificationManager.markManyAsUnread(subscriberId, notificationsIds);
+        return this.ok();
+    }
+
+    @Put(':subscriberId/notifications/archive')
+    async archive(@Param('subscriberId') subscriberId: string, @Body() notificationsIds: Array<string>) {
+        const result =  await this.notificationManager.archive(subscriberId, notificationsIds);
+        return this.ok(result);
+    }
+
+    @Put(':subscriberId/notifications/unarchive')
+    async unarchive(@Param('subscriberId') subscriberId: string, @Body() archivedNotificationsIds: Array<string>) {
+        const result =  await this.notificationManager.unarchive(subscriberId, archivedNotificationsIds);
+        return this.ok(result);
     }
 }

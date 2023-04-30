@@ -1,8 +1,10 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { EventsGateway } from "../../events/events.gateway";
-import { Notification } from "../../repositories/subscriber/notification/schema";
-import { NotificationService } from "../../services/notification/notification.service";
-import { TopicService } from "../../services/topic/topic.service";
+import { EventsGateway } from '../../events/events.gateway';
+import { Notification } from '../../repositories/subscriber/notification/schema';
+import { NotificationService } from '../../services/notification/notification.service';
+import { TopicService } from '../../services/topic/topic.service';
+import { Payload } from "../../types/global-types";
+import { UpdatedModel } from '../../repositories/helper-types';
 
 @Injectable()
 export class NotificationManager {
@@ -17,6 +19,14 @@ export class NotificationManager {
         return notifications?? new Array()
     }
 
+    archive(subscriberId: string, notificationsIds: Array<string>) : Promise<UpdatedModel> {
+        return this.notificationService.archive(subscriberId, notificationsIds)
+    }
+
+    unarchive(subscriberId: string, archivedNotificationsIds: Array<string>) : Promise<UpdatedModel> {
+        return this.notificationService.unarchive(subscriberId, archivedNotificationsIds)
+    }
+
     async markAsRead(subscriberId: string, notificationId: string) {
         await this.notificationService.markAsRead(subscriberId, notificationId);
     }
@@ -25,8 +35,8 @@ export class NotificationManager {
         await this.notificationService.markAsUnRead(subscriberId, notificationId);
     }
 
-    async markSomeAsRead(subscriberId: string, notificationsIds: Array<string>) {
-        await this.notificationService.markManyRead(subscriberId, notificationsIds);
+    async markManyAsRead(subscriberId: string, notificationsIds: Array<string>) {
+        await this.notificationService.markManyAsRead(subscriberId, notificationsIds);
     }
 
     async markAllAsRead(subscriberId: string) {
@@ -36,7 +46,7 @@ export class NotificationManager {
     async notify(
         event: string,
         actionUrl: string,
-        payload: any,
+        payload: Payload,
         subscribersIds: Array<string>
         ) {
 
@@ -48,10 +58,12 @@ export class NotificationManager {
 
         const notificationTemplate = topic.notificationTemplate;
 
-        const content = this.notificationService.compileContent(notificationTemplate.template!, payload)
-        const notification =  Notification.create(topic, content, actionUrl)
+        const content = this.notificationService.compileContent(notificationTemplate?.template, payload)
+        
+        const notification =  this.notificationService.buildNotification(topic, content, actionUrl)
 
         await this.notificationService.notifyAll(subscribersIds, notification)
-        this.eventsGateway.notifySubscribers(notification, subscribersIds )
+
+        this.eventsGateway.notifySubscribers(notification, subscribersIds)
     }
 }

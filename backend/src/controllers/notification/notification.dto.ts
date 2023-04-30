@@ -1,5 +1,7 @@
+import { Payload } from "../../types/global-types";
+
 export class NotificationDto {
     to: Array<string>;
-    payload: any;
+    payload: Payload;
     actionUrl: string
 }
