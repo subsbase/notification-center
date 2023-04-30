@@ -10,7 +10,9 @@ import { map } from 'rxjs/operators';
 import { Server } from 'socket.io';
 import { Notification } from "../repositories/subscriber/notification/schema";
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: true
+})
 export class EventsGateway {
   @WebSocketServer()
   private server: Server;

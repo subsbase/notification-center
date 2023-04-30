@@ -101,9 +101,9 @@ export class NotificationService {
     }
 
     async markAllAsRead(subscriberId: string) {
-        await this.subscribersRepository.updateMany(
+        await this.subscribersRepository.updateOne(
             { subscriberId: subscriberId },
-            { $set: { "notifications.$.read": true } },
+            { $set: { "notifications.$[].read": true } },
         )
     }
 }

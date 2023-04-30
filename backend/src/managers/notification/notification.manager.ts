@@ -13,7 +13,7 @@ export class NotificationManager {
             
 
     async getAllNotifications(subscriberId: string, pageNum: number, pageSize: number) : Promise<Array<Notification>> {
-        const notifications = await this.notificationService.getNotifications(subscriberId, pageNum, pageSize)
+        const notifications = await this.notificationService.getNotifications(subscriberId, pageNum, 30)
         return notifications?? new Array()
     }
 
