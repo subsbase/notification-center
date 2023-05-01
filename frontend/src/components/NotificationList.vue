@@ -29,6 +29,7 @@
         <div>
           <span v-if="!notification.read" class="blue-circle mr-10"> </span>
           <img
+            @click.stop="handleArchiveNotification(notification._id)"
             class="clickable top-1 pos-relative"
             src="../assets/archive-icon.svg"
           />
@@ -50,7 +51,7 @@
 <script setup>
 import { defineProps, computed, defineEmits, onBeforeMount, ref } from "vue";
 import moment from "moment";
-import { markAllAsRead, markAsRead } from "@/services/notifications";
+import { archiveNotification, markAllAsRead, markAsRead } from "@/services/notifications";
 
 const emit = defineEmits(['on-click-mark-read'])
 
@@ -71,6 +72,19 @@ onBeforeMount(() => {
   getSubscriberId()
 });
 
+const handleArchiveNotification = (notificationId) => { 
+  const payload = []
+  payload.push(notificationId)
+  archiveNotification("test1", payload)
+    .then((res) => {
+      console.log("res", res);
+      emit('on-click-mark-read')
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+
 const getSubscriberId = () => { 
   let url = new URL(window.location)
   let params = new URLSearchParams(url.search)
@@ -84,9 +98,10 @@ const getNotificationTime = (time) => {
 };
 
 const handleMarkAllAsRead = () => {
-  markAllAsRead("test")
+  markAllAsRead("test1")
     .then((res) => {
       console.log("res", res);
+      emit('on-click-mark-read')
     })
     .catch((err) => {
       console.error(err);
@@ -94,7 +109,7 @@ const handleMarkAllAsRead = () => {
 };
 
 const handleMarkAsRead = (notificationId, actionUrl) => {
-  markAsRead("test", notificationId)
+  markAsRead("test1", notificationId)
     .then((res) => {
       console.log("res", res);
       emit('on-click-mark-read')

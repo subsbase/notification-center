@@ -33,3 +33,15 @@ export const markAsRead = (subscriberId, notificationId) => {
       .catch(err => reject(err))
   })
 }
+
+export const archiveNotification = (subscriberId, data) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "put",
+      url: `${BASE_URL}notifc/subscribers/${subscriberId}/notifications/archive`,
+      data
+    })
+      .then(res => resolve(res.data))
+      .catch(err => reject(err))
+  })
+}

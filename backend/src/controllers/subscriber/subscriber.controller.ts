@@ -52,16 +52,16 @@ export class SubscribersController extends BaseController {
         return this.ok();
     }
     
-    @Patch(':subscriberId/notification/:notificationId/markasunread')
-    async markAsUnread(
-        @Param('subscriberId')
-        subscriberId: string,
-        @Param('notificationId')
-        notificationId: string
-    ): Promise<IActionResult> {
-        await this.notificationManager.markAsUnread(subscriberId, notificationId);
-        return this.ok();
-    }
+    // @Patch(':subscriberId/notification/:notificationId/markasunread')
+    // async markAsUnread(
+    //     @Param('subscriberId')
+    //     subscriberId: string,
+    //     @Param('notificationId')
+    //     notificationId: string
+    // ): Promise<IActionResult> {
+    //     await this.notificationManager.markAsUnRead(subscriberId, notificationId);
+    //     return this.ok();
+    // }
 
     @Patch(':subscriberId/notification/:notificationId/markasunread')
     async markAsUnRead(
@@ -82,7 +82,7 @@ export class SubscribersController extends BaseController {
 
     @Patch(':subscriberId/notifications/markasunread')
     async markAllAsUnread(@Param('subscriberId') subscriberId: string): Promise<IActionResult> {
-        await this.notificationManager.markAllAsUnread(subscriberId);
+        await this.notificationManager.markAllAsUnRead(subscriberId);
         return this.ok();
     }
 
@@ -94,7 +94,7 @@ export class SubscribersController extends BaseController {
 
     @Patch(':subscriberId/notifications/markmanyasunread')
     async markManyAsUnread(@Param('subscriberId') subscriberId: string, @Body() notificationsIds: Array<string>) {
-        await this.notificationManager.markManyAsUnread(subscriberId, notificationsIds);
+        await this.notificationManager.markManyAsUnRead(subscriberId, notificationsIds);
         return this.ok();
     }
 

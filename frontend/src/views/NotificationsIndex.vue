@@ -3,6 +3,7 @@
     <NotificationList
     :notifications="notifications"
     :source="'page'"
+    @on-click-mark-read="fetchAllNotifications"
     />
   </div>
 </template>
@@ -19,7 +20,7 @@ onBeforeMount(() => {
 });
 
 const fetchAllNotifications = () => { 
-  getAllNotifications("test")
+  getAllNotifications("test1")
     .then((res) => {
       notifications.value = res.reverse()
     })

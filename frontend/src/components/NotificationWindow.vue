@@ -1,7 +1,6 @@
 <template>
   <!-- <i @click="showNotificationWindow" class="fa fa-bell clickable"></i> -->
   <div v-if="showNotificationWindowTrigger" class="notification-window">
-
     <NotificationList
     :notifications="notifications"
     @on-click-mark-read="fetchAllNotifications"
@@ -25,7 +24,7 @@ const showNotificationWindowTrigger = ref(true)
 
 const socket = io("http://127.0.0.1:3000");
 socket.on("connect", function () {
-  socket.emit("joinGroup", "test");
+  socket.emit("joinGroup", "test1");
   console.log("Connected");
 });
 socket.on("notification", function (data) {
@@ -59,7 +58,7 @@ const showAllNotificationsPage = () => {
 }
 
 const fetchAllNotifications = () => { 
-  getAllNotifications("test")
+  getAllNotifications("test1")
     .then((res) => {
       notifications.value = res.reverse()
     })

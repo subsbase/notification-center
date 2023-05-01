@@ -288,7 +288,7 @@ export class NotificationService {
         )
     }
 
-    async markManyAsUnread(subscriberId: string, notificationsIds: Array<string>) {
+    async markManyAsUnRead(subscriberId: string, notificationsIds: Array<string>) {
         await this.subscribersRepository.updateOne(
             { subscriberId: subscriberId, "notifications._id": notificationsIds },
             { $set: {"notifications.$[notification].read": false}},
@@ -296,7 +296,7 @@ export class NotificationService {
         )
     }
 
-    async markAllAsUnread(subscriberId: string) {
+    async markAllAsUnRead(subscriberId: string) {
         await this.subscribersRepository.updateOne(
             { subscriberId: subscriberId },
             { $set: {"notifications.$[].read": false}},
