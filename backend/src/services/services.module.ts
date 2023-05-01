@@ -9,6 +9,7 @@ import { AuthService } from './auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenProcessor } from './auth/access.token.processor';
 import { ArchivedNotificationService } from './archived-notifications/archived-notifications.service';
+import { InternalEventsModule } from '../internal-events/internal.events.module';
 
 @Module({})
 export class ServicesModule {
@@ -16,15 +17,16 @@ export class ServicesModule {
     return {
       module: ServicesModule,
       imports: [RepositoriesModule.withUri(uri), 
-      JwtModule.register({
-        global: true,
-        secret: process.env.JWT_SECRET,
-        signOptions: { 
-          expiresIn: '1d',
-          issuer: process.env.JWT_ISSUER,
-          audience: process.env.JWT_AUDIENCE,
-        },
-      })],
+        InternalEventsModule,
+        JwtModule.register({
+          global: true,
+          secret: process.env.JWT_SECRET,
+          signOptions: { 
+            expiresIn: '1d',
+            issuer: process.env.JWT_ISSUER,
+            audience: process.env.JWT_AUDIENCE,
+          },
+        })],
       providers: [SubjectService, TopicService, NotificationService, SubscriberService, AuthService, NotificationProcessor, AccessTokenProcessor, ArchivedNotificationService],
       exports: [SubjectService, TopicService, NotificationService, SubscriberService, AuthService, ArchivedNotificationService],
     }

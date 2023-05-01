@@ -8,13 +8,16 @@ import { UpdatedModel } from '../../repositories/helper-types';
 import { ArchivedNotification } from '../../repositories/subscriber/archived-notification/schema';
 import { Realm } from '../../repositories/realm/schema';
 import { Topic } from "../../repositories/topic/schema";
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { NotificationArchived, NotificationRead, NotificationUnarchived, NotificationUnread, NotificationsRead, NotificationsUnread } from 'src/internal-events/notification';
 
 @Injectable()
 export class NotificationService {
     constructor(
-        private readonly notificationProcessor: NotificationProcessor,
-        private readonly subscribersRepository: SubscribersRepository
-    ) { }
+        private readonly notificationProcessor: NotificationProcessor, 
+        private readonly subscribersRepository: SubscribersRepository,
+        private readonly eventEmitter: EventEmitter2
+        ) {}
 
 
     async getNotifications(subscriberId: string, pageNum: number, pageSize: number) : Promise<Array<Notification> | undefined> {
@@ -86,8 +89,8 @@ export class NotificationService {
         })
     }
 
-    archive(subscriberId: string, notificationsIds: Array<string>): Promise<UpdatedModel> {
-        return this.subscribersRepository.aggregate([
+    async archive(subscriberId: string, notificationsIds: Array<string>): Promise<UpdatedModel> {
+        const result = await this.subscribersRepository.aggregate([
             {
                 $match: { subscriberId },
             },
@@ -151,10 +154,16 @@ export class NotificationService {
                 { setDefaultsOnInsert: true }
             );
         });
+
+        this.eventEmitter.emit('notification.archived', new NotificationArchived(
+            subscriberId,
+            notificationsIds))
+
+        return result;
     }
 
-    unarchive(subscriberId: string, archivedNotificationsIds: Array<string>) : Promise<UpdatedModel> {
-        return this.subscribersRepository.aggregate([
+    async unarchive(subscriberId: string, archivedNotificationsIds: Array<string>) : Promise<UpdatedModel> {
+        const result = await this.subscribersRepository.aggregate([
             {
                 $match: { subscriberId },
             },
@@ -224,6 +233,12 @@ export class NotificationService {
                 ],
             );
         });
+
+        this.eventEmitter.emit('notification.unarchived', new NotificationUnarchived(
+            subscriberId,
+            archivedNotificationsIds))
+
+        return result;
     }
 
     buildNotification(topic: Topic, content: string, actionUrl: string): Notification {
@@ -271,6 +286,10 @@ export class NotificationService {
             { $set: { "notifications.$[notification].read": false } },
             { arrayFilters: [{ "notification._id": notificationId }] }
         )
+        
+        this.eventEmitter.emit('notification.read', new NotificationRead(
+            subscriberId,
+            [notificationId]))
     }
 
     async markManyAsRead(subscriberId: string, notificationsIds: Array<string>) {
@@ -279,6 +298,10 @@ export class NotificationService {
             { $set: { "notifications.$[notification].read": true } },
             { arrayFilters: [{ "notification._id": notificationsIds }] }
         )
+
+        this.eventEmitter.emit('notification.read', new NotificationRead(
+            subscriberId,
+            notificationsIds))
     }
 
     async markAllAsRead(subscriberId: string) {
@@ -286,6 +309,8 @@ export class NotificationService {
             { subscriberId: subscriberId },
             { $set: {"notifications.$[].read": true}},
         )
+
+        this.eventEmitter.emit('notifications.read', new NotificationsRead(subscriberId))
     }
 
     async markManyAsUnRead(subscriberId: string, notificationsIds: Array<string>) {
@@ -294,6 +319,10 @@ export class NotificationService {
             { $set: {"notifications.$[notification].read": false}},
             { arrayFilters: [{ "notification._id": notificationsIds }]}
         )
+
+        this.eventEmitter.emit('notification.unread', new NotificationUnread(
+            subscriberId,
+            notificationsIds))
     }
 
     async markAllAsUnRead(subscriberId: string) {
@@ -301,5 +330,7 @@ export class NotificationService {
             { subscriberId: subscriberId },
             { $set: {"notifications.$[].read": false}},
         )
+
+        this.eventEmitter.emit('notifications.unread', new NotificationsUnread(subscriberId))
     }
 }
