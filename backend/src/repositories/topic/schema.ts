@@ -4,7 +4,6 @@ import { BaseModel } from '../base-model';
 import { SchemaOptions } from '../schema.options';
 import { Subject } from '../subject/schema';
 import {NotificationTemplate} from "./notification-template/schema";
-import { Realm } from '../realm/schema';
 
 export type TopicDocument = HydratedDocument<Topic>;
 
@@ -19,8 +18,8 @@ export class Topic extends BaseModel {
   @Prop({ type: NotificationTemplate })
   notificationTemplate?: NotificationTemplate;
 
-  @Prop({ required: true, type: MongoSchema.Types.ObjectId, ref: 'Realm' })
-  realm: Realm;
+  @Prop({ required: true })
+  realm: string;
 
   @Prop({ type: MongoSchema.Types.ObjectId, ref: 'Topic' })
   parentTopic?: Topic;

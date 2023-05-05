@@ -6,10 +6,16 @@ import { Notification } from '../../repositories/subscriber/notification/schema'
 import { Payload } from '../../types/global-types';
 import { UpdatedModel } from '../../repositories/helper-types';
 import { ArchivedNotification } from '../../repositories/subscriber/archived-notification/schema';
-import { Realm } from '../../repositories/realm/schema';
 import { Topic } from "../../repositories/topic/schema";
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { NotificationArchived, NotificationRead, NotificationUnarchived, NotificationUnread, NotificationsRead, NotificationsUnread } from 'src/internal-events/notification';
+import { 
+    NotificationArchived,
+    NotificationRead,
+    NotificationUnarchived,
+    NotificationUnread,
+    NotificationsRead,
+    NotificationsUnread 
+} from '../../internal-events/notification';
 
 @Injectable()
 export class NotificationService {
@@ -59,7 +65,7 @@ export class NotificationService {
 
     getNotificationsToArchive(thresholdDays: number) : Promise<Array<{
         subscriberId: string;
-        realm: Realm;
+        realm: string;
         notificationsToArchive: Array<ArchivedNotification> | undefined;
     }>> {
         return this.subscribersRepository.aggregate([
