@@ -14,6 +14,10 @@ export class SubjectService {
       })
   }
   
+  getOrCreate(subject: string) : Promise<Subject> {
+    return this.subjectsRepository.findOrCreate({ name: subject})
+  }
+
   async create(subject: Subject): Promise<CreatedModel> {
     return await this.subjectsRepository.create(subject);
   }
