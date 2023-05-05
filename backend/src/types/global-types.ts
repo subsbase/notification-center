@@ -5,7 +5,8 @@ declare module 'fastify' {
     user?: {
         id: string,
         name: string,
-        type: string
+        type: string,
+        realm: string
     };
   }
 }
