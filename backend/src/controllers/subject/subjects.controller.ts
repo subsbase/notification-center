@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  Inject,
   Post,
   Put,
   Query,
@@ -12,18 +11,17 @@ import { Subject } from '../../repositories/subject/schema';
 import { BaseController } from '../base-controller';
 import { IActionResult } from '../response-helpers/action-result.interface';
 import { NumberPipeTransform } from '../pipes/number.pipe-transform';
-import { REQUEST } from '@nestjs/core';
-import { FastifyRequest } from '../../types/global-types';
+import { Authorize } from '../decorators/authorize.decorator';
 
 @Controller('subjects')
 export class SubjectsController extends BaseController {
 
   constructor(
-    @Inject(REQUEST) protected readonly request: FastifyRequest,
     private readonly subjectManager: SubjectManager) {
-    super(request);
+    super();
   }
   
+  @Authorize()
   @Get()
   async listSubjects(
   @Query('pageNum', new NumberPipeTransform(1)) 
@@ -37,6 +35,7 @@ export class SubjectsController extends BaseController {
     return this.ok(subjects?? new Array())
   }
 
+  @Authorize()
   @Post()
   async create(@Body() subject: Subject): Promise<IActionResult> {
     try {
@@ -54,6 +53,7 @@ export class SubjectsController extends BaseController {
     }
   }
 
+  @Authorize()
   @Put()
   async update(@Body() subject: Subject): Promise<IActionResult> {
     try{
