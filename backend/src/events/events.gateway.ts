@@ -3,13 +3,10 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsResponse,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { Notification } from "../repositories/subscriber/notification/schema";
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import { NotificationArchived, NotificationEvent, NotificationUnarchived, NotificationsEvent } from '../internal-events/notification';
-import { Injectable } from '@nestjs/common';
 
 @WebSocketGateway()
 export class EventsGateway {
