@@ -12,9 +12,4 @@ export class SubscribersRepository extends BaseRepository<SubscriberDocument, Su
     protected readonly model: Model<SubscriberDocument>) {
         super(model);
     }
-
-    createOrUpdate(subscriber: Subscriber):Promise<any>{
-        let model = new this.model(subscriber);
-        return model.save();
-    }
 }
