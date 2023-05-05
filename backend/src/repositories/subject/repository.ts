@@ -8,7 +8,7 @@ import { Subject, SubjectDocument } from './schema';
 export class SubjectsRepository extends BaseRepository<SubjectDocument,Subject> {
   constructor(
     @InjectModel(Subject.name)
-    protected readonly model: Model<SubjectDocument>,
+    protected readonly model: Model<SubjectDocument>
   ) {
     super(model);
   }

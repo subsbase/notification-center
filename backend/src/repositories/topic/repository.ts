@@ -6,7 +6,9 @@ import { Topic, TopicDocument } from './schema';
 
 @Injectable()
 export class TopicsRepository extends BaseRepository<TopicDocument, Topic> {
-  constructor(@InjectModel(Topic.name) protected model: Model<TopicDocument>) {
+  constructor(
+    @InjectModel(Topic.name)
+    protected model: Model<TopicDocument>) {
     super(model);
   }
 }

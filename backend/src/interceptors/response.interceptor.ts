@@ -1,4 +1,4 @@
-import { CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor, Scope } from '@nestjs/common';
+import { CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
 import { IActionResult } from '../controllers/response-helpers/action-result.interface';
 import { FastifyReply } from 'fastify';
