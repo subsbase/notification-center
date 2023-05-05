@@ -8,9 +8,7 @@ export class AuthService {
 
   constructor(
     private readonly realmRepository: RealmRepository,
-    private readonly accessTokenProcessor: AccessTokenProcessor) {
-
-  }
+    private readonly accessTokenProcessor: AccessTokenProcessor) {}
 
   async authenticateWithApiSecret(apiSecret: string) : Promise<string>{
 
@@ -23,6 +21,7 @@ export class AuthService {
     const payload = {
       id: realm._id.toString(),
       name: realm.name,
+      realm: realm.name,
       type: Realm.name
     }
 
