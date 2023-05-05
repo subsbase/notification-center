@@ -4,6 +4,7 @@ import { ApiSecretInterceptor } from './api.secret.interceptor';
 import { AuthorizationInterceptor } from './authorization.interceptor';
 import { ResponseInterceptor } from './response.interceptor';
 import { ServicesModule } from '../services/services.module';
+import { RealmInterceptor } from './realm.interceptor';
 
 
 @Module({})
@@ -16,6 +17,10 @@ export class InterceptorsModule {
         {
           provide: APP_INTERCEPTOR,
           useClass: ApiSecretInterceptor,
+        },
+        {
+          provide: APP_INTERCEPTOR,
+          useClass: RealmInterceptor
         },
         {
             provide: APP_INTERCEPTOR,
