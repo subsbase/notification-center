@@ -11,6 +11,7 @@ import { Subject } from '../../repositories/subject/schema';
 import { BaseController } from '../base-controller';
 import { IActionResult } from '../response-helpers/action-result.interface';
 import { NumberPipeTransform } from '../pipes/number.pipe-transform';
+import { Authorize } from '../decorators/authorize.decorator';
 
 @Controller('subjects')
 export class SubjectsController extends BaseController {
@@ -20,6 +21,7 @@ export class SubjectsController extends BaseController {
     super();
   }
   
+  @Authorize()
   @Get()
   async listSubjects(
   @Query('pageNum', new NumberPipeTransform(1)) 

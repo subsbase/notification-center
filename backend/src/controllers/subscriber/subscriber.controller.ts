@@ -5,6 +5,7 @@ import { Subscriber } from '../../repositories/subscriber/schema';
 import { BaseController } from '../base-controller';
 import { NumberPipeTransform } from '../pipes/number.pipe-transform';
 import { IActionResult } from '../response-helpers/action-result.interface';
+import { Authorize } from '../decorators/authorize.decorator';
 
 
 @Controller('subscribers')
@@ -16,6 +17,7 @@ export class SubscribersController extends BaseController {
         super();
     }
 
+    @Authorize()
     @Post()
     async create(@Body() subscriber: Subscriber): Promise<IActionResult> {
         const result = await this.subscriberManager.create(subscriber)
