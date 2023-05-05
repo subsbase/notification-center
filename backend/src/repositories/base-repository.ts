@@ -28,14 +28,6 @@ export abstract class BaseRepository<T extends Document, TSchema> {
     return { id: savedResult.id, created: !!savedResult.id };
   }
 
-  async findOrCreate(query: FilterQuery<T>): Promise<TSchema>{
-    const result = (await this.model.findOne(query)) as TSchema;
-    if (!result) {
-      return (await this.model.create(query)) as TSchema;
-    }
-    return result;
-  }
-
   async insertMany(docs: Array<TSchema>, options: InsertManyOptions): Promise<HydratedDocument<MergeType<MergeType<T, TSchema[]>, Require_id<T>>, {}, {}>[]> {
     return await this.model.insertMany(docs, options)
   }

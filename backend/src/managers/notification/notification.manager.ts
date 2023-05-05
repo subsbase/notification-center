@@ -1,19 +1,17 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { EventsGateway } from '../../events/events.gateway';
 import { Notification } from '../../repositories/subscriber/notification/schema';
 import { NotificationService } from '../../services/notification/notification.service';
 import { TopicService } from '../../services/topic/topic.service';
 import { Payload } from "../../types/global-types";
 import { UpdatedModel } from '../../repositories/helper-types';
-import { SubjectService } from '../../services/subject/subject.service';
 
 @Injectable()
 export class NotificationManager {
     constructor(
             private readonly eventsGateway: EventsGateway,
             private readonly notificationService: NotificationService,
-            private readonly topicsService: TopicService,
-            private readonly subjectService: SubjectService) { }
+            private readonly topicsService: TopicService) { }
             
 
     async getAllNotifications(subscriberId: string, pageNum: number, pageSize: number) : Promise<Array<Notification>> {
@@ -54,17 +52,17 @@ export class NotificationManager {
     }
 
     async notify(
-        subjectName: string,
         event: string,
         actionUrl: string,
         payload: Payload,
         subscribersIds: Array<string>
         ) {
 
-        const subject = await this.subjectService.getOrCreate(subjectName)
-        
-        //gets or creates topic by the event
-        const topic = await this.topicsService.getByEvent(event, subject)
+        const topic = await  this.topicsService.getByEvent(event);
+
+        if(!topic){
+            throw new NotFoundException(null, `No Topic found with event ${event}`)
+        }
 
         const notificationTemplate = topic.notificationTemplate;
 
