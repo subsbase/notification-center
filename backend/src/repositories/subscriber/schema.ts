@@ -2,7 +2,6 @@ import { HydratedDocument, Schema as MongoSchema } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { BaseModel } from '../base-model';
 import { SchemaOptions } from '../schema.options';
-import { Realm } from '../realm/schema';
 import { Notification, NotificationSchema } from './notification/schema';
 import { ArchivedNotification, ArchivedNotificationSchema } from './archived-notification/schema';
 
@@ -13,8 +12,8 @@ export class Subscriber extends BaseModel {
   @Prop({ index: true, unique: true, required: true, type: MongoSchema.Types.String })
   subscriberId: string;
 
-  @Prop({ required: true, type: MongoSchema.Types.ObjectId, ref: 'Realm' })
-  realm: Realm;
+  @Prop({ required: true })
+  realm: string;
 
   @Prop({ type: MongoSchema.Types.Mixed })
   customData?: any;

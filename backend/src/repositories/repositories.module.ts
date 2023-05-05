@@ -10,7 +10,8 @@ import { Realm, RealmSchema } from './realm/schema';
 import { RealmRepository } from './realm/repository';
 import { ArchivedNotification, ArchivedNotificationSchema } from './archived-notifications/schema';
 import { ArchivedNotificationsRepository } from './archived-notifications/repositorty';
-
+import { SchemaModule } from '../schema/schema.module';
+import { SchemaFactory } from '../schema/schema.factory';
 
 @Module({})
 export class RepositoriesModule {
@@ -21,28 +22,44 @@ export class RepositoriesModule {
       module: RepositoriesModule,
       imports: [    
         MongooseModule.forRoot(uri),
-        MongooseModule.forFeature([
+        MongooseModule.forFeatureAsync([
           {
             name: Realm.name,
-            schema: RealmSchema
+            useFactory: () => RealmSchema
           },
           {
             name: Subject.name,
-            schema: SubjectSchema,
+            imports: [SchemaModule],
+            inject: [SchemaFactory],
+            useFactory: (schemaFactory: SchemaFactory) => {
+              return schemaFactory.create(SubjectSchema);
+            }
           },
           {
             name: Topic.name,
-            schema: TopicSchema,
+            imports: [SchemaModule],
+            inject: [SchemaFactory],
+            useFactory: (schemaFactory: SchemaFactory) => {
+              return schemaFactory.create(TopicSchema);
+            }
           },
           {
             name: Subscriber.name,
-            schema: SubscriberSchema,
+            imports: [SchemaModule],
+            inject: [SchemaFactory],
+            useFactory: (schemaFactory: SchemaFactory) => {
+              return schemaFactory.create(SubscriberSchema);
+            }
           },
           {
             name: ArchivedNotification.name,
-            schema: ArchivedNotificationSchema
+            imports: [SchemaModule],
+            inject: [SchemaFactory],
+            useFactory: (schemaFactory: SchemaFactory) => {
+              return schemaFactory.create(ArchivedNotificationSchema);
+            }
           }
-        ]),
+        ])
       ],
       providers: [
         RealmRepository,

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ArchivedNotificationsRepository } from '../../repositories/archived-notifications/repositorty';
 import { ArchivedNotification as SubscriberArchivedNotification } from '../../repositories/subscriber/archived-notification/schema'
-import { Realm } from '../../repositories/realm/schema';
 
 @Injectable()
 export class ArchivedNotificationService {
@@ -10,7 +9,7 @@ export class ArchivedNotificationService {
     
     async archive(subscribers: Array<{
         subscriberId: string;
-        realm: Realm;
+        realm: string;
         notificationsToArchive: Array<SubscriberArchivedNotification> | undefined;
     }>) : Promise<void> {
         await this.archivedNotificationsRepository.insertMany( 
