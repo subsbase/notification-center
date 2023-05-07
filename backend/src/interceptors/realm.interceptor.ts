@@ -1,7 +1,6 @@
 import { BadRequestException, CallHandler, ExecutionContext, Inject, NestInterceptor } from "@nestjs/common";
 import { FastifyRequest } from "fastify";
 import { Observable } from "rxjs";
-import { GlobalContext } from "../types/global-context";
 import { Reflector } from "@nestjs/core";
 
 export class RealmInterceptor implements NestInterceptor {
@@ -29,8 +28,6 @@ export class RealmInterceptor implements NestInterceptor {
         if(!realm){
             throw new BadRequestException('x-realm header is required')
         }
-
-        GlobalContext.Realm = realm!; 
     }
 
 }
