@@ -1,4 +1,4 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Module, Scope } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Subject, SubjectSchema } from './subject/schema';
 import { SubjectsRepository } from './subject/repository';
@@ -7,11 +7,14 @@ import { TopicsRepository } from './topic/repository';
 import { Subscriber, SubscriberSchema } from './subscriber/schema';
 import { SubscribersRepository } from './subscriber/repository';
 import { Realm, RealmSchema } from './realm/schema';
-import { RealmRepository } from './realm/repository';
+import { RealmGlobalRepository } from './realm/global-repository';
 import { ArchivedNotification, ArchivedNotificationSchema } from './archived-notifications/schema';
-import { ArchivedNotificationsRepository } from './archived-notifications/repositorty';
+import { ArchivedNotificationsGlobalRepository } from './archived-notifications/global-repositorty';
 import { SchemaModule } from '../schema/schema.module';
 import { SchemaFactory } from '../schema/schema.factory';
+import { RepositoryFactory } from 'src/repository-factory/repository.factory';
+import { RepositoryFactoryModule } from 'src/repository-factory/repository.factory.module';
+import { SubscribersGlobalRepository } from './subscriber/global-repository';
 
 @Module({})
 export class RepositoriesModule {
@@ -21,6 +24,7 @@ export class RepositoriesModule {
     return {
       module: RepositoriesModule,
       imports: [    
+        RepositoryFactoryModule,
         MongooseModule.forRoot(uri),
         MongooseModule.forFeatureAsync([
           {
@@ -62,18 +66,38 @@ export class RepositoriesModule {
         ])
       ],
       providers: [
-        RealmRepository,
-        SubjectsRepository,
-        TopicsRepository,
-        SubscribersRepository,
-        ArchivedNotificationsRepository
+        RealmGlobalRepository,
+        {
+          provide: SubjectsRepository,
+          inject: [RepositoryFactory],
+          useFactory: (repositoryFactory: RepositoryFactory) => {
+            return repositoryFactory.create(SubjectsRepository, Subject.name)
+          }
+        },
+        {
+          provide: TopicsRepository,
+          inject: [RepositoryFactory],
+          useFactory: (repositoryFactory: RepositoryFactory) => {
+            return repositoryFactory.create(TopicsRepository, Topic.name)
+          }
+        },
+        {
+          provide: SubscribersRepository,
+          inject: [RepositoryFactory],
+          useFactory: (repositoryFactory: RepositoryFactory) => {
+            return repositoryFactory.create(SubscribersRepository, Subscriber.name)
+          }
+        },
+        ArchivedNotificationsGlobalRepository,
+        SubscribersGlobalRepository
       ],
       exports: [
-        RealmRepository,
+        RealmGlobalRepository,
         SubjectsRepository,
         TopicsRepository,
         SubscribersRepository,
-        ArchivedNotificationsRepository
+        ArchivedNotificationsGlobalRepository,
+        SubscribersGlobalRepository
       ],
     };
   }

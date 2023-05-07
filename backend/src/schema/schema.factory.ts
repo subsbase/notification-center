@@ -1,12 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { Schema } from "mongoose";
-import { GlobalContext } from "../types/global-context";
 
 @Injectable()
 export class SchemaFactory {
 
     METHODS: Array<RegExp> = [
-        new RegExp(/^aggregate$/),
         new RegExp(/^count$/),
         new RegExp(/^countDocuments$/),
         new RegExp(/^deleteOne$/),
@@ -23,24 +21,27 @@ export class SchemaFactory {
         new RegExp(/^update$/),
         new RegExp(/^updateOne$/),
         new RegExp(/^updateMany$/),
-        new RegExp(/^insertMany$/)
     ];
+
     create<TSchema extends Schema>(schema: TSchema) : TSchema {
         const methods = this.METHODS;
     
         methods.forEach((method) => {
             schema.pre( method,
-                { query: true, document: true,  } ,
+                { query: true, document: true } ,
                 function(next){
-                    this.where({ realm: GlobalContext.Realm })
+                    const options = this.getOptions();
+                    this.where({ realm: options.realm })
                     next()
                 })
         })
 
-        schema.pre(['init', 'save', 'validate'],function(){
-            if(!this.realm){
-                this.set('realm', GlobalContext.Realm )
-            }
+        schema.pre('aggregate',
+        { query: true, document: true },
+        function(next){
+            const options = this.options
+            this.match({ realm: options.realm })
+            next()
         })
         
         return schema;
