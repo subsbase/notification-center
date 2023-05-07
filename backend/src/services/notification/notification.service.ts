@@ -63,38 +63,6 @@ export class NotificationService {
         return subscribers[0].notifications;
     }
 
-    getNotificationsToArchive(thresholdDays: number) : Promise<Array<{
-        subscriberId: string;
-        realm: string;
-        notificationsToArchive: Array<ArchivedNotification> | undefined;
-    }>> {
-        return this.subscribersRepository.aggregate([
-            { $unwind: "$archivedNotifications" },
-            { $match: { "archivedNotifications.archivedAt": { $lt: new Date(Date.now() - thresholdDays * 24 * 60 * 60 * 1000) } } },
-            { $group:  { _id: "$_id", realm: { $first: "$realm" } , archivedNotifications: { $push: "$archivedNotifications" }  } }
-        ]).then(aggregationResult => {
-            
-            this.subscribersRepository.bulkWrite(aggregationResult.map(subscriber => ({
-                updateOne: {
-                    filter: { _id: subscriber._id },
-                    update: { 
-                        $pull: { 
-                            archivedNotifications: {
-                                _id: { $in: subscriber.archivedNotifications?.map(archivedNotification => new Types.ObjectId(archivedNotification._id)) }
-                            }
-                        },
-                    },
-                }
-            })))
-
-            return aggregationResult.map(subsciber => ({
-                subscriberId: subsciber._id,
-                realm: subsciber.realm,
-                notificationsToArchive: subsciber.archivedNotifications
-            }))
-        })
-    }
-
     async archive(subscriberId: string, notificationsIds: Array<string>): Promise<UpdatedModel> {
         const result = await this.subscribersRepository.aggregate([
             {
