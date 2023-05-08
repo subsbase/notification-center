@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { RealmRepository } from '../../repositories/realm/repository';
+import { RealmGlobalRepository } from '../../repositories/realm/global-repository';
 import { AccessTokenProcessor } from './access.token.processor';
 import { Realm } from '../../repositories/realm/schema';
 
@@ -7,10 +7,8 @@ import { Realm } from '../../repositories/realm/schema';
 export class AuthService {
 
   constructor(
-    private readonly realmRepository: RealmRepository,
-    private readonly accessTokenProcessor: AccessTokenProcessor) {
-
-  }
+    private readonly realmRepository: RealmGlobalRepository,
+    private readonly accessTokenProcessor: AccessTokenProcessor) {}
 
   async authenticateWithApiSecret(apiSecret: string) : Promise<string>{
 
@@ -23,6 +21,7 @@ export class AuthService {
     const payload = {
       id: realm._id.toString(),
       name: realm.name,
+      realm: realm.name,
       type: Realm.name
     }
 

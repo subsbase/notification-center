@@ -8,12 +8,16 @@ export class SubjectService {
   constructor(private readonly subjectsRepository: SubjectsRepository) {}
   
   getAll(pageNum: number, pageSize: number): Promise<Array<Subject>> {
-    return this.subjectsRepository.find({}, { 
+    return this.subjectsRepository.find({}, {} , { 
         skip: (pageNum - 1) * pageSize,
         limit: pageSize
       })
   }
   
+  getOrCreate(subject: string) : Promise<Subject> {
+    return this.subjectsRepository.findOrCreate({ name: subject})
+  }
+
   async create(subject: Subject): Promise<CreatedModel> {
     return await this.subjectsRepository.create(subject);
   }
