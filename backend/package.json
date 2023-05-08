@@ -62,20 +62,17 @@
     "typescript": "^5.0.3"
   },
   "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "test",
-    "testRegex": ".*\\.spec\\.ts$",
+    "roots": ["./test/"],
+    "moduleFileExtensions": ["js", "json", "ts"],
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.ts$": "ts-jest"
     },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
+    "testMatch": ["**/test/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"] ,
+    "moduleNameMapper": {
+      "^src\\/(.*)$": "./src/$1"
+    },
+    "collectCoverageFrom": ["src/**/*.(ts|js)"],
+    "coverageDirectory": "coverage",
     "testEnvironment": "node"
   }
 }
