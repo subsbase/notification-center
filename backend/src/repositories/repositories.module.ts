@@ -12,8 +12,8 @@ import { ArchivedNotification, ArchivedNotificationSchema } from './archived-not
 import { ArchivedNotificationsGlobalRepository } from './archived-notifications/global-repositorty';
 import { SchemaModule } from '../schema/schema.module';
 import { SchemaFactory } from '../schema/schema.factory';
-import { RepositoryFactory } from '../../src/repository-factory/repository.factory';
-import { RepositoryFactoryModule } from '../../src/repository-factory/repository.factory.module';
+import { RepositoryFactory } from '../repository-factory/repository.factory';
+import { RepositoryFactoryModule } from '../repository-factory/repository.factory.module';
 import { SubscribersGlobalRepository } from './subscriber/global-repository';
 
 @Module({})
