@@ -5,6 +5,7 @@ import { Types } from 'mongoose';
 import { BulkWriteResult } from 'mongodb';
 import { ArchiveNotificationService } from '../../../../src/services/archived-notifications/archive-notifications.service';
 import { Topic } from '../../../../src/repositories/topic/schema';
+import { InvalidArgumentError } from '../../../../src/types/exceptions';
 
 describe('ArchiveNotificationService - getNotificationsToArchive', () => {
   let service: ArchiveNotificationService;
@@ -25,7 +26,13 @@ describe('ArchiveNotificationService - getNotificationsToArchive', () => {
   });
 
   it('should throw an error when thresholdDays is not valid', async () => {
-    await expect(service.getNotificationsToArchive(-1)).rejects.toThrowError();
+    try{
+      await service.getNotificationsToArchive(-1)
+    }catch(err){
+      expect(err).toBeInstanceOf(InvalidArgumentError);
+    }
+
+    expect(subscribersGlobalRepository.aggregate).not.toHaveBeenCalled()
   });
 
   it('should retrieve notifications to archive', async () => {
