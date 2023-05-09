@@ -39,6 +39,21 @@ export class SubscribersController extends BaseController {
         return this.ok(notifications);
     }
 
+    @Get(':subscriberId/notifications/archived')
+    async listArchivedNotifications(
+        @Param('subscriberId')
+        subscriberId: string,
+        @Query('pageNum', new NumberPipeTransform(1))
+        pageNum: number,
+        @Query('pageSize', new NumberPipeTransform(5))
+        pageSize: number
+    ): Promise<IActionResult> {
+
+        const archivedNotifications = await this.notificationManager.getAllArchivedNotifications(subscriberId, pageNum, pageSize)
+
+        return this.ok(archivedNotifications);
+    }
+
 
     @Patch(':subscriberId/notification/:notificationId/markasread')
     async markAsRead(
