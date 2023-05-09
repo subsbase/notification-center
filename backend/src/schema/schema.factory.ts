@@ -40,7 +40,7 @@ export class SchemaFactory {
         { query: true, document: true },
         function(next){
             const options = this.options
-            this.match({ realm: options.realm })
+            this.pipeline().unshift({ $match: { realm: options.realm } })
             next()
         })
         
