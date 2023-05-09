@@ -41,7 +41,7 @@ import mongoose, {
     }
   
     async insertMany(docs: Array<TSchema>, options: InsertManyOptions): Promise<HydratedDocument<MergeType<MergeType<T, TSchema[]>, Require_id<T>>, {}, {}>[]> {
-      return await this.model.insertMany(docs, {...options, realm: this.realm})
+      return await this.model.insertMany(docs.map(doc => ({ ...doc, realm: this.realm })), {...options, realm: this.realm})
     }
   
     async find(filter: FilterQuery<T>, projection?: ProjectionType<T> ,options?: QueryOptions): Promise<Array<TSchema>> {
