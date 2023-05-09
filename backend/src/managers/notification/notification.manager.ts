@@ -6,6 +6,7 @@ import { TopicService } from '../../services/topic/topic.service';
 import { Payload } from "../../types/global-types";
 import { UpdatedModel } from '../../repositories/helper-types';
 import { SubjectService } from '../../services/subject/subject.service';
+import { ArchivedNotification } from "../../repositories/subscriber/archived-notification/schema";
 
 @Injectable()
 export class NotificationManager {
@@ -18,6 +19,11 @@ export class NotificationManager {
 
     async getAllNotifications(subscriberId: string, pageNum: number, pageSize: number) : Promise<Array<Notification>> {
         const notifications = await this.notificationService.getNotifications(subscriberId, pageNum, pageSize)
+        return notifications?? new Array()
+    }
+
+    async getAllArchivedNotifications(subscriberId: string, pageNum: number, pageSize: number) : Promise<Array<ArchivedNotification>> {
+        const notifications = await this.notificationService.getArchivedNotifications(subscriberId, pageNum, pageSize)
         return notifications?? new Array()
     }
 
