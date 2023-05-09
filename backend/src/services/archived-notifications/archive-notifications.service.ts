@@ -3,6 +3,7 @@ import { ArchivedNotificationsGlobalRepository } from '../../repositories/archiv
 import { ArchivedNotification as SubscriberArchivedNotification } from '../../repositories/subscriber/archived-notification/schema'
 import { SubscribersGlobalRepository } from '../../repositories/subscriber/global-repository';
 import { Types } from 'mongoose';
+import { InvalidArgumentError } from '../../types/exceptions';
 
 @Injectable()
 export class ArchiveNotificationService {
@@ -16,6 +17,11 @@ export class ArchiveNotificationService {
         realm: string;
         notificationsToArchive: Array<SubscriberArchivedNotification> | undefined;
     }>> {
+
+        if(this.isInvalidThresholdDays(thresholdDays)){
+            throw new InvalidArgumentError('thresholdDays')
+        }
+
         return this.subscribersGlobalRepository.aggregate([
             { $unwind: "$archivedNotifications" },
             { $match: { "archivedNotifications.archivedAt": { $lt: new Date(Date.now() - thresholdDays * 24 * 60 * 60 * 1000) } } },
@@ -41,6 +47,10 @@ export class ArchiveNotificationService {
                 notificationsToArchive: subsciber.archivedNotifications
             }))
         })
+    }
+
+    private isInvalidThresholdDays(thresholdDays: number): boolean{
+        return typeof thresholdDays !== 'number' || isNaN(thresholdDays) || thresholdDays < 0
     }
 
     async archive(subscribers: Array<{

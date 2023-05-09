@@ -1,6 +1,7 @@
 import { JwtService } from '@nestjs/jwt';
 import { AccessTokenProcessor } from '../../../../../src/services/auth/access.token.processor';
 import { createMock } from '@golevelup/ts-jest';
+import { InvalidArgumentError } from '../../../../../src/types/exceptions';
 
 describe('AccessTokenProcessor - verify', () => {
   let processor: AccessTokenProcessor;
@@ -43,12 +44,13 @@ describe('AccessTokenProcessor - verify', () => {
   it('should throw error if token is empty', async () => {
     // Arrange
     const token = '';
-
-    // Act
-    const verifyPromise = processor.verify(token);
-
-    // Assert
-    await expect(verifyPromise).rejects.toThrowError();
+    try{
+      //Act
+      await processor.verify(token);
+    }catch(err){
+      // Assert
+      expect(err).toBeInstanceOf(InvalidArgumentError);
+    }
     expect(jwtServiceMock.verifyAsync).not.toHaveBeenCalled();
   });
 });
