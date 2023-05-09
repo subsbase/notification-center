@@ -60,8 +60,47 @@ export class NotificationService {
             }
         ]);
 
-        return subscribers[0].notifications;
+        return subscribers[0]?.notifications;
     }
+
+
+    async  getArchivedNotifications(subscriberId: string, pageNum: number, pageSize: number) : Promise<Array<ArchivedNotification> | undefined> {
+        const subscribers =  await this.subscribersRepository.aggregate ([
+            { $match: { subscriberId: subscriberId } },
+            {
+                $project: {
+                    archivedNotifications: { $slice: ['$archivedNotifications', (pageNum - 1) * pageSize, pageSize] }
+                }
+            },
+            {
+                $unwind: '$archivedNotifications'
+            },
+            {
+                $lookup: {
+                    from: 'topics',
+                    let: { referenceId: '$archivedNotifications.topic' },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ['$_id', '$$referenceId'] } } }
+                    ],
+                    as: 'topic'
+                }
+            },
+            {
+                $addFields: {
+                    'archivedNotifications.topic': { $arrayElemAt: ['$topic', 0] }
+                }
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    archivedNotifications: { $push: '$archivedNotifications' }
+                }
+            }
+        ]);
+
+        return subscribers[0]?.archivedNotifications;
+    }
+    
 
     async archive(subscriberId: string, notificationsIds: Array<string>): Promise<UpdatedModel> {
         const result = await this.subscribersRepository.aggregate([
