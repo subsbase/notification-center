@@ -8,8 +8,12 @@ import { TopicService } from './topic/topic.service';
 import { AuthService } from './auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenProcessor } from './auth/access.token.processor';
-import { ArchivedNotificationService } from './archived-notifications/archived-notifications.service';
+import { ArchiveNotificationService } from './archived-notifications/archive-notifications.service';
 import { InternalEventsModule } from '../internal-events/internal.events.module';
+import { RealmService } from './realm/realm.service';
+import { SubscriberEventHandler } from './subscriber/subscriber.event.handler';
+import { TopicProcessor } from './topic/topic.processor';
+import { SubjectProcessor } from './subject/subject.processor';
 
 @Module({})
 export class ServicesModule {
@@ -27,8 +31,8 @@ export class ServicesModule {
             audience: process.env.JWT_AUDIENCE,
           },
         })],
-      providers: [SubjectService, TopicService, NotificationService, SubscriberService, AuthService, NotificationProcessor, AccessTokenProcessor, ArchivedNotificationService],
-      exports: [SubjectService, TopicService, NotificationService, SubscriberService, AuthService, ArchivedNotificationService],
+      providers: [SubjectProcessor, SubjectService, TopicProcessor, TopicService, NotificationService, SubscriberService, AuthService, NotificationProcessor, AccessTokenProcessor, ArchiveNotificationService, RealmService, SubscriberEventHandler],
+      exports: [SubjectService, TopicService, NotificationService, SubscriberService, AuthService, ArchiveNotificationService, RealmService],
     }
   }
 }

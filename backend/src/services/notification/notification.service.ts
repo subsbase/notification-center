@@ -6,10 +6,16 @@ import { Notification } from '../../repositories/subscriber/notification/schema'
 import { Payload } from '../../types/global-types';
 import { UpdatedModel } from '../../repositories/helper-types';
 import { ArchivedNotification } from '../../repositories/subscriber/archived-notification/schema';
-import { Realm } from '../../repositories/realm/schema';
 import { Topic } from "../../repositories/topic/schema";
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { NotificationArchived, NotificationRead, NotificationUnarchived, NotificationUnread, NotificationsRead, NotificationsUnread } from 'src/internal-events/notification';
+import { 
+    NotificationArchived,
+    NotificationRead,
+    NotificationUnarchived,
+    NotificationUnread,
+    NotificationsRead,
+    NotificationsUnread 
+} from '../../internal-events/notification';
 
 @Injectable()
 export class NotificationService {
@@ -54,40 +60,47 @@ export class NotificationService {
             }
         ]);
 
-        return subscribers[0].notifications;
+        return subscribers[0]?.notifications;
     }
 
-    getNotificationsToArchive(thresholdDays: number) : Promise<Array<{
-        subscriberId: string;
-        realm: Realm;
-        notificationsToArchive: Array<ArchivedNotification> | undefined;
-    }>> {
-        return this.subscribersRepository.aggregate([
-            { $unwind: "$archivedNotifications" },
-            { $match: { "archivedNotifications.archivedAt": { $lt: new Date(Date.now() - thresholdDays * 24 * 60 * 60 * 1000) } } },
-            { $group:  { _id: "$_id", realm: { $first: "$realm" } , archivedNotifications: { $push: "$archivedNotifications" }  } }
-        ]).then(aggregationResult => {
-            
-            this.subscribersRepository.bulkWrite(aggregationResult.map(subscriber => ({
-                updateOne: {
-                    filter: { _id: subscriber._id },
-                    update: { 
-                        $pull: { 
-                            archivedNotifications: {
-                                _id: { $in: subscriber.archivedNotifications?.map(archivedNotification => new Types.ObjectId(archivedNotification._id)) }
-                            }
-                        },
-                    },
+
+    async  getArchivedNotifications(subscriberId: string, pageNum: number, pageSize: number) : Promise<Array<ArchivedNotification> | undefined> {
+        const subscribers =  await this.subscribersRepository.aggregate ([
+            { $match: { subscriberId: subscriberId } },
+            {
+                $project: {
+                    archivedNotifications: { $slice: ['$archivedNotifications', (pageNum - 1) * pageSize, pageSize] }
                 }
-            })))
+            },
+            {
+                $unwind: '$archivedNotifications'
+            },
+            {
+                $lookup: {
+                    from: 'topics',
+                    let: { referenceId: '$archivedNotifications.topic' },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ['$_id', '$$referenceId'] } } }
+                    ],
+                    as: 'topic'
+                }
+            },
+            {
+                $addFields: {
+                    'archivedNotifications.topic': { $arrayElemAt: ['$topic', 0] }
+                }
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    archivedNotifications: { $push: '$archivedNotifications' }
+                }
+            }
+        ]);
 
-            return aggregationResult.map(subsciber => ({
-                subscriberId: subsciber._id,
-                realm: subsciber.realm,
-                notificationsToArchive: subsciber.archivedNotifications
-            }))
-        })
+        return subscribers[0]?.archivedNotifications;
     }
+    
 
     async archive(subscriberId: string, notificationsIds: Array<string>): Promise<UpdatedModel> {
         const result = await this.subscribersRepository.aggregate([

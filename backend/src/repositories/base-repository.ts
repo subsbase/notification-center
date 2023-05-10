@@ -1,4 +1,4 @@
-import mongoose, {
+import {
   AggregateOptions,
   FilterQuery,
   HydratedDocument,
@@ -12,61 +12,87 @@ import mongoose, {
   SaveOptions,
   UpdateQuery,
   UpdateWithAggregationPipeline,
-  MongooseBulkWriteOptions
+  MongooseBulkWriteOptions,
+  RemoveOptions,
 } from 'mongoose';
 import { Document } from 'mongoose';
-import { AnyBulkWriteOperation, BulkWriteOptions } from 'mongodb'
+import { AnyBulkWriteOperation, BulkWriteOptions } from 'mongodb';
 import { CreatedModel, RemovedModel, UpdatedModel } from './helper-types';
+import { GlobalRepository } from './base-global-repository';
 
-export abstract class BaseRepository<T extends Document, TSchema> {
-  constructor(protected readonly model: Model<T>) {}
+export abstract class BaseRepository<T extends Document, TSchema> extends GlobalRepository<T, TSchema> {
+  constructor(protected readonly model: Model<T>, protected readonly realm: string) {
+    super(model);
+  }
 
   async create(doc: TSchema, saveOptions?: SaveOptions): Promise<CreatedModel> {
-    const createdEntity = new this.model(doc);
-    const savedResult = await createdEntity.save(saveOptions);
-
-    return { id: savedResult.id, created: !!savedResult.id };
+    return super.create({ ...doc, realm: this.realm }, { ...saveOptions, realm: this.realm });
   }
 
-  async insertMany(docs: Array<TSchema>, options: InsertManyOptions): Promise<HydratedDocument<MergeType<MergeType<T, TSchema[]>, Require_id<T>>, {}, {}>[]> {
-    return await this.model.insertMany(docs, options)
+  async save(doc: TSchema): Promise<TSchema>;
+  async save(doc: TSchema, saveOptions?: SaveOptions): Promise<TSchema>;
+  async save(doc: TSchema, saveOptions?: SaveOptions): Promise<TSchema> {
+    return super.save({ ...doc, realm: this.realm }, { ...saveOptions, realm: this.realm });
   }
 
-  async find(filter: FilterQuery<T>, projection?: ProjectionType<T> ,options?: QueryOptions): Promise<Array<TSchema>> {
-    return await this.model.find(filter, projection , options);
+  async findOrCreate(
+    query: FilterQuery<T>,
+    projection?: ProjectionType<T>,
+    queryOptions?: QueryOptions<T>,
+    saveOptions?: SaveOptions,
+  ): Promise<TSchema> {
+    return super.findOrCreate(
+      { ...query, realm: this.realm },
+      projection,
+      { ...queryOptions, realm: this.realm },
+      { ...saveOptions, realm: this.realm },
+    );
   }
 
-  async findOne(filter: FilterQuery<T>, projection?: ProjectionType<T> , options?: QueryOptions): Promise<TSchema | null> {
-    return await this.model.findOne(filter, projection, options);
+  async insertMany(
+    docs: Array<TSchema>,
+    options: InsertManyOptions,
+  ): Promise<HydratedDocument<MergeType<MergeType<T, TSchema[]>, Require_id<T>>, {}, {}>[]> {
+    return super.insertMany(
+      docs.map((doc) => ({ ...doc, realm: this.realm })),
+      { ...options, realm: this.realm },
+    );
   }
 
-  async findById(id: string): Promise<TSchema | null> {
-    return await this.model.findById(id);
+  async find(filter: FilterQuery<T>, projection?: ProjectionType<T>, options?: QueryOptions): Promise<Array<TSchema>> {
+    return super.find(filter, projection, { ...options, realm: this.realm });
   }
 
-  async findAll(): Promise<Array<T>> {
-    return await this.model.find();
+  async findOne(
+    filter: FilterQuery<T>,
+    projection?: ProjectionType<T>,
+    options?: QueryOptions,
+  ): Promise<TSchema | null> {
+    return super.findOne(filter, projection, { ...options, realm: this.realm });
   }
 
-  async remove(filter: FilterQuery<T>): Promise<RemovedModel> {
-    const { deletedCount } = await this.model.remove(filter);
-    return { deletedCount, deleted: !!deletedCount };
+  async findById(id: string, projection?: ProjectionType<T>, options?: QueryOptions): Promise<TSchema | null> {
+    return super.findById(id, projection, { ...options, realm: this.realm });
+  }
+
+  async remove(filter: FilterQuery<T>, options?: RemoveOptions): Promise<RemovedModel> {
+    return super.remove(filter, { ...options, realm: this.realm });
   }
 
   async update(
     id: string,
     updated: UpdateWithAggregationPipeline | UpdateQuery<T>,
-    options?: QueryOptions
-    ): Promise<UpdatedModel> {
-      return await this.updateOne( { _id: new mongoose.Types.ObjectId(id) }, updated, options)
-    }
+    options?: QueryOptions,
+  ): Promise<UpdatedModel> {
+    return super.update(id, updated, { ...options, realm: this.realm });
+  }
 
   async updateOne(
     filter: FilterQuery<T>,
     updated: UpdateWithAggregationPipeline | UpdateQuery<T>,
     options?: QueryOptions,
   ): Promise<UpdatedModel> {
-    return await this.model.updateOne(filter, updated, options); 
+    return super.updateOne(filter, updated, { ...options, realm: this.realm });
   }
 
   async updateMany(
@@ -74,17 +100,17 @@ export abstract class BaseRepository<T extends Document, TSchema> {
     updated: UpdateWithAggregationPipeline | UpdateQuery<T>,
     options?: QueryOptions,
   ): Promise<UpdatedModel> {
-    return await this.model.updateMany(filter, updated, options);
+    return super.updateMany(filter, updated, { ...options, realm: this.realm });
   }
 
-  async aggregate(pipeline?: PipelineStage[], options?: AggregateOptions) : Promise<Array<TSchema>> {
-    return this.model.aggregate(pipeline, options );
+  async aggregate(pipeline?: PipelineStage[], options?: AggregateOptions): Promise<Array<TSchema>> {
+    return super.aggregate(pipeline, { ...options, realm: this.realm });
   }
 
   async bulkWrite(
-      writeOperations: Array<AnyBulkWriteOperation<T extends Document ? object : (T extends {} ? T : object)>>,
-      bulkWriteOptions?: BulkWriteOptions & MongooseBulkWriteOptions
+    writeOperations: Array<AnyBulkWriteOperation<T extends Document ? object : T extends {} ? T : object>>,
+    bulkWriteOptions?: BulkWriteOptions & MongooseBulkWriteOptions,
   ) {
-     return await this.model.bulkWrite(writeOperations)
+    return super.bulkWrite(writeOperations, { ...bulkWriteOptions, realm: this.realm });
   }
 }
