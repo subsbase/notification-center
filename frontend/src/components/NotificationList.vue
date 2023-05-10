@@ -14,7 +14,7 @@
   <div :class="['px-20',
   source === 'page' ? '' : 'notification-list'
   ]">
-    <p class="font-size-12 mb-10 text-left medium">Today</p>
+    <!-- <p class="font-size-12 mb-10 text-left medium">Today</p> -->
     <div
       @click="handleMarkAsRead(notification._id, notification.actionUrl)"
       v-for="notification in notifications"

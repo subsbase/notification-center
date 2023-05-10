@@ -278,6 +278,10 @@ export class NotificationService {
             { $set: { "notifications.$[notification].read": true } },
             { arrayFilters: [{ "notification._id": notificationId }] }
         )
+
+        this.eventEmitter.emit('notification.read', new NotificationRead(
+            subscriberId,
+            [notificationId]))
     }
 
     async markAsUnRead(subscriberId: string, notificationId: string) {

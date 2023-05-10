@@ -32,6 +32,7 @@ socket.on("notification", function (data) {
   console.log("notification", data);
 });
 
+
 onBeforeMount(() => {
   //getSubscriberId()
   fetchAllNotifications() 

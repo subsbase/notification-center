@@ -17,7 +17,7 @@ export class SubscriberService {
         return await this.subscriberRepository.create(subscriber);
     }
 
-    @OnEvent('subscriber.joined')
+    // @OnEvent('subscriber.joined')
     async handleSubscriberJoind(payload: any) {
         //todo: make sure realm inclueded in payload
         await this.createOrUpdate({

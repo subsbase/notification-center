@@ -25,6 +25,18 @@ socket.on("notification", function (data) {
   console.log("notification", data);
 });
 
+socket.on("NotificationRead", function () {
+  fetchAllNotifications()
+});
+
+socket.on("NotificationsRead", function () {
+  fetchAllNotifications()
+});
+
+socket.on("NotificationArchived", function () {
+  fetchAllNotifications()
+});
+
 onBeforeMount(() => {
   fetchAllNotifications() 
 });
