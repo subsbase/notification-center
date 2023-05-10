@@ -5,6 +5,7 @@ import { FastifyAdapter } from '@nestjs/platform-fastify/adapters';
 import { AppModule } from './app.module';
 import { MongoErrorFilter } from './filters/mongo-error.filter';
 import { ValidationErrorFilter } from './filters/validation-error.filter';
+import { InvalidArgumentErrorFilter } from './filters/invalid-argument-error.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -22,7 +23,7 @@ async function bootstrap() {
       method: RequestMethod.GET
     }]
   })
-  app.useGlobalFilters(new MongoErrorFilter(),new ValidationErrorFilter());
+  app.useGlobalFilters(new MongoErrorFilter(), new ValidationErrorFilter(), new InvalidArgumentErrorFilter());
 
   await app.listen(process.env.PORT || 3000, '0.0.0.0');
 
