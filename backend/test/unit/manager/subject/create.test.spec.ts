@@ -20,7 +20,7 @@ describe('SubjectManager create', () => {
   it('should call subjectService.create with the provided subject', async () => {
     const expected = { id: '123', created: true };
     const subject = new Subject();
-    subject.name = 'Invoice';
+    subject.key = 'Invoice';
 
     jest.spyOn(subjectService, 'create').mockResolvedValue(expected);
 
@@ -31,7 +31,7 @@ describe('SubjectManager create', () => {
 
   it('should throw an error if subjectService.create throws an error', async () => {
     const subject = new Subject();
-    subject.name = 'Invoice';
+    subject.key = 'Invoice';
 
     jest.spyOn(subjectService, 'create').mockImplementation((subject) => {
       throw new MongooseError('Error');

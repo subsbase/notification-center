@@ -2,6 +2,7 @@ import { createMock } from '@golevelup/ts-jest';
 import { Subject } from '../../../../src/repositories/subject/schema';
 import { SubjectsRepository } from '../../../../src/repositories/subject/repository';
 import { SubjectService } from '../../../../src/services/subject/subject.service';
+import { SubjectProcessor } from '../../../../src/services/subject/subject.processor';
 
 describe('SubjectService.getAll', () => {
 
@@ -12,7 +13,8 @@ describe('SubjectService.getAll', () => {
         const mockSubjectsRepository = createMock<SubjectsRepository>({
           find: jest.fn().mockResolvedValue([new Subject(), new Subject()]),
         });
-        const subjectService = new SubjectService(mockSubjectsRepository);
+        const subjectProcessor = new SubjectProcessor();
+        const subjectService = new SubjectService(subjectProcessor, mockSubjectsRepository);
     
         // Act
         const result = await subjectService.getAll(pageNum, pageSize);
@@ -30,8 +32,9 @@ describe('SubjectService.getAll', () => {
         const mockSubjectsRepository = createMock<SubjectsRepository>({
           find: jest.fn().mockResolvedValue(Array.from({ length: 20 }, () => new Subject())),
         });
-        const subjectService = new SubjectService(mockSubjectsRepository);
-    
+        const subjectProcessor = new SubjectProcessor();
+        const subjectService = new SubjectService(subjectProcessor, mockSubjectsRepository);
+
         // Act
         await subjectService.getAll(pageNum, pageSize);
     
@@ -46,8 +49,9 @@ describe('SubjectService.getAll', () => {
         const mockSubjectsRepository = createMock<SubjectsRepository>({
           find: jest.fn().mockResolvedValue(Array.from({ length: 20 }, () => new Subject())),
         });
-        const subjectService = new SubjectService(mockSubjectsRepository);
-    
+        const subjectProcessor = new SubjectProcessor();
+        const subjectService = new SubjectService(subjectProcessor, mockSubjectsRepository);
+
         // Act
         await subjectService.getAll(pageNum, pageSize);
     
@@ -63,8 +67,9 @@ describe('SubjectService.getAll', () => {
         const mockSubjectsRepository = createMock<SubjectsRepository>({
           find: jest.fn().mockRejectedValue(mockError),
         });
-        const subjectService = new SubjectService(mockSubjectsRepository);
-    
+        const subjectProcessor = new SubjectProcessor();
+        const subjectService = new SubjectService(subjectProcessor, mockSubjectsRepository);
+            
         // Act
         const resultPromise = subjectService.getAll(pageNum, pageSize);
     

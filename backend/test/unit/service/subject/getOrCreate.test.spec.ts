@@ -3,40 +3,64 @@ import { Subject } from '../../../../src/repositories/subject/schema';
 import { SubjectsRepository } from '../../../../src/repositories/subject/repository';
 import { SubjectService } from '../../../../src/services/subject/subject.service';
 import { MongoServerError, MongoError } from 'mongodb';
+import { SubjectProcessor } from '../../../../src/services/subject/subject.processor';
+import { InvalidArgumentError } from '../../../../src/types/exceptions';
 
 
 describe('SubjectService.getOrCreate', () => {
 
     it('should return an Subject object', async () => {
       // Arrange
-      const subjectName = 'Math';
+      const subjectKey = 'invoice';
       const existingSubject = new Subject();
-      existingSubject.name = subjectName;
+      existingSubject.key = subjectKey;
       const mockSubjectsRepository = createMock<SubjectsRepository>({
         findOrCreate: jest.fn().mockResolvedValue(existingSubject),
       });
-      const subjectService = new SubjectService(mockSubjectsRepository);
-  
+      const subjectProcessor = new SubjectProcessor();
+      const subjectService = new SubjectService(subjectProcessor, mockSubjectsRepository);  
       // Act
-      const result = await subjectService.getOrCreate(subjectName);
+      const result = await subjectService.getOrCreate(subjectKey);
   
       // Assert
       expect(result).toBe(existingSubject);
     })
 
-    it('should throw error if token is empty', async () => {
+    it('should throw error if findOrCreate throws error', async () => {
       // Arrange
-      const subjectName = 'Math';
+      const subjectKey = 'invoice';
       const existingSubject = new Subject();
-      existingSubject.name = subjectName;
+      existingSubject.key = subjectKey;
       const mockSubjectsRepository = createMock<SubjectsRepository>();
-      const subjectSerice = new SubjectService(mockSubjectsRepository);
-
+      const subjectProcessor = new SubjectProcessor();
+      const subjectService = new SubjectService(subjectProcessor, mockSubjectsRepository);
+      
       jest.spyOn(mockSubjectsRepository, 'findOrCreate').mockRejectedValue(new MongoServerError({}));
   
       // Assert
-      await expect(subjectSerice.getOrCreate(subjectName)).rejects.toThrowError(MongoError);
-      expect(mockSubjectsRepository.findOrCreate).toHaveBeenCalledWith({ name: subjectName });
+      await expect(subjectService.getOrCreate(subjectKey)).rejects.toThrowError(MongoError);
+      expect(mockSubjectsRepository.findOrCreate).toHaveBeenCalledWith({ key: subjectKey, title: 'Invoice' });
     });
+
+    it('should throw error if invalid subject key', async () => {
+      // Arrange
+      const subjectKey = 'INVOICE';
+      const existingSubject = new Subject();
+      existingSubject.key = subjectKey;
+      const mockSubjectsRepository = createMock<SubjectsRepository>();
+      const subjectProcessor = new SubjectProcessor();
+      const subjectService = new SubjectService(subjectProcessor, mockSubjectsRepository);
+        
+      try{
+        
+        //Act
+        await subjectService.getOrCreate(subjectKey)
+
+      }catch(err){
+        // Assert
+        expect(err).toBeInstanceOf(InvalidArgumentError)
+      }
+      expect(mockSubjectsRepository.findOrCreate).not.toHaveBeenCalled();
+    })
 
 });
