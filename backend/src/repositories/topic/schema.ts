@@ -12,6 +12,9 @@ export class Topic extends BaseModel {
   @Prop({ index: true, unique: true, required: true })
   event: string;
 
+  @Prop({ required: true })
+  name: string;
+
   @Prop({ required: true, type: MongoSchema.Types.ObjectId, ref: 'Subject' })
   subject: Subject;
 

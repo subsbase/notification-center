@@ -13,7 +13,8 @@ describe('build', () => {
   it('should build a notification object with the correct values', () => {
     const topic: Topic = {
       _id: '6457a58fc3efba97726d7e99',
-      event: 'Test Topic',
+      event: 'test-topic',
+      name: 'Test Topic',
       subject: new Subject(),
       realm: 'admin-portal',
       createdAt: new Date(),
@@ -48,7 +49,8 @@ describe('build', () => {
   it('should throw an error when content is empty', () => {
     const topic: Topic =  {
         _id: '6457a58fc3efba97726d7e99',
-        event: 'Test Topic',
+        event: 'test-topic',
+        name: 'Test Topic',
         subject: new Subject(),
         realm: 'admin-portal',
         createdAt: new Date(),
@@ -64,7 +66,8 @@ describe('build', () => {
   it('should build normaly when actionUrl is empty', () => {
     const topic: Topic =  {
         _id: '6457a58fc3efba97726d7e99',
-        event: 'Test Topic',
+        event: 'test-topic',
+        name: 'Test Topic',
         subject: new Subject(),
         realm: 'admin-portal',
         createdAt: new Date(),

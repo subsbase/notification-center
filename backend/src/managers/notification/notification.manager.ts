@@ -70,7 +70,7 @@ export class NotificationManager {
         const subject = await this.subjectService.getOrCreate(subjectName)
         
         //gets or creates topic by the event
-        const topic = await this.topicsService.getByEvent(event, subject)
+        const topic = await this.topicsService.getOrCreateByEvent(event, subject)
 
         const notificationTemplate = topic.notificationTemplate;
 

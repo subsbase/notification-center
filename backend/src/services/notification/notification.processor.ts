@@ -3,6 +3,7 @@ import { Payload } from '../../types/global-types';
 import { Topic } from '../../repositories/topic/schema';
 import { Notification } from '../../repositories/subscriber/notification/schema';
 import { InvalidArgumentError } from '../../types/exceptions';
+import { StringUtilts } from '../../utils/string-utils';
 
 export class NotificationProcessor {
     
@@ -26,14 +27,10 @@ export class NotificationProcessor {
     }
 
     compileContent(template: string | undefined, payload: Payload): string {
-        return this.IsString(payload)? payload.toString() : Handlebars.compile(template)(payload);
+        return StringUtilts.isString(payload)? payload.toString() : Handlebars.compile(template)(payload);
     }
 
-    private IsString(obj: any): boolean{
-        return typeof obj === 'string' || obj instanceof String;
-    }
-
-    private isNotValidContent(content: string): boolean{
-        return typeof content !== 'string' || content.trim().length <= 0;
+    isNotValidContent(content: string): boolean{
+        return typeof content !== 'string' || StringUtilts.isEmptyOrWhiteSpace(content)
     }
 }
