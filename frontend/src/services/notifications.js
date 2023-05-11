@@ -4,12 +4,29 @@ import { BASE_URL } from "./server"
 export const getAllNotifications = (subscriberId) => {
     return new Promise((resolve, reject) => {
       axios({
+        headers: {
+          "x-realm": "admin-portal"
+        },
         method: "get",
         url: `${BASE_URL}notifc/subscribers/${subscriberId}/notifications`
       })
         .then(res => resolve(res.data))
         .catch(err => reject(err))
     })
+}
+
+export const getArchivedNotifications = (subscriberId) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      headers: {
+        "x-realm": "admin-portal"
+      },
+      method: "get",
+      url: `${BASE_URL}notifc/subscribers/${subscriberId}/notifications/archived`
+    })
+      .then(res => resolve(res.data))
+      .catch(err => reject(err))
+  })
 }
 
 export const markAllAsRead = (subscriberId) => {

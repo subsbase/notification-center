@@ -79,6 +79,18 @@ body {
 //     display: inline-block;
 // }
 
+.d-flex {
+    display: flex;
+}
+
+.filters {
+    div {
+        line-height: 1.7;
+        &.active {
+            border-bottom: 2px solid #00A79D;
+        }
+    }
+}
 // ---------------- Font Sizes ----------------
 
 @for $i from 6 through 32 {
