@@ -1,4 +1,3 @@
-
 export class AuthDto {
-    apiSecret: string;
+  apiSecret: string;
 }

@@ -15,11 +15,11 @@ export class Subscriber extends BaseModel {
   @Prop({ type: MongoSchema.Types.Mixed })
   customData?: Record<string, string>;
 
-  @Prop({ type: [NotificationSchema], default: new Array<Notification>()})
+  @Prop({ type: [NotificationSchema], default: new Array<Notification>() })
   notifications?: Array<Notification>;
 
   @Prop({ type: [ArchivedNotificationSchema], default: new Array<ArchivedNotification>() })
-  archivedNotifications?: Array<ArchivedNotification>
+  archivedNotifications?: Array<ArchivedNotification>;
 }
 
 export const SubscriberSchema = SchemaFactory.createForClass(Subscriber);
