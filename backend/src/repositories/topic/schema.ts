@@ -9,22 +9,19 @@ export type TopicDocument = HydratedDocument<Topic>;
 
 @Schema(SchemaOptions)
 export class Topic extends BaseModel {
-  @Prop({ index: true, unique: true, required: true })
-  event: string;
-
   @Prop({ required: true })
   name: string;
 
-  @Prop({ required: true, type: MongoSchema.Types.ObjectId, ref: 'Subject' })
+  @Prop({ required: true, type: String, ref: 'Subject' })
   subject: Subject;
 
   @Prop({ type: NotificationTemplate })
   notificationTemplate?: NotificationTemplate;
 
-  @Prop({ required: true })
+  @Prop({ required: true, ref: 'Realm' })
   realm: string;
 
-  @Prop({ type: MongoSchema.Types.ObjectId, ref: 'Topic' })
+  @Prop({ type: String, ref: 'Topic' })
   parentTopic?: Topic;
 }
 
