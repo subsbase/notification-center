@@ -20,16 +20,16 @@ export class SubjectService {
   getOrCreate(subjectKey: string) : Promise<Subject> {
     this.subjectProcessor.validateSubjectKey(subjectKey)
     const title = this.subjectProcessor.getTitleFormKey(subjectKey);
-    return this.subjectsRepository.findOrCreate({ key: subjectKey, title })
+    return this.subjectsRepository.findOrCreate({ id: subjectKey, title })
   }
 
   async create(subject: Subject): Promise<CreatedModel> {
-    this.subjectProcessor.validateSubjectKey(subject.key)
+    this.subjectProcessor.validateSubjectKey(subject.id)
     return await this.subjectsRepository.create(subject);
   }
 
   async update(subject: Subject): Promise<UpdatedModel> {
-    this.subjectProcessor.validateSubjectKey(subject.key)
-    return await this.subjectsRepository.update(subject._id, subject)
+    this.subjectProcessor.validateSubjectKey(subject.id)
+    return await this.subjectsRepository.update(subject.id, subject)
   } 
 }

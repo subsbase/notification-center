@@ -13,7 +13,7 @@ describe('SubjectService.getOrCreate', () => {
       // Arrange
       const subjectKey = 'invoice';
       const existingSubject = new Subject();
-      existingSubject.key = subjectKey;
+      existingSubject.id = subjectKey;
       const mockSubjectsRepository = createMock<SubjectsRepository>({
         findOrCreate: jest.fn().mockResolvedValue(existingSubject),
       });
@@ -30,7 +30,7 @@ describe('SubjectService.getOrCreate', () => {
       // Arrange
       const subjectKey = 'invoice';
       const existingSubject = new Subject();
-      existingSubject.key = subjectKey;
+      existingSubject.id = subjectKey;
       const mockSubjectsRepository = createMock<SubjectsRepository>();
       const subjectProcessor = new SubjectProcessor();
       const subjectService = new SubjectService(subjectProcessor, mockSubjectsRepository);
@@ -39,14 +39,14 @@ describe('SubjectService.getOrCreate', () => {
   
       // Assert
       await expect(subjectService.getOrCreate(subjectKey)).rejects.toThrowError(MongoError);
-      expect(mockSubjectsRepository.findOrCreate).toHaveBeenCalledWith({ key: subjectKey, title: 'Invoice' });
+      expect(mockSubjectsRepository.findOrCreate).toHaveBeenCalledWith({ id: subjectKey, title: 'Invoice' });
     });
 
     it('should throw error if invalid subject key', async () => {
       // Arrange
       const subjectKey = 'INVOICE';
       const existingSubject = new Subject();
-      existingSubject.key = subjectKey;
+      existingSubject.id = subjectKey;
       const mockSubjectsRepository = createMock<SubjectsRepository>();
       const subjectProcessor = new SubjectProcessor();
       const subjectService = new SubjectService(subjectProcessor, mockSubjectsRepository);

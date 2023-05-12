@@ -13,7 +13,7 @@ describe('SubscriberManager', () => {
       const subscriberManager = new SubscriberManager(subscriberService);
 
       const subscriber: Subscriber = new Subscriber();
-      subscriber.subscriberId = '60b26d50abbc6a3b3e00c6f7';
+      subscriber.id = '60b26d50abbc6a3b3e00c6f7';
 
       const createdSubscriber: CreatedModel = {
         id: '60b26d50abbc6a3b3e00c6f7',

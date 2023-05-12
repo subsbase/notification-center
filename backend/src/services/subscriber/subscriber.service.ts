@@ -9,7 +9,7 @@ export class SubscriberService {
     constructor(private readonly subscriberRepository: SubscribersRepository) {}
 
     public createIfNotExists(subscriberId: string) {
-       return this.subscriberRepository.findOrCreate({ subscriberId: subscriberId });
+       return this.subscriberRepository.findOrCreate({ id: subscriberId });
     }
 
     async create(subscriber: Subscriber) : Promise<CreatedModel> {
