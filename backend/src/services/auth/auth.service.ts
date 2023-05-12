@@ -19,9 +19,9 @@ export class AuthService {
     }
 
     const payload = {
-      id: realm._id.toString(),
-      name: realm.name,
-      realm: realm.name,
+      id: realm.id,
+      name: realm.id,
+      realm: realm.id,
       type: Realm.name
     }
 

@@ -32,6 +32,7 @@ export class SchemaFactory {
                 function(next){
                     const options = this.getOptions();
                     this.where({ realm: options.realm })
+                    this.select('-__v')
                     next()
                 })
         })

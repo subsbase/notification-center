@@ -3,20 +3,24 @@ import { ArchivedNotificationsGlobalRepository } from '../../../../src/repositor
 import { SubscribersGlobalRepository } from '../../../../src/repositories/subscriber/global-repository';
 import { Types } from 'mongoose';
 import { BulkWriteResult } from 'mongodb';
-import { ArchiveNotificationService } from '../../../../src/services/archived-notifications/archive-notifications.service';
+import { ArchiveNotificationService } from '../../../../src/services/archived-notifications/archive.notifications.service';
 import { Topic } from '../../../../src/repositories/topic/schema';
 import { InvalidArgumentError } from '../../../../src/types/exceptions';
+import { ArchivedNotificationProcessor } from '../../../../src/services/archived-notifications/archived.notification.processor';
+import { Subscriber } from '../../../../src/repositories/subscriber/schema';
+import { ArchivedNotification } from '../../../../src/repositories/subscriber/archived-notification/schema';
 
 describe('ArchiveNotificationService - getNotificationsToArchive', () => {
   let service: ArchiveNotificationService;
   let archivedNotificationsRepository: ArchivedNotificationsGlobalRepository;
   let subscribersGlobalRepository: SubscribersGlobalRepository;
-
+  let archivedNotificationProcessor: ArchivedNotificationProcessor;
   beforeEach(() => {
     archivedNotificationsRepository = createMock<ArchivedNotificationsGlobalRepository>();
     subscribersGlobalRepository = createMock<SubscribersGlobalRepository>();
+    archivedNotificationProcessor = new ArchivedNotificationProcessor()
 
-    service = new ArchiveNotificationService(archivedNotificationsRepository, subscribersGlobalRepository);
+    service = new ArchiveNotificationService(archivedNotificationProcessor ,archivedNotificationsRepository, subscribersGlobalRepository);
   });
 
   it('should return empty array if there are no notifications to archive', async () => {
@@ -42,27 +46,26 @@ describe('ArchiveNotificationService - getNotificationsToArchive', () => {
     // Create a mock subscriber with notifications to archive
     const subscriberId = '6457a58fc3efba97726d7e99';
     const realm = 'test-realm';
-    const notification = {
-      _id: '6457a58fc3efba97726d7e99',
-      content: 'test-notification',
-      topic: new Topic(),
-      archivedAt: new Date(Date.now() - (thresholdDays + 1) * 24 * 60 * 60 * 1000),
-      payload: { test: 'payload' },
-      read: false,
-      actionUrl: 'google.com',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    const notificationsToArchive = [notification];
-    const subscriber = {
-      _id: subscriberId,
-      subscriberId: subscriberId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      realm,
-      notifications: [],
-      archivedNotifications: notificationsToArchive,
-    };
+    const notification: ArchivedNotification = new ArchivedNotification()
+    notification.id='6457a58fc3efba97726d7e99'
+    notification.content='test-notification'
+    notification.topic=new Topic()
+    notification.archivedAt=new Date(Date.now() - (thresholdDays + 1) * 24 * 60 * 60 * 1000)
+    notification.read=false
+    notification.actionUrl='google.com'
+    notification.createdAt=new Date()
+    notification.updatedAt=new Date()
+    
+    const notificationsToArchive: Array<ArchivedNotification> = [notification];
+
+    const subscriber: Subscriber = new Subscriber()    
+    subscriber.id= subscriberId
+    subscriber.createdAt = new Date()
+    subscriber.updatedAt= new Date()
+    subscriber.realm = realm 
+    subscriber.notifications = []
+    subscriber.archivedNotifications = notificationsToArchive
+    
 
     const bulkWriteResult: BulkWriteResult = createMock<BulkWriteResult>();
     // Create a mock subscribersGlobalRepository that returns the mock subscriber
@@ -73,25 +76,19 @@ describe('ArchiveNotificationService - getNotificationsToArchive', () => {
     const result = await service.getNotificationsToArchive(thresholdDays);
 
     // Assert the result
-    expect(result).toEqual([
-      {
-        subscriberId,
-        realm,
-        notificationsToArchive,
-      },
-    ]);
+    expect(result).toEqual([subscriber]);
 
     expect(subscribersGlobalRepository.bulkWrite).toBeCalledWith([
       {
         updateOne: {
           filter: {
-            _id: subscriber._id,
+            _id: subscriber.id,
           },
           update: {
             $pull: {
               archivedNotifications: {
                 _id: {
-                  $in: notificationsToArchive.map((n) => new Types.ObjectId(n._id)),
+                  $in: notificationsToArchive.map((n) => new Types.ObjectId(n.id)),
                 },
               },
             },

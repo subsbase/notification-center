@@ -7,13 +7,10 @@ export type SubjectDocument = HydratedDocument<Subject>;
 
 @Schema(SchemaOptions)
 export class Subject extends BaseModel {
-  @Prop({ index: true, required: true, unique: true })
-  key: string;
-
   @Prop({ required: true })
   title: string
 
-  @Prop({ required: true })
+  @Prop({ required: true, ref: 'Realm' })
   realm: string;
 }
 
