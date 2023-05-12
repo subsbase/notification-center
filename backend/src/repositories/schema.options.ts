@@ -1,7 +1,11 @@
-export const SchemaOptions = {
+export const SchemaOptions = { 
     timestamps: true,
-    toJSON: {
-        virtuals: true,
-    },
-    toObject: { virtuals: true },
+    toJSON: { 
+        virtuals: true, 
+        getters: true,
+    }, 
+    toObject: { 
+        virtuals: true, 
+        getters: true,
+    }
 };
