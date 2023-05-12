@@ -18,9 +18,13 @@ describe('ArchiveNotificationService - getNotificationsToArchive', () => {
   beforeEach(() => {
     archivedNotificationsRepository = createMock<ArchivedNotificationsGlobalRepository>();
     subscribersGlobalRepository = createMock<SubscribersGlobalRepository>();
-    archivedNotificationProcessor = new ArchivedNotificationProcessor()
+    archivedNotificationProcessor = new ArchivedNotificationProcessor();
 
-    service = new ArchiveNotificationService(archivedNotificationProcessor ,archivedNotificationsRepository, subscribersGlobalRepository);
+    service = new ArchiveNotificationService(
+      archivedNotificationProcessor,
+      archivedNotificationsRepository,
+      subscribersGlobalRepository,
+    );
   });
 
   it('should return empty array if there are no notifications to archive', async () => {
@@ -30,13 +34,13 @@ describe('ArchiveNotificationService - getNotificationsToArchive', () => {
   });
 
   it('should throw an error when thresholdDays is not valid', async () => {
-    try{
-      await service.getNotificationsToArchive(-1)
-    }catch(err){
+    try {
+      await service.getNotificationsToArchive(-1);
+    } catch (err) {
       expect(err).toBeInstanceOf(InvalidArgumentError);
     }
 
-    expect(subscribersGlobalRepository.aggregate).not.toHaveBeenCalled()
+    expect(subscribersGlobalRepository.aggregate).not.toHaveBeenCalled();
   });
 
   it('should retrieve notifications to archive', async () => {
@@ -46,26 +50,25 @@ describe('ArchiveNotificationService - getNotificationsToArchive', () => {
     // Create a mock subscriber with notifications to archive
     const subscriberId = '6457a58fc3efba97726d7e99';
     const realm = 'test-realm';
-    const notification: ArchivedNotification = new ArchivedNotification()
-    notification.id='6457a58fc3efba97726d7e99'
-    notification.content='test-notification'
-    notification.topic=new Topic()
-    notification.archivedAt=new Date(Date.now() - (thresholdDays + 1) * 24 * 60 * 60 * 1000)
-    notification.read=false
-    notification.actionUrl='google.com'
-    notification.createdAt=new Date()
-    notification.updatedAt=new Date()
-    
+    const notification: ArchivedNotification = new ArchivedNotification();
+    notification.id = '6457a58fc3efba97726d7e99';
+    notification.content = 'test-notification';
+    notification.topic = new Topic();
+    notification.archivedAt = new Date(Date.now() - (thresholdDays + 1) * 24 * 60 * 60 * 1000);
+    notification.read = false;
+    notification.actionUrl = 'google.com';
+    notification.createdAt = new Date();
+    notification.updatedAt = new Date();
+
     const notificationsToArchive: Array<ArchivedNotification> = [notification];
 
-    const subscriber: Subscriber = new Subscriber()    
-    subscriber.id= subscriberId
-    subscriber.createdAt = new Date()
-    subscriber.updatedAt= new Date()
-    subscriber.realm = realm 
-    subscriber.notifications = []
-    subscriber.archivedNotifications = notificationsToArchive
-    
+    const subscriber: Subscriber = new Subscriber();
+    subscriber.id = subscriberId;
+    subscriber.createdAt = new Date();
+    subscriber.updatedAt = new Date();
+    subscriber.realm = realm;
+    subscriber.notifications = [];
+    subscriber.archivedNotifications = notificationsToArchive;
 
     const bulkWriteResult: BulkWriteResult = createMock<BulkWriteResult>();
     // Create a mock subscribersGlobalRepository that returns the mock subscriber

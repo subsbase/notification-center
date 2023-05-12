@@ -5,11 +5,11 @@ import { ArchiveNotificationsTask } from './archive-notifications';
 
 @Module({})
 export class BackgroundJobsModule {
-  static withConfig(dbConnection: string) : DynamicModule {
+  static withConfig(dbConnection: string): DynamicModule {
     return {
       module: BackgroundJobsModule,
-      imports: [ScheduleModule.forRoot(),ServicesModule.withDbonnection(dbConnection)],
-      providers: [ArchiveNotificationsTask]
-    }
+      imports: [ScheduleModule.forRoot(), ServicesModule.withDbonnection(dbConnection)],
+      providers: [ArchiveNotificationsTask],
+    };
   }
 }

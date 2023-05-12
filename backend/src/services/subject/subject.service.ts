@@ -8,28 +8,33 @@ import { SubjectProcessor } from './subject.processor';
 export class SubjectService {
   constructor(
     private readonly subjectProcessor: SubjectProcessor,
-    private readonly subjectsRepository: SubjectsRepository) {}
-  
+    private readonly subjectsRepository: SubjectsRepository,
+  ) {}
+
   getAll(pageNum: number, pageSize: number): Promise<Array<Subject>> {
-    return this.subjectsRepository.find({}, {} , { 
+    return this.subjectsRepository.find(
+      {},
+      {},
+      {
         skip: (pageNum - 1) * pageSize,
-        limit: pageSize
-    })
+        limit: pageSize,
+      },
+    );
   }
-  
-  getOrCreate(subjectKey: string) : Promise<Subject> {
-    this.subjectProcessor.validateSubjectKey(subjectKey)
+
+  getOrCreate(subjectKey: string): Promise<Subject> {
+    this.subjectProcessor.validateSubjectKey(subjectKey);
     const title = this.subjectProcessor.getTitleFormKey(subjectKey);
-    return this.subjectsRepository.findOrCreate({ id: subjectKey, title })
+    return this.subjectsRepository.findOrCreate({ id: subjectKey, title });
   }
 
   async create(subject: Subject): Promise<CreatedModel> {
-    this.subjectProcessor.validateSubjectKey(subject.id)
+    this.subjectProcessor.validateSubjectKey(subject.id);
     return await this.subjectsRepository.create(subject);
   }
 
   async update(subject: Subject): Promise<UpdatedModel> {
-    this.subjectProcessor.validateSubjectKey(subject.id)
-    return await this.subjectsRepository.update(subject.id, subject)
-  } 
+    this.subjectProcessor.validateSubjectKey(subject.id);
+    return await this.subjectsRepository.update(subject.id, subject);
+  }
 }

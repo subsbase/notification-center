@@ -1,13 +1,11 @@
-import { ArgumentMetadata, Injectable, PipeTransform } from "@nestjs/common";
+import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
 
 @Injectable()
-export class NumberPipeTransform implements PipeTransform<string,number> {
+export class NumberPipeTransform implements PipeTransform<string, number> {
+  constructor(private readonly defaultValue: number) {}
 
-    constructor(private readonly defaultValue: number) {}
-
-    transform(value: string, metadata: ArgumentMetadata): number {
-        if(!value)
-            return this.defaultValue;
-        return Number.parseInt(value);
-    }
+  transform(value: string, metadata: ArgumentMetadata): number {
+    if (!value) return this.defaultValue;
+    return Number.parseInt(value);
+  }
 }

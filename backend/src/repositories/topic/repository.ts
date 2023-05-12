@@ -9,7 +9,8 @@ export class TopicsRepository extends BaseRepository<TopicDocument, Topic> {
   constructor(
     @InjectModel(Topic.name)
     protected model: Model<TopicDocument>,
-    protected readonly realm: string) {
-      super(model, realm);
+    protected readonly realm: string,
+  ) {
+    super(model, realm);
   }
 }

@@ -18,23 +18,46 @@ import { ArchivedNotificationProcessor } from './archived-notifications/archived
 
 @Module({})
 export class ServicesModule {
-  static withDbonnection(uri: string): DynamicModule{
+  static withDbonnection(uri: string): DynamicModule {
     return {
       module: ServicesModule,
-      imports: [RepositoriesModule.withUri(uri),
+      imports: [
+        RepositoriesModule.withUri(uri),
         InternalEventsModule,
         JwtModule.register({
           global: true,
           secret: process.env.JWT_SECRET,
-          signOptions: { 
+          signOptions: {
             expiresIn: '1d',
             issuer: process.env.JWT_ISSUER,
             audience: process.env.JWT_AUDIENCE,
           },
-        })],
-      providers: [SubjectProcessor, SubjectService, TopicProcessor, TopicService, NotificationService, SubscriberService, AuthService, NotificationProcessor, AccessTokenProcessor, ArchiveNotificationService, RealmService, SubscriberEventHandler, ArchivedNotificationProcessor],
-      exports: [SubjectService, TopicService, NotificationService, SubscriberService, AuthService, ArchiveNotificationService, RealmService],
-    }
+        }),
+      ],
+      providers: [
+        SubjectProcessor,
+        SubjectService,
+        TopicProcessor,
+        TopicService,
+        NotificationService,
+        SubscriberService,
+        AuthService,
+        NotificationProcessor,
+        AccessTokenProcessor,
+        ArchiveNotificationService,
+        RealmService,
+        SubscriberEventHandler,
+        ArchivedNotificationProcessor,
+      ],
+      exports: [
+        SubjectService,
+        TopicService,
+        NotificationService,
+        SubscriberService,
+        AuthService,
+        ArchiveNotificationService,
+        RealmService,
+      ],
+    };
   }
 }
-

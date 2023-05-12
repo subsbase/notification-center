@@ -6,13 +6,13 @@ import { Subscriber } from '../subscriber/schema';
 
 export type ArchivedNotificationDocument = HydratedDocument<ArchivedNotification>;
 
-@Schema({ ...SchemaOptions, collection: 'archived-notifications'})
+@Schema({ ...SchemaOptions, collection: 'archived-notifications' })
 export class ArchivedNotification extends SubscriberArchivedNotification {
-    @Prop({ required: true, type: String, ref: 'Subscriber' })    
-    subscriber: Subscriber;
+  @Prop({ required: true, type: String, ref: 'Subscriber' })
+  subscriber: Subscriber;
 
-    @Prop({ required: true, ref: 'Realm' })
-    realm: string;
+  @Prop({ required: true, ref: 'Realm' })
+  realm: string;
 }
 
 export const ArchivedNotificationSchema = SchemaFactory.createForClass(ArchivedNotification);

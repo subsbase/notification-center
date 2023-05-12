@@ -6,14 +6,13 @@ import { IActionResult } from '../response-helpers/action-result.interface';
 
 @Controller('auth')
 export class AuthController extends BaseController {
-  constructor(
-    private readonly authManager: AuthManager) {
+  constructor(private readonly authManager: AuthManager) {
     super();
   }
-  
+
   @Post()
-  async authenticate(@Body() authDto: AuthDto) : Promise<IActionResult> {
-    const jwtToken = await this.authManager.signIn(authDto.apiSecret)
+  async authenticate(@Body() authDto: AuthDto): Promise<IActionResult> {
+    const jwtToken = await this.authManager.signIn(authDto.apiSecret);
     return this.ok(jwtToken);
   }
 }

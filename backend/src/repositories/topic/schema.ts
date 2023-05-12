@@ -3,7 +3,7 @@ import { HydratedDocument, Schema as MongoSchema } from 'mongoose';
 import { BaseModel } from '../base-model';
 import { SchemaOptions } from '../schema.options';
 import { Subject } from '../subject/schema';
-import {NotificationTemplate} from "./notification-template/schema";
+import { NotificationTemplate } from './notification-template/schema';
 
 export type TopicDocument = HydratedDocument<Topic>;
 

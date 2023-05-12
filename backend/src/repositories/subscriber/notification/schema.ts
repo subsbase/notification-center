@@ -7,11 +7,11 @@ import { Topic } from '../../topic/schema';
 @Schema(SchemaOptions)
 export class Notification extends BaseModel {
   @Prop({
-    type: MongoSchema.Types.ObjectId, 
+    type: MongoSchema.Types.ObjectId,
     default: Types.ObjectId,
-    alias: 'id'
+    alias: 'id',
   })
-  declare protected _id: string; // override _id property with ObjectId type
+  protected declare _id: string; // override _id property with ObjectId type
 
   @Prop({ required: true, type: MongoSchema.Types.ObjectId, ref: 'Topic' })
   topic: Topic;

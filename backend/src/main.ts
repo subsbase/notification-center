@@ -8,21 +8,20 @@ import { ValidationErrorFilter } from './filters/validation-error.filter';
 import { InvalidArgumentErrorFilter } from './filters/invalid-argument-error.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    new FastifyAdapter({ logger: true }),
-  );
-  
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ logger: true }));
+
   app.enableCors({
-   origin: (process.env.ALLOWED_ORIGINS as string).split(',')
-  })
+    origin: (process.env.ALLOWED_ORIGINS as string).split(','),
+  });
 
   app.setGlobalPrefix('notifc', {
-    exclude: [{
-      path: '/healthz',
-      method: RequestMethod.GET
-    }]
-  })
+    exclude: [
+      {
+        path: '/healthz',
+        method: RequestMethod.GET,
+      },
+    ],
+  });
   app.useGlobalFilters(new MongoErrorFilter(), new ValidationErrorFilter(), new InvalidArgumentErrorFilter());
 
   await app.listen(process.env.PORT || 3000, '0.0.0.0');
