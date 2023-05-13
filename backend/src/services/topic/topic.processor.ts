@@ -1,18 +1,18 @@
-import { StringUtilts } from "../../utils/string-utils";
-import { InvalidArgumentError } from "../../types/exceptions";
+import { StringUtilts } from '../../utils/string-utils';
+import { InvalidArgumentError } from '../../types/exceptions';
 
 export class TopicProcessor {
-    validateEvent(event: string): void{
-        if(this.isNotValidTopicEvent(event)){
-            throw new InvalidArgumentError('event', `Invalid topic event ${event} event must be provided in kebab-case`)
-        }
+  validateId(id: string): void {
+    if (this.isNotValidTopicId(id)) {
+      throw new InvalidArgumentError('event', `Invalid topic event ${id} event must be provided in kebab-case`);
     }
+  }
 
-    getTopicNameFormEvent(event: string) : string {
-        return StringUtilts.kebabToNormal(event);
-    }
+  getTopicNameFormId(id: string): string {
+    return StringUtilts.kebabToNormal(id);
+  }
 
-    private isNotValidTopicEvent(event: string): boolean{
-        return !StringUtilts.isKebabCase(event);
-    }
+  private isNotValidTopicId(id: string): boolean {
+    return !StringUtilts.isKebabCase(id);
+  }
 }

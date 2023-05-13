@@ -1,4 +1,4 @@
-import { Payload } from 'src/types/global-types';
+import { Payload } from '../../../../../src/types/global-types';
 import { NotificationProcessor } from '../../../../../src/services/notification/notification.processor';
 
 describe('notification processor compileContent', () => {

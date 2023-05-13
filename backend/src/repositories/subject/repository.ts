@@ -5,11 +5,11 @@ import { Subject, SubjectDocument } from './schema';
 import { BaseRepository } from '../base-repository';
 
 @Injectable()
-export class SubjectsRepository extends BaseRepository<SubjectDocument,Subject> {
+export class SubjectsRepository extends BaseRepository<SubjectDocument, Subject> {
   constructor(
     @InjectModel(Subject.name)
     protected readonly model: Model<SubjectDocument>,
-    protected readonly realm: string
+    protected readonly realm: string,
   ) {
     super(model, realm);
   }

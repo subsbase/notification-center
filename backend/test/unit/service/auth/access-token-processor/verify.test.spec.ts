@@ -44,10 +44,10 @@ describe('AccessTokenProcessor - verify', () => {
   it('should throw error if token is empty', async () => {
     // Arrange
     const token = '';
-    try{
+    try {
       //Act
       await processor.verify(token);
-    }catch(err){
+    } catch (err) {
       // Assert
       expect(err).toBeInstanceOf(InvalidArgumentError);
     }

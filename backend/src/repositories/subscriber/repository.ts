@@ -6,11 +6,11 @@ import { BaseRepository } from '../base-repository';
 
 @Injectable()
 export class SubscribersRepository extends BaseRepository<SubscriberDocument, Subscriber> {
-    
-    constructor(
+  constructor(
     @InjectModel(Subscriber.name)
     protected readonly model: Model<SubscriberDocument>,
-    protected readonly realm: string) {
-        super(model, realm);
-    }
+    protected readonly realm: string,
+  ) {
+    super(model, realm);
+  }
 }

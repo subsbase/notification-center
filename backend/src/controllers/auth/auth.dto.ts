@@ -1,4 +1,8 @@
+import { IsNotEmpty, IsString } from "class-validator";
 
 export class AuthDto {
-    apiSecret: string;
+
+  @IsString({ message: 'apiSecret is required' })
+  @IsNotEmpty({ message: 'apiSecret can not be empty' })
+  apiSecret: string;
 }

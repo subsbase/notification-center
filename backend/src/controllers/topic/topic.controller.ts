@@ -7,16 +7,14 @@ import { Authorize } from '../decorators/authorize.decorator';
 
 @Controller('topics')
 export class TopicsController extends BaseController {
+  constructor(private readonly topicManager: TopicsManager) {
+    super();
+  }
 
-    constructor(
-        private readonly topicManager: TopicsManager) {
-        super();
-    }
-
-    @Authorize()
-    @Post()
-    async create(@Body() topic: Topic) : Promise<IActionResult> {
-       const result = await  this.topicManager.create(topic)
-       return this.ok(result);
-    }
+  @Authorize()
+  @Post()
+  async create(@Body() topic: Topic): Promise<IActionResult> {
+    const result = await this.topicManager.create(topic);
+    return this.ok(result);
+  }
 }

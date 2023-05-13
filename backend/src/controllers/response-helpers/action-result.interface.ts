@@ -1,6 +1,6 @@
-import { HttpStatus } from "@nestjs/common";
+import { HttpStatus } from '@nestjs/common';
 
 export interface IActionResult {
-    statusCode: HttpStatus;
-    body?: object;
+  statusCode: HttpStatus;
+  body?: object;
 }

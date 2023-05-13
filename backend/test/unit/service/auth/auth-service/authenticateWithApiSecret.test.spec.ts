@@ -24,14 +24,13 @@ describe('AuthService -  authenticateWithApiSecret ', () => {
 
   it('should return an access token if realm is found', async () => {
     const realm = {
-      _id: '1',
-      name: 'testRealm',
+      id: 'testRealm',
       secret: 'testSecret',
     } as Realm;
     const payload = {
-      id: realm._id.toString(),
-      name: realm.name,
-      realm: realm.name,
+      id: realm.id,
+      name: realm.id,
+      realm: realm.id,
       type: Realm.name,
     };
     const accessToken = 'testAccessToken';

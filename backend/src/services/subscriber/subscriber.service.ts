@@ -5,14 +5,13 @@ import { Subscriber } from '../../repositories/subscriber/schema';
 
 @Injectable()
 export class SubscriberService {
+  constructor(private readonly subscriberRepository: SubscribersRepository) {}
 
-    constructor(private readonly subscriberRepository: SubscribersRepository) {}
+  public createIfNotExists(subscriberId: string) {
+    return this.subscriberRepository.findOrCreate({ id: subscriberId });
+  }
 
-    public createIfNotExists(subscriberId: string) {
-       return this.subscriberRepository.findOrCreate({ subscriberId: subscriberId });
-    }
-
-    async create(subscriber: Subscriber) : Promise<CreatedModel> {
-        return await this.subscriberRepository.create(subscriber);
-    }
+  async create(subscriber: Subscriber): Promise<CreatedModel> {
+    return await this.subscriberRepository.create(subscriber);
+  }
 }

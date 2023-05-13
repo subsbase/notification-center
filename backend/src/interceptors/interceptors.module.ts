@@ -6,10 +6,9 @@ import { ResponseInterceptor } from './response.interceptor';
 import { ServicesModule } from '../services/services.module';
 import { RealmInterceptor } from './realm.interceptor';
 
-
 @Module({})
 export class InterceptorsModule {
-  static withConfig(dbConnection: string) : DynamicModule {
+  static withConfig(dbConnection: string): DynamicModule {
     return {
       module: InterceptorsModule,
       imports: [ServicesModule.withDbonnection(dbConnection)],
@@ -20,17 +19,17 @@ export class InterceptorsModule {
         },
         {
           provide: APP_INTERCEPTOR,
-          useClass: RealmInterceptor
+          useClass: RealmInterceptor,
         },
         {
-            provide: APP_INTERCEPTOR,
-            useClass: AuthorizationInterceptor
+          provide: APP_INTERCEPTOR,
+          useClass: AuthorizationInterceptor,
         },
         {
           provide: APP_INTERCEPTOR,
           useClass: ResponseInterceptor,
-        }
-      ]
-    }
+        },
+      ],
+    };
   }
 }

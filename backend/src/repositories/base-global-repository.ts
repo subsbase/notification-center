@@ -1,4 +1,4 @@
-import mongoose, {
+import {
   AggregateOptions,
   FilterQuery,
   HydratedDocument,
@@ -16,7 +16,11 @@ import mongoose, {
   RemoveOptions,
 } from 'mongoose';
 import { Document } from 'mongoose';
-import { AnyBulkWriteOperation, BulkWriteOptions } from 'mongodb';
+import {
+  AnyBulkWriteOperation,
+  BulkWriteOptions,
+  BulkWriteResult,
+} from 'mongoose/node_modules/mongodb';
 import { CreatedModel, RemovedModel, UpdatedModel } from './helper-types';
 
 export abstract class GlobalRepository<T extends Document, TSchema> {
@@ -84,7 +88,7 @@ export abstract class GlobalRepository<T extends Document, TSchema> {
     updated: UpdateWithAggregationPipeline | UpdateQuery<T>,
     options?: QueryOptions,
   ): Promise<UpdatedModel> {
-    return await this.updateOne({ _id: new mongoose.Types.ObjectId(id) }, updated, options);
+    return await this.updateOne({ _id: id }, updated, options);
   }
 
   async updateOne(
@@ -110,7 +114,12 @@ export abstract class GlobalRepository<T extends Document, TSchema> {
   async bulkWrite(
     writeOperations: Array<AnyBulkWriteOperation<T extends Document ? object : T extends {} ? T : object>>,
     bulkWriteOptions?: BulkWriteOptions & MongooseBulkWriteOptions,
-  ) {
+  ): Promise<BulkWriteResult> {
+    return await this.model.bulkWrite(writeOperations, bulkWriteOptions);
+  }
+
+  //only used with chileds so we can build operations dynamicly
+  protected async bulkWriteAny(writeOperations: any, bulkWriteOptions?: BulkWriteOptions & MongooseBulkWriteOptions) {
     return await this.model.bulkWrite(writeOperations, bulkWriteOptions);
   }
 }

@@ -7,19 +7,24 @@ import { Authorize } from '../decorators/authorize.decorator';
 
 @Controller('notifications')
 export class NotificationsController extends BaseController {
+  constructor(private readonly notificationManager: NotificationManager) {
+    super();
+  }
 
-    constructor(
-        private readonly notificationManager: NotificationManager) {
-        super();
-    }
-
-    @Authorize()
-    @Post('trigger/:subject/:event')
-    async trigger(
-        @Param('subject') subject: string,
-        @Param('event') event: string,
-        @Body() notificationDto: NotificationDto ) : Promise<IActionResult> {
-        await this.notificationManager.notify(subject, event, notificationDto.actionUrl, notificationDto.payload ,notificationDto.to)
-        return this.ok();
-    }
+  @Authorize()
+  @Post('trigger/:subjectId/:topicId')
+  async trigger(
+    @Param('subjectId') subjectId: string,
+    @Param('topicId') topicId: string,
+    @Body() notificationDto: NotificationDto,
+  ): Promise<IActionResult> {
+    await this.notificationManager.notify(
+      subjectId,
+      topicId,
+      notificationDto.actionUrl,
+      notificationDto.payload,
+      notificationDto.to,
+    );
+    return this.ok();
+  }
 }

@@ -26,8 +26,8 @@ describe('SubjectManager update', () => {
       acknowledged: true,
     };
     const subject = new Subject();
-    subject._id = '123';
-    subject.key = 'Invoice';
+    subject.id = '123';
+    subject.id = 'Invoice';
 
     jest.spyOn(subjectService, 'update').mockResolvedValue(expected);
 
@@ -56,8 +56,8 @@ describe('SubjectManager update', () => {
       acknowledged: true,
     };
     const subject = new Subject();
-    subject._id = '123';
-    subject.key = 'Invoice';
+    subject.id = '123';
+    subject.id = 'Invoice';
 
     jest.spyOn(subjectService, 'update').mockResolvedValue(expected);
 

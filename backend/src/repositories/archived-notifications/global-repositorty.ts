@@ -5,11 +5,14 @@ import { GlobalRepository } from '../base-global-repository';
 import { ArchivedNotification, ArchivedNotificationDocument } from './schema';
 
 @Injectable()
-export class ArchivedNotificationsGlobalRepository extends GlobalRepository<ArchivedNotificationDocument, ArchivedNotification> {
-    
-    constructor(
+export class ArchivedNotificationsGlobalRepository extends GlobalRepository<
+  ArchivedNotificationDocument,
+  ArchivedNotification
+> {
+  constructor(
     @InjectModel(ArchivedNotification.name)
-    protected readonly model: Model<ArchivedNotificationDocument>) {
-        super(model);
-    }
+    protected readonly model: Model<ArchivedNotificationDocument>,
+  ) {
+    super(model);
+  }
 }

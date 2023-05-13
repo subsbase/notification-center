@@ -1,85 +1,82 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 import { EventsGateway } from '../../events/events.gateway';
 import { Notification } from '../../repositories/subscriber/notification/schema';
 import { NotificationService } from '../../services/notification/notification.service';
 import { TopicService } from '../../services/topic/topic.service';
-import { Payload } from "../../types/global-types";
+import { Payload } from '../../types/global-types';
 import { UpdatedModel } from '../../repositories/helper-types';
 import { SubjectService } from '../../services/subject/subject.service';
-import { ArchivedNotification } from "../../repositories/subscriber/archived-notification/schema";
+import { ArchivedNotification } from '../../repositories/subscriber/archived-notification/schema';
 
 @Injectable()
 export class NotificationManager {
-    constructor(
-            private readonly eventsGateway: EventsGateway,
-            private readonly notificationService: NotificationService,
-            private readonly topicsService: TopicService,
-            private readonly subjectService: SubjectService) { }
-            
+  constructor(
+    private readonly eventsGateway: EventsGateway,
+    private readonly notificationService: NotificationService,
+    private readonly topicsService: TopicService,
+    private readonly subjectService: SubjectService,
+  ) {}
 
-    async getAllNotifications(subscriberId: string, pageNum: number, pageSize: number) : Promise<Array<Notification>> {
-        const notifications = await this.notificationService.getNotifications(subscriberId, pageNum, 30)
-        return notifications?? new Array()
-    }
+  async getAllNotifications(subscriberId: string, pageNum: number, pageSize: number): Promise<Array<Notification>> {
+    const notifications = await this.notificationService.getNotifications(subscriberId, pageNum, pageSize);
+    return notifications ?? new Array();
+  }
 
-    async getAllArchivedNotifications(subscriberId: string, pageNum: number, pageSize: number) : Promise<Array<ArchivedNotification>> {
-        const notifications = await this.notificationService.getArchivedNotifications(subscriberId, pageNum, pageSize)
-        return notifications?? new Array()
-    }
+  async getAllArchivedNotifications(
+    subscriberId: string,
+    pageNum: number,
+    pageSize: number,
+  ): Promise<Array<ArchivedNotification>> {
+    const notifications = await this.notificationService.getArchivedNotifications(subscriberId, pageNum, pageSize);
+    return notifications ?? new Array();
+  }
 
-    archive(subscriberId: string, notificationsIds: Array<string>) : Promise<UpdatedModel> {
-        return this.notificationService.archive(subscriberId, notificationsIds)
-    }
+  archive(subscriberId: string, notificationsIds: Array<string>): Promise<UpdatedModel> {
+    return this.notificationService.archive(subscriberId, notificationsIds);
+  }
 
-    unarchive(subscriberId: string, archivedNotificationsIds: Array<string>) : Promise<UpdatedModel> {
-        return this.notificationService.unarchive(subscriberId, archivedNotificationsIds)
-    }
+  unarchive(subscriberId: string, archivedNotificationsIds: Array<string>): Promise<UpdatedModel> {
+    return this.notificationService.unarchive(subscriberId, archivedNotificationsIds);
+  }
 
-    async markAsRead(subscriberId: string, notificationId: string) {
-        await this.notificationService.markAsRead(subscriberId, notificationId);
-    }
+  async markAsRead(subscriberId: string, notificationId: string) {
+    await this.notificationService.markAsRead(subscriberId, notificationId);
+  }
 
-    async markAsUnRead(subscriberId: string, notificationId: string) {
-        await this.notificationService.markAsUnRead(subscriberId, notificationId);
-    }
+  async markManyAsRead(subscriberId: string, notificationsIds: Array<string>) {
+    await this.notificationService.markManyAsRead(subscriberId, notificationsIds);
+  }
 
-    async markManyAsRead(subscriberId: string, notificationsIds: Array<string>) {
-        await this.notificationService.markManyAsRead(subscriberId, notificationsIds);
-    }
+  async markAllAsRead(subscriberId: string) {
+    await this.notificationService.markAllAsRead(subscriberId);
+  }
 
-    async markManyAsUnRead(subscriberId: string, notificationsIds: Array<string>) {
-        await this.notificationService.markManyAsUnRead(subscriberId, notificationsIds);
-    }
+  async markAsUnread(subscriberId: string, notificationId: string) {
+    await this.notificationService.markAsUnread(subscriberId, notificationId);
+  }
 
-    async markAllAsRead(subscriberId: string) {
-        await this.notificationService.markAllAsRead(subscriberId);
-    }
+  async markManyAsUnread(subscriberId: string, notificationsIds: Array<string>) {
+    await this.notificationService.markManyAsUnread(subscriberId, notificationsIds);
+  }
 
-    async markAllAsUnRead(subscriberId: string) {
-        await this.notificationService.markAllAsUnRead(subscriberId);
-    }
+  async markAllAsUnread(subscriberId: string) {
+    await this.notificationService.markAllAsUnread(subscriberId);
+  }
 
-    async notify(
-        subjectName: string,
-        event: string,
-        actionUrl: string,
-        payload: Payload,
-        subscribersIds: Array<string>
-        ) {
+  async notify(subjectId: string, topicId: string, actionUrl: string, payload: Payload, subscribersIds: Array<string>) {
+    const subject = await this.subjectService.getOrCreate(subjectId);
 
-        const subject = await this.subjectService.getOrCreate(subjectName)
-        
-        //gets or creates topic by the event
-        const topic = await this.topicsService.getOrCreateByEvent(event, subject)
+    //gets or creates topic by the event
+    const topic = await this.topicsService.getOrCreate(topicId, subject);
 
-        const notificationTemplate = topic.notificationTemplate;
+    const notificationTemplate = topic.notificationTemplate;
 
-        const content = this.notificationService.compileContent(notificationTemplate?.template, payload)
-        
-        const notification =  this.notificationService.buildNotification(topic, content, actionUrl)
+    const content = this.notificationService.compileContent(notificationTemplate?.template, payload);
 
-        await this.notificationService.notifyAll(subscribersIds, notification)
+    const notification = this.notificationService.buildNotification(topic, content, actionUrl);
 
-        this.eventsGateway.notifySubscribers(notification, subscribersIds)
-    }
+    await this.notificationService.notifyAll(subscribersIds, notification);
+
+    this.eventsGateway.notifySubscribers(notification, subscribersIds);
+  }
 }

@@ -18,18 +18,16 @@ import { SubscribersGlobalRepository } from './subscriber/global-repository';
 
 @Module({})
 export class RepositoriesModule {
-  static withUri(
-    uri: string,
-  ): DynamicModule {
+  static withUri(uri: string): DynamicModule {
     return {
       module: RepositoriesModule,
-      imports: [    
+      imports: [
         RepositoryFactoryModule,
         MongooseModule.forRoot(uri),
         MongooseModule.forFeatureAsync([
           {
             name: Realm.name,
-            useFactory: () => RealmSchema
+            useFactory: () => RealmSchema,
           },
           {
             name: Subject.name,
@@ -37,7 +35,7 @@ export class RepositoriesModule {
             inject: [SchemaFactory],
             useFactory: (schemaFactory: SchemaFactory) => {
               return schemaFactory.create(SubjectSchema);
-            }
+            },
           },
           {
             name: Topic.name,
@@ -45,7 +43,7 @@ export class RepositoriesModule {
             inject: [SchemaFactory],
             useFactory: (schemaFactory: SchemaFactory) => {
               return schemaFactory.create(TopicSchema);
-            }
+            },
           },
           {
             name: Subscriber.name,
@@ -53,7 +51,7 @@ export class RepositoriesModule {
             inject: [SchemaFactory],
             useFactory: (schemaFactory: SchemaFactory) => {
               return schemaFactory.create(SubscriberSchema);
-            }
+            },
           },
           {
             name: ArchivedNotification.name,
@@ -61,9 +59,9 @@ export class RepositoriesModule {
             inject: [SchemaFactory],
             useFactory: (schemaFactory: SchemaFactory) => {
               return schemaFactory.create(ArchivedNotificationSchema);
-            }
-          }
-        ])
+            },
+          },
+        ]),
       ],
       providers: [
         RealmGlobalRepository,
@@ -71,25 +69,25 @@ export class RepositoriesModule {
           provide: SubjectsRepository,
           inject: [RepositoryFactory],
           useFactory: (repositoryFactory: RepositoryFactory) => {
-            return repositoryFactory.create(SubjectsRepository, Subject.name)
-          }
+            return repositoryFactory.create(SubjectsRepository, Subject.name);
+          },
         },
         {
           provide: TopicsRepository,
           inject: [RepositoryFactory],
           useFactory: (repositoryFactory: RepositoryFactory) => {
-            return repositoryFactory.create(TopicsRepository, Topic.name)
-          }
+            return repositoryFactory.create(TopicsRepository, Topic.name);
+          },
         },
         {
           provide: SubscribersRepository,
           inject: [RepositoryFactory],
           useFactory: (repositoryFactory: RepositoryFactory) => {
-            return repositoryFactory.create(SubscribersRepository, Subscriber.name)
-          }
+            return repositoryFactory.create(SubscribersRepository, Subscriber.name);
+          },
         },
         ArchivedNotificationsGlobalRepository,
-        SubscribersGlobalRepository
+        SubscribersGlobalRepository,
       ],
       exports: [
         RealmGlobalRepository,
@@ -97,7 +95,7 @@ export class RepositoriesModule {
         TopicsRepository,
         SubscribersRepository,
         ArchivedNotificationsGlobalRepository,
-        SubscribersGlobalRepository
+        SubscribersGlobalRepository,
       ],
     };
   }

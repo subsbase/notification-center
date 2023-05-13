@@ -9,20 +9,17 @@ export type SubscriberDocument = HydratedDocument<Subscriber>;
 
 @Schema(SchemaOptions)
 export class Subscriber extends BaseModel {
-  @Prop({ index: true, unique: true, required: true, type: MongoSchema.Types.String })
-  subscriberId: string;
-
-  @Prop({ required: true })
+  @Prop({ required: true, ref: 'Realm' })
   realm: string;
 
   @Prop({ type: MongoSchema.Types.Mixed })
-  customData?: any;
+  customData?: Record<string, string>;
 
-  @Prop({ type: [NotificationSchema], default: new Array<Notification>()})
+  @Prop({ type: [NotificationSchema], default: new Array<Notification>() })
   notifications?: Array<Notification>;
 
   @Prop({ type: [ArchivedNotificationSchema], default: new Array<ArchivedNotification>() })
-  archivedNotifications?: Array<ArchivedNotification>
+  archivedNotifications?: Array<ArchivedNotification>;
 }
 
 export const SubscriberSchema = SchemaFactory.createForClass(Subscriber);

@@ -9,11 +9,19 @@ import { HealthController } from './health/health.controller';
 
 @Module({})
 export class ControllersModule {
-  static withConfig(dbConnection:string) : DynamicModule {
+  static withConfig(dbConnection: string): DynamicModule {
     return {
       module: ControllersModule,
       imports: [ManagersModule.withConfig(dbConnection)],
-      controllers: [SubjectsController, TopicsController, NotificationsController, SubscribersController, TopicsController, AuthController, HealthController],
-    }
+      controllers: [
+        SubjectsController,
+        TopicsController,
+        NotificationsController,
+        SubscribersController,
+        TopicsController,
+        AuthController,
+        HealthController,
+      ],
+    };
   }
 }

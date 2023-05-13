@@ -11,12 +11,12 @@ import { HealthManager } from './health/health.manager';
 
 @Module({})
 export class ManagersModule {
-    static withConfig(dbConnection: string) : DynamicModule {
-        return {
-            module: ManagersModule,
-            imports: [ServicesModule.withDbonnection(dbConnection), EventsModule, TerminusModule],
-            providers: [SubjectManager, TopicsManager, NotificationManager, SubscriberManager, AuthManager, HealthManager],
-            exports: [SubjectManager ,TopicsManager, NotificationManager, SubscriberManager, AuthManager, HealthManager]
-        };
-    }
+  static withConfig(dbConnection: string): DynamicModule {
+    return {
+      module: ManagersModule,
+      imports: [ServicesModule.withDbonnection(dbConnection), EventsModule, TerminusModule],
+      providers: [SubjectManager, TopicsManager, NotificationManager, SubscriberManager, AuthManager, HealthManager],
+      exports: [SubjectManager, TopicsManager, NotificationManager, SubscriberManager, AuthManager, HealthManager],
+    };
+  }
 }
