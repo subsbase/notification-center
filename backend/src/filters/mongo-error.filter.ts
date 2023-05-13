@@ -1,6 +1,6 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus, Logger } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
-import { MongoError } from 'mongodb';
+import { MongoError } from 'mongoose/node_modules/mongodb';
 
 @Catch(MongoError)
 export class MongoErrorFilter implements ExceptionFilter<MongoError> {

@@ -2,7 +2,7 @@ import { createMock } from '@golevelup/ts-jest';
 import { Subject } from '../../../../src/repositories/subject/schema';
 import { SubjectsRepository } from '../../../../src/repositories/subject/repository';
 import { SubjectService } from '../../../../src/services/subject/subject.service';
-import { MongoServerError, MongoError } from 'mongodb';
+import { MongoServerError, MongoError } from 'mongoose/node_modules/mongodb';
 import { SubjectProcessor } from '../../../../src/services/subject/subject.processor';
 import { InvalidArgumentError } from '../../../../src/types/exceptions';
 
