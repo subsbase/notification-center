@@ -16,7 +16,12 @@ import {
   RemoveOptions,
 } from 'mongoose';
 import { Document } from 'mongoose';
-import { AnyBulkWriteOperation, BulkWriteOptions } from 'mongodb';
+import {
+  InsertOneModel,
+  AnyBulkWriteOperation,
+  BulkWriteOptions,
+  BulkWriteResult,
+} from 'mongoose/node_modules/mongodb';
 import { CreatedModel, RemovedModel, UpdatedModel } from './helper-types';
 import { GlobalRepository } from './base-global-repository';
 
@@ -110,7 +115,32 @@ export abstract class BaseRepository<T extends Document, TSchema> extends Global
   async bulkWrite(
     writeOperations: Array<AnyBulkWriteOperation<T extends Document ? object : T extends {} ? T : object>>,
     bulkWriteOptions?: BulkWriteOptions & MongooseBulkWriteOptions,
-  ) {
-    return super.bulkWrite(writeOperations, { ...bulkWriteOptions, realm: this.realm });
+  ): Promise<BulkWriteResult> {
+    const mappedOperations = writeOperations.map((writeOperation) => {
+      const operation = writeOperation as any;
+      if (operation.insertOne !== undefined) {
+        return {
+          insertOne: {
+            document: {
+              ...operation.insertOne.document,
+              realm: this.realm,
+            },
+          },
+        };
+      }
+
+      const [operationName, value] = Object.entries(writeOperation)[0];
+
+      return Object.defineProperty({}, operationName, {
+        value: {
+          ...value,
+          filter: {
+            ...value.filter,
+            realm: this.realm,
+          },
+        },
+      });
+    });
+    return super.bulkWriteAny(mappedOperations, { ...bulkWriteOptions, realm: this.realm });
   }
 }
