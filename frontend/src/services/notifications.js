@@ -1,12 +1,10 @@
 import axios from "axios"
-import { BASE_URL } from "./server"
+import { BASE_URL, HEADERS } from "./server"
 
 export const getAllNotifications = (subscriberId) => {
     return new Promise((resolve, reject) => {
       axios({
-        headers: {
-          "x-realm": "admin-portal"
-        },
+        headers: HEADERS,
         method: "get",
         url: `${BASE_URL}notifc/subscribers/${subscriberId}/notifications`
       })
@@ -18,9 +16,7 @@ export const getAllNotifications = (subscriberId) => {
 export const getArchivedNotifications = (subscriberId) => {
   return new Promise((resolve, reject) => {
     axios({
-      headers: {
-        "x-realm": "admin-portal"
-      },
+      headers: HEADERS,
       method: "get",
       url: `${BASE_URL}notifc/subscribers/${subscriberId}/notifications/archived`
     })
@@ -43,6 +39,7 @@ export const markAllAsRead = (subscriberId) => {
 export const markAsRead = (subscriberId, notificationId) => {
   return new Promise((resolve, reject) => {
     axios({
+      headers: HEADERS,
       method: "patch",
       url: `${BASE_URL}notifc/subscribers/${subscriberId}/notification/${notificationId}/markasread`
     })

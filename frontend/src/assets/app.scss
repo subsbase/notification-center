@@ -82,15 +82,6 @@ body {
 .d-flex {
     display: flex;
 }
-
-.filters {
-    div {
-        line-height: 1.7;
-        &.active {
-            border-bottom: 2px solid #00A79D;
-        }
-    }
-}
 // ---------------- Font Sizes ----------------
 
 @for $i from 6 through 32 {
@@ -199,7 +190,7 @@ body {
     color: #fff;
     border-radius: 50%;
     font-size: 11px;
-    right: 0;
+    left: 15px;
     z-index: 9;
     top: -2px;
     height: 17px;

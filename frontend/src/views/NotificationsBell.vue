@@ -15,7 +15,11 @@ import { io } from "socket.io-client";
 
 const notificationCount = ref(0)
 
-const socket = io("http://127.0.0.1:3000");
+const socket = io("http://127.0.0.1:3000", {
+  extraHeaders: {
+    "x-realm": "admin-portal"
+  }
+});
 socket.on("connect", function () {
   socket.emit("joinGroup", "test1");
   console.log("Connected");

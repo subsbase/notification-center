@@ -18,7 +18,11 @@ import { io } from "socket.io-client";
 const notifications = ref([])
 const archivedNotifications = ref([])
 
-const socket = io("http://127.0.0.1:3000");
+const socket = io("http://127.0.0.1:3000", {
+  extraHeaders: {
+    "x-realm": "admin-portal"
+  }
+});
 socket.on("notification", function (data) {
   fetchAllNotifications()
   console.log("notification", data);
