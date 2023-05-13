@@ -22,10 +22,10 @@ export class SubjectService {
     );
   }
 
-  getOrCreate(subjectKey: string): Promise<Subject> {
-    this.subjectProcessor.validateSubjectKey(subjectKey);
-    const title = this.subjectProcessor.getTitleFormKey(subjectKey);
-    return this.subjectsRepository.findOrCreate({ id: subjectKey, title });
+  getOrCreate(subjectId: string): Promise<Subject> {
+    this.subjectProcessor.validateSubjectKey(subjectId);
+    const title = this.subjectProcessor.getTitleFormId(subjectId);
+    return this.subjectsRepository.findOrCreate({ id: subjectId, title });
   }
 
   async create(subject: Subject): Promise<CreatedModel> {

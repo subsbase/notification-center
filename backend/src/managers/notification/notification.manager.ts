@@ -63,11 +63,11 @@ export class NotificationManager {
     await this.notificationService.markAllAsUnread(subscriberId);
   }
 
-  async notify(subjectName: string, event: string, actionUrl: string, payload: Payload, subscribersIds: Array<string>) {
-    const subject = await this.subjectService.getOrCreate(subjectName);
+  async notify(subjectId: string, topicId: string, actionUrl: string, payload: Payload, subscribersIds: Array<string>) {
+    const subject = await this.subjectService.getOrCreate(subjectId);
 
     //gets or creates topic by the event
-    const topic = await this.topicsService.getOrCreateByEvent(event, subject);
+    const topic = await this.topicsService.getOrCreate(topicId, subject);
 
     const notificationTemplate = topic.notificationTemplate;
 

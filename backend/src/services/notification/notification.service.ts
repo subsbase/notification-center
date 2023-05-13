@@ -31,7 +31,7 @@ export class NotificationService {
     pageSize: number,
   ): Promise<Array<Notification> | undefined> {
     const subscribers = await this.subscribersRepository.aggregate([
-      { $match: { subscriberId: subscriberId } },
+      { $match: { _id: subscriberId } },
       {
         $project: {
           notifications: { $slice: ['$notifications', (pageNum - 1) * pageSize, pageSize] },
@@ -71,7 +71,7 @@ export class NotificationService {
     pageSize: number,
   ): Promise<Array<ArchivedNotification> | undefined> {
     const subscribers = await this.subscribersRepository.aggregate([
-      { $match: { subscriberId: subscriberId } },
+      { $match: { _id: subscriberId } },
       {
         $project: {
           archivedNotifications: { $slice: ['$archivedNotifications', (pageNum - 1) * pageSize, pageSize] },
@@ -109,7 +109,7 @@ export class NotificationService {
     const result = await this.subscribersRepository
       .aggregate([
         {
-          $match: { subscriberId },
+          $match: { _id: subscriberId },
         },
         {
           $project: {
@@ -141,7 +141,7 @@ export class NotificationService {
           },
         };
         return this.subscribersRepository.updateOne(
-          { id: subscriberId },
+          { _id: subscriberId },
           [
             {
               $set: {
@@ -198,7 +198,7 @@ export class NotificationService {
     const result = await this.subscribersRepository
       .aggregate([
         {
-          $match: { subscriberId },
+          $match: { _id: subscriberId },
         },
         {
           $project: {
@@ -232,7 +232,9 @@ export class NotificationService {
             in: { $concatArrays: ['$$value', '$$this'] },
           },
         };
-        return this.subscribersRepository.updateOne({ id: subscriberId }, [
+        return this.subscribersRepository.updateOne(
+          { _id: subscriberId }, 
+        [
           {
             $set: {
               archivedNotifications: {
@@ -288,7 +290,7 @@ export class NotificationService {
 
   async notify(subscriberId: string, notification: Notification) {
     await this.subscribersRepository.updateOne(
-      { id: subscriberId },
+      { _id: subscriberId },
       { $push: { notifications: notification } },
       { upsert: true, new: true, setDefaultsOnInsert: true },
     );
@@ -299,10 +301,10 @@ export class NotificationService {
       subscribersIds.map((subscriberId) => {
         return {
           updateOne: {
-            filter: { subscriberId: subscriberId },
+            filter: { _id: subscriberId },
             update: {
               $push: { notifications: notification },
-              $setOnInsert: { subscriberId: subscriberId },
+              $setOnInsert: { _id: subscriberId },
             },
             upsert: true,
           },
@@ -313,7 +315,7 @@ export class NotificationService {
 
   async markAsRead(subscriberId: string, notificationId: string) {
     await this.subscribersRepository.updateOne(
-      { id: subscriberId, 'notifications._id': notificationId },
+      { _id: subscriberId, 'notifications._id': notificationId },
       { $set: { 'notifications.$[notification].read': true } },
       { arrayFilters: [{ 'notification._id': notificationId }] },
     );
@@ -323,7 +325,7 @@ export class NotificationService {
 
   async markManyAsRead(subscriberId: string, notificationsIds: Array<string>) {
     await this.subscribersRepository.updateOne(
-      { id: subscriberId, 'notifications._id': notificationsIds },
+      { _id: subscriberId, 'notifications._id': notificationsIds },
       { $set: { 'notifications.$[notification].read': true } },
       { arrayFilters: [{ 'notification._id': notificationsIds }] },
     );
@@ -332,14 +334,14 @@ export class NotificationService {
   }
 
   async markAllAsRead(subscriberId: string) {
-    await this.subscribersRepository.updateOne({ id: subscriberId }, { $set: { 'notifications.$[].read': true } });
+    await this.subscribersRepository.updateOne({ _id: subscriberId }, { $set: { 'notifications.$[].read': true } });
 
     this.eventEmitter.emit('notifications.read', new NotificationsRead(subscriberId));
   }
 
   async markAsUnread(subscriberId: string, notificationId: string) {
     await this.subscribersRepository.updateOne(
-      { id: subscriberId, 'notifications._id': notificationId },
+      { _id: subscriberId, 'notifications._id': notificationId },
       { $set: { 'notifications.$[notification].read': false } },
       { arrayFilters: [{ 'notification._id': notificationId }] },
     );
@@ -349,7 +351,7 @@ export class NotificationService {
 
   async markManyAsUnread(subscriberId: string, notificationsIds: Array<string>) {
     await this.subscribersRepository.updateOne(
-      { id: subscriberId, 'notifications._id': notificationsIds },
+      { _id: subscriberId, 'notifications._id': notificationsIds },
       { $set: { 'notifications.$[notification].read': false } },
       { arrayFilters: [{ 'notification._id': notificationsIds }] },
     );
@@ -358,7 +360,7 @@ export class NotificationService {
   }
 
   async markAllAsUnread(subscriberId: string) {
-    await this.subscribersRepository.updateOne({ id: subscriberId }, { $set: { 'notifications.$[].read': false } });
+    await this.subscribersRepository.updateOne({ _id: subscriberId }, { $set: { 'notifications.$[].read': false } });
 
     this.eventEmitter.emit('notifications.unread', new NotificationsUnread(subscriberId));
   }
