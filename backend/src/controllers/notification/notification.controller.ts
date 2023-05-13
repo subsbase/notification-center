@@ -12,15 +12,15 @@ export class NotificationsController extends BaseController {
   }
 
   @Authorize()
-  @Post('trigger/:subject/:event')
+  @Post('trigger/:subjectId/:topicId')
   async trigger(
-    @Param('subject') subject: string,
-    @Param('event') event: string,
+    @Param('subjectId') subjectId: string,
+    @Param('topicId') topicId: string,
     @Body() notificationDto: NotificationDto,
   ): Promise<IActionResult> {
     await this.notificationManager.notify(
-      subject,
-      event,
+      subjectId,
+      topicId,
       notificationDto.actionUrl,
       notificationDto.payload,
       notificationDto.to,
