@@ -84,7 +84,7 @@ export abstract class GlobalRepository<T extends Document, TSchema> {
     updated: UpdateWithAggregationPipeline | UpdateQuery<T>,
     options?: QueryOptions,
   ): Promise<UpdatedModel> {
-    return await this.updateOne({ _id: new mongoose.Types.ObjectId(id) }, updated, options);
+    return await this.updateOne({ _id: id }, updated, options);
   }
 
   async updateOne(
