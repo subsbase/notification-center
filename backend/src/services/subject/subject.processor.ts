@@ -2,7 +2,7 @@ import { InvalidArgumentError } from '../../types/exceptions';
 import { StringUtilts } from '../../utils/string-utils';
 
 export class SubjectProcessor {
-  getTitleFormKey(subjectKey: string) {
+  getTitleFormId(subjectKey: string) {
     return StringUtilts.kebabToNormal(subjectKey);
   }
 

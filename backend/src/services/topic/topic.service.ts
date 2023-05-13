@@ -10,13 +10,13 @@ export class TopicService {
   constructor(private readonly topicProcessor: TopicProcessor, private readonly topicsRepository: TopicsRepository) {}
 
   async create(topic: Topic): Promise<CreatedModel> {
-    this.topicProcessor.validateEvent(topic.id);
+    this.topicProcessor.validateId(topic.id);
     return await this.topicsRepository.create(topic);
   }
 
-  async getOrCreateByEvent(event: string, subject: Subject): Promise<Topic> {
-    this.topicProcessor.validateEvent(event);
-    const name = this.topicProcessor.getTopicNameFormEvent(event);
-    return await this.topicsRepository.findOrCreate({ id: event.toLowerCase(), name: name, subject: subject });
+  async getOrCreate(id: string, subject: Subject): Promise<Topic> {
+    this.topicProcessor.validateId(id);
+    const name = this.topicProcessor.getTopicNameFormId(id);
+    return await this.topicsRepository.findOrCreate({ id: id, name: name, subject: subject });
   }
 }
