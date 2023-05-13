@@ -1,4 +1,4 @@
-import { Logger, RequestMethod } from '@nestjs/common';
+import { Logger, RequestMethod, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { FastifyAdapter } from '@nestjs/platform-fastify/adapters';
@@ -22,6 +22,7 @@ async function bootstrap() {
       },
     ],
   });
+  app.useGlobalPipes(new ValidationPipe())
   app.useGlobalFilters(new MongoErrorFilter(), new ValidationErrorFilter(), new InvalidArgumentErrorFilter());
 
   await app.listen(process.env.PORT || 3000, '0.0.0.0');
