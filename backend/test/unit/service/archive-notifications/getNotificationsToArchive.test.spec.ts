@@ -2,7 +2,7 @@ import { createMock } from '@golevelup/ts-jest';
 import { ArchivedNotificationsGlobalRepository } from '../../../../src/repositories/archived-notifications/global-repositorty';
 import { SubscribersGlobalRepository } from '../../../../src/repositories/subscriber/global-repository';
 import { Types } from 'mongoose';
-import { BulkWriteResult } from 'mongodb';
+import { BulkWriteResult } from 'mongoose/node_modules/mongodb';
 import { ArchiveNotificationService } from '../../../../src/services/archived-notifications/archive.notifications.service';
 import { Topic } from '../../../../src/repositories/topic/schema';
 import { InvalidArgumentError } from '../../../../src/types/exceptions';

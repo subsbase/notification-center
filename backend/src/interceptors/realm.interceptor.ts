@@ -13,12 +13,12 @@ export class RealmInterceptor implements NestInterceptor {
     const ignoreRealm = this.reflector.get<boolean>('ignoreRealm', context.getHandler());
 
     if (!ignoreRealm) {
-      this.SetGlobalContexRealm(context);
+      this.validateContextRealm(context);
     }
     return next.handle();
   }
 
-  private SetGlobalContexRealm(context: ExecutionContext) {
+  private validateContextRealm(context: ExecutionContext) {
     const ctx = context.switchToHttp();
     const request = ctx.getRequest<FastifyRequest>();
     const realm = request.headers['x-realm'] as string | undefined;

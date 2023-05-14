@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { NotificationProcessor } from './notification.processor';
-import { SubscribersRepository } from '../../repositories/subscriber/repository';
+import { SubscribersRepositoryFactory } from '../../repositories/subscriber/repository';
 import { Notification } from '../../repositories/subscriber/notification/schema';
 import { Payload } from '../../types/global-types';
 import { UpdatedModel } from '../../repositories/helper-types';
@@ -21,16 +21,17 @@ import {
 export class NotificationService {
   constructor(
     private readonly notificationProcessor: NotificationProcessor,
-    private readonly subscribersRepository: SubscribersRepository,
+    private readonly subscribersRepositoryFactory: SubscribersRepositoryFactory,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async getNotifications(
+    realm: string,
     subscriberId: string,
     pageNum: number,
     pageSize: number,
   ): Promise<Array<Notification> | undefined> {
-    const subscribers = await this.subscribersRepository.aggregate([
+    const subscribers = await this.subscribersRepositoryFactory.create(realm).aggregate([
       { $match: { _id: subscriberId } },
       {
         $project: {
@@ -66,11 +67,12 @@ export class NotificationService {
   }
 
   async getArchivedNotifications(
+    realm: string,
     subscriberId: string,
     pageNum: number,
     pageSize: number,
   ): Promise<Array<ArchivedNotification> | undefined> {
-    const subscribers = await this.subscribersRepository.aggregate([
+    const subscribers = await this.subscribersRepositoryFactory.create(realm).aggregate([
       { $match: { _id: subscriberId } },
       {
         $project: {
@@ -105,8 +107,9 @@ export class NotificationService {
     return subscribers[0]?.archivedNotifications;
   }
 
-  async archive(subscriberId: string, notificationsIds: Array<string>): Promise<UpdatedModel> {
-    const result = await this.subscribersRepository
+  async archive(realm: string, subscriberId: string, notificationsIds: Array<string>): Promise<UpdatedModel> {
+    const result = await this.subscribersRepositoryFactory
+      .create(realm)
       .aggregate([
         {
           $match: { _id: subscriberId },
@@ -140,7 +143,7 @@ export class NotificationService {
             in: { $concatArrays: ['$$value', '$$this'] },
           },
         };
-        return this.subscribersRepository.updateOne(
+        return this.subscribersRepositoryFactory.create(realm).updateOne(
           { _id: subscriberId },
           [
             {
@@ -194,8 +197,9 @@ export class NotificationService {
     return result;
   }
 
-  async unarchive(subscriberId: string, archivedNotificationsIds: Array<string>): Promise<UpdatedModel> {
-    const result = await this.subscribersRepository
+  async unarchive(realm: string, subscriberId: string, archivedNotificationsIds: Array<string>): Promise<UpdatedModel> {
+    const result = await this.subscribersRepositoryFactory
+      .create(realm)
       .aggregate([
         {
           $match: { _id: subscriberId },
@@ -232,9 +236,7 @@ export class NotificationService {
             in: { $concatArrays: ['$$value', '$$this'] },
           },
         };
-        return this.subscribersRepository.updateOne(
-          { _id: subscriberId }, 
-        [
+        return this.subscribersRepositoryFactory.create(realm).updateOne({ _id: subscriberId }, [
           {
             $set: {
               archivedNotifications: {
@@ -288,16 +290,18 @@ export class NotificationService {
     return this.notificationProcessor.compileContent(template, payload);
   }
 
-  async notify(subscriberId: string, notification: Notification) {
-    await this.subscribersRepository.updateOne(
-      { _id: subscriberId },
-      { $push: { notifications: notification } },
-      { upsert: true, new: true, setDefaultsOnInsert: true },
-    );
+  async notify(realm: string, subscriberId: string, notification: Notification) {
+    await this.subscribersRepositoryFactory
+      .create(realm)
+      .updateOne(
+        { _id: subscriberId },
+        { $push: { notifications: notification } },
+        { upsert: true, new: true, setDefaultsOnInsert: true },
+      );
   }
 
-  async notifyAll(subscribersIds: Array<string>, notification: Notification) {
-    await this.subscribersRepository.bulkWrite(
+  async notifyAll(realm: string, subscribersIds: Array<string>, notification: Notification) {
+    await this.subscribersRepositoryFactory.create(realm).bulkWrite(
       subscribersIds.map((subscriberId) => {
         return {
           updateOne: {
@@ -313,54 +317,66 @@ export class NotificationService {
     );
   }
 
-  async markAsRead(subscriberId: string, notificationId: string) {
-    await this.subscribersRepository.updateOne(
-      { _id: subscriberId, 'notifications._id': notificationId },
-      { $set: { 'notifications.$[notification].read': true } },
-      { arrayFilters: [{ 'notification._id': notificationId }] },
-    );
+  async markAsRead(realm: string, subscriberId: string, notificationId: string) {
+    await this.subscribersRepositoryFactory
+      .create(realm)
+      .updateOne(
+        { _id: subscriberId, 'notifications._id': notificationId },
+        { $set: { 'notifications.$[notification].read': true } },
+        { arrayFilters: [{ 'notification._id': notificationId }] },
+      );
 
     this.eventEmitter.emit('notification.read', new NotificationRead(subscriberId, [notificationId]));
   }
 
-  async markManyAsRead(subscriberId: string, notificationsIds: Array<string>) {
-    await this.subscribersRepository.updateOne(
-      { _id: subscriberId, 'notifications._id': notificationsIds },
-      { $set: { 'notifications.$[notification].read': true } },
-      { arrayFilters: [{ 'notification._id': notificationsIds }] },
-    );
+  async markManyAsRead(realm: string, subscriberId: string, notificationsIds: Array<string>) {
+    await this.subscribersRepositoryFactory
+      .create(realm)
+      .updateOne(
+        { _id: subscriberId, 'notifications._id': notificationsIds },
+        { $set: { 'notifications.$[notification].read': true } },
+        { arrayFilters: [{ 'notification._id': notificationsIds }] },
+      );
 
     this.eventEmitter.emit('notification.read', new NotificationRead(subscriberId, notificationsIds));
   }
 
-  async markAllAsRead(subscriberId: string) {
-    await this.subscribersRepository.updateOne({ _id: subscriberId }, { $set: { 'notifications.$[].read': true } });
+  async markAllAsRead(realm: string, subscriberId: string) {
+    await this.subscribersRepositoryFactory
+      .create(realm)
+      .updateOne({ _id: subscriberId }, { $set: { 'notifications.$[].read': true } });
 
     this.eventEmitter.emit('notifications.read', new NotificationsRead(subscriberId));
   }
 
-  async markAsUnread(subscriberId: string, notificationId: string) {
-    await this.subscribersRepository.updateOne(
-      { _id: subscriberId, 'notifications._id': notificationId },
-      { $set: { 'notifications.$[notification].read': false } },
-      { arrayFilters: [{ 'notification._id': notificationId }] },
-    );
+  async markAsUnread(realm: string, subscriberId: string, notificationId: string) {
+    await this.subscribersRepositoryFactory
+      .create(realm)
+      .updateOne(
+        { _id: subscriberId, 'notifications._id': notificationId },
+        { $set: { 'notifications.$[notification].read': false } },
+        { arrayFilters: [{ 'notification._id': notificationId }] },
+      );
 
     this.eventEmitter.emit('notification.unread', new NotificationUnread(subscriberId, [notificationId]));
   }
 
-  async markManyAsUnread(subscriberId: string, notificationsIds: Array<string>) {
-    await this.subscribersRepository.updateOne(
-      { _id: subscriberId, 'notifications._id': notificationsIds },
-      { $set: { 'notifications.$[notification].read': false } },
-      { arrayFilters: [{ 'notification._id': notificationsIds }] },
-    );
+  async markManyAsUnread(realm: string, subscriberId: string, notificationsIds: Array<string>) {
+    await this.subscribersRepositoryFactory
+      .create(realm)
+      .updateOne(
+        { _id: subscriberId, 'notifications._id': notificationsIds },
+        { $set: { 'notifications.$[notification].read': false } },
+        { arrayFilters: [{ 'notification._id': notificationsIds }] },
+      );
 
     this.eventEmitter.emit('notification.unread', new NotificationUnread(subscriberId, notificationsIds));
   }
 
-  async markAllAsUnread(subscriberId: string) {
-    await this.subscribersRepository.updateOne({ _id: subscriberId }, { $set: { 'notifications.$[].read': false } });
+  async markAllAsUnread(realm: string, subscriberId: string) {
+    await this.subscribersRepositoryFactory
+      .create(realm)
+      .updateOne({ _id: subscriberId }, { $set: { 'notifications.$[].read': false } });
 
     this.eventEmitter.emit('notifications.unread', new NotificationsUnread(subscriberId));
   }

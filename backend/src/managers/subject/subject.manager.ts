@@ -7,15 +7,15 @@ import { SubjectService } from '../../services/subject/subject.service';
 export class SubjectManager {
   constructor(private readonly subjectService: SubjectService) {}
 
-  async getAll(pageNum: number, pageSize: number): Promise<Array<Subject>> {
-    return this.subjectService.getAll(pageNum, pageSize);
+  async getAll(realm: string, pageNum: number, pageSize: number): Promise<Array<Subject>> {
+    return this.subjectService.getAll(realm, pageNum, pageSize);
   }
 
-  async create(subject: Subject): Promise<CreatedModel> {
-    return await this.subjectService.create(subject);
+  async create(realm: string, subject: Subject): Promise<CreatedModel> {
+    return await this.subjectService.create(realm, subject);
   }
 
-  async update(subject: Subject): Promise<UpdatedModel> {
-    return await this.subjectService.update(subject);
+  async update(realm: string, subject: Subject): Promise<UpdatedModel> {
+    return await this.subjectService.update(realm, subject);
   }
 }

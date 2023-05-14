@@ -12,6 +12,7 @@ describe('SubscriberManager', () => {
       const subscriberService = createMock<SubscriberService>({ create: jest.fn() });
       const subscriberManager = new SubscriberManager(subscriberService);
 
+      const realm = 'test-realm';
       const subscriber: Subscriber = new Subscriber();
       subscriber.id = '60b26d50abbc6a3b3e00c6f7';
 
@@ -22,7 +23,7 @@ describe('SubscriberManager', () => {
       jest.spyOn(subscriberService, 'create').mockResolvedValue(createdSubscriber);
 
       // Act
-      const result = await subscriberManager.create(subscriber);
+      const result = await subscriberManager.create(realm, subscriber);
 
       // Assert
       expect(result).toEqual(createdSubscriber);
@@ -30,18 +31,19 @@ describe('SubscriberManager', () => {
 
     it('should throw an error if subscriberService.create throws an error', async () => {
       // Arrange
+      const realm = 'test-realm';
       const subscriberService = createMock<SubscriberService>({ create: jest.fn() });
       const subscriberManager = new SubscriberManager(subscriberService);
 
       const subscriber: Subscriber = new Subscriber();
 
-      jest.spyOn(subscriberService, 'create').mockImplementation((subscriber) => {
+      jest.spyOn(subscriberService, 'create').mockImplementation((realm, subscriber) => {
         throw new MongooseError('Error');
       });
 
       // Act //Assert
-      expect(subscriberManager.create(subscriber)).rejects.toThrowError(MongooseError);
-      expect(subscriberService.create).toHaveBeenCalledWith(subscriber);
+      expect(subscriberManager.create(realm, subscriber)).rejects.toThrowError(MongooseError);
+      expect(subscriberService.create).toHaveBeenCalledWith(realm, subscriber);
     });
   });
 });

@@ -1,15 +1,20 @@
-import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, Put, Query } from '@nestjs/common';
 import { SubjectManager } from '../../managers/subject/subject.manager';
 import { Subject } from '../../repositories/subject/schema';
 import { BaseController } from '../base-controller';
 import { IActionResult } from '../response-helpers/action-result.interface';
 import { NumberPipeTransform } from '../pipes/number.pipe-transform';
 import { Authorize } from '../decorators/authorize.decorator';
+import { REQUEST } from '@nestjs/core';
+import { FastifyRequest } from '../../types/global-types';
 
 @Controller('subjects')
 export class SubjectsController extends BaseController {
-  constructor(private readonly subjectManager: SubjectManager) {
-    super();
+  constructor(
+    @Inject(REQUEST) protected readonly request: FastifyRequest,
+    private readonly subjectManager: SubjectManager,
+  ) {
+    super(request);
   }
 
   @Authorize()
@@ -20,7 +25,7 @@ export class SubjectsController extends BaseController {
     @Query('pageSize', new NumberPipeTransform(50))
     pageSize: number,
   ): Promise<IActionResult> {
-    const subjects = await this.subjectManager.getAll(pageNum, pageSize);
+    const subjects = await this.subjectManager.getAll(this.Realm, pageNum, pageSize);
 
     return this.ok(subjects ?? new Array());
   }
@@ -29,7 +34,7 @@ export class SubjectsController extends BaseController {
   @Post()
   async create(@Body() subject: Subject): Promise<IActionResult> {
     try {
-      const result = await this.subjectManager.create(subject);
+      const result = await this.subjectManager.create(this.Realm, subject);
 
       if (!result.created) {
         return this.badRequest(result);
@@ -45,7 +50,7 @@ export class SubjectsController extends BaseController {
   @Put()
   async update(@Body() subject: Subject): Promise<IActionResult> {
     try {
-      const result = await this.subjectManager.update(subject);
+      const result = await this.subjectManager.update(this.Realm, subject);
       if (result.modifiedCount < 1) {
         return this.notFound();
       } else {
