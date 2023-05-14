@@ -18,11 +18,12 @@ describe('NotificationManager archive', () => {
       mockedTopicsService,
       mockedSubjectService,
     );
+    const realm = 'test-realm';
     const subscriberId = '123';
     const notificationsIds = ['1', '2'];
 
     // Act
-    const result = await notificationManager.archive(subscriberId, notificationsIds);
+    const result = await notificationManager.archive(realm, subscriberId, notificationsIds);
 
     // Assert
     expect(mockedNotificationService.archive).toHaveBeenCalledWith(subscriberId, notificationsIds);
@@ -40,6 +41,7 @@ describe('NotificationManager archive', () => {
       mockedTopicsService,
       mockedSubjectService,
     );
+    const realm = 'test-realm';
     const subscriberId = '123';
     const notificationsIds = ['1', '2'];
     const mockResult = {
@@ -53,7 +55,7 @@ describe('NotificationManager archive', () => {
     mockedNotificationService.archive.mockResolvedValue(mockResult);
 
     //Act
-    const result = await notificationManager.archive(subscriberId, notificationsIds);
+    const result = await notificationManager.archive(realm, subscriberId, notificationsIds);
 
     //Assert
     expect(result).toEqual(mockResult);

@@ -18,25 +18,27 @@ describe('SubjectManager create', () => {
   });
 
   it('should call subjectService.create with the provided subject', async () => {
+    const realm = 'test-realm';
     const expected = { id: '123', created: true };
     const subject = new Subject();
     subject.id = 'Invoice';
 
     jest.spyOn(subjectService, 'create').mockResolvedValue(expected);
 
-    const result = await subjectManager.create(subject);
+    const result = await subjectManager.create(realm, subject);
 
-    expect(subjectService.create).toHaveBeenCalledWith(subject);
+    expect(subjectService.create).toHaveBeenCalledWith(realm, subject);
   });
 
   it('should throw an error if subjectService.create throws an error', async () => {
+    const realm = 'test-realm';
     const subject = new Subject();
     subject.id = 'Invoice';
 
-    jest.spyOn(subjectService, 'create').mockImplementation((subject) => {
+    jest.spyOn(subjectService, 'create').mockImplementation((realm, subject) => {
       throw new MongooseError('Error');
     });
 
-    expect(subjectManager.create(subject)).rejects.toThrowError(MongooseError);
+    expect(subjectManager.create(realm, subject)).rejects.toThrowError(MongooseError);
   });
 });
