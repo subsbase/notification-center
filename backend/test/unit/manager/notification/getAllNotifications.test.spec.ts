@@ -19,13 +19,14 @@ describe('NotificationManager getAllNotifications', () => {
       mockedTopicsService,
       mockedSubjectService,
     );
+    const realm = 'test-realm';
     const subscriberId = '123';
     const pageNum = 1;
     const pageSize = 10;
 
-    await notificationManager.getAllNotifications(subscriberId, pageNum, pageSize);
+    await notificationManager.getAllNotifications(realm, subscriberId, pageNum, pageSize);
 
-    expect(mockedNotificationService.getNotifications).toHaveBeenCalledWith(subscriberId, pageNum, pageSize);
+    expect(mockedNotificationService.getNotifications).toHaveBeenCalledWith(realm, subscriberId, pageNum, pageSize);
   });
 
   it('should return empty array if notifications are null', async () => {
@@ -41,7 +42,7 @@ describe('NotificationManager getAllNotifications', () => {
     );
 
     jest.spyOn(mockedNotificationService, 'getNotifications').mockResolvedValue(undefined);
-    const result = await notificationManager.getAllNotifications('123', 1, 10);
+    const result = await notificationManager.getAllNotifications('test-realm', '123', 1, 10);
     expect(result).toEqual([]);
   });
 
@@ -62,7 +63,7 @@ describe('NotificationManager getAllNotifications', () => {
       notifications.push(notification);
     }
     jest.spyOn(mockedNotificationService, 'getNotifications').mockResolvedValue(notifications);
-    const result = await notificationManager.getAllNotifications('123', 1, 10);
+    const result = await notificationManager.getAllNotifications('test-realm', '123', 1, 10);
     expect(result).toEqual(notifications);
   });
 });

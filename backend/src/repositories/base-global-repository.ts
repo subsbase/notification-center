@@ -16,11 +16,7 @@ import {
   RemoveOptions,
 } from 'mongoose';
 import { Document } from 'mongoose';
-import {
-  AnyBulkWriteOperation,
-  BulkWriteOptions,
-  BulkWriteResult,
-} from 'mongoose/node_modules/mongodb';
+import { AnyBulkWriteOperation, BulkWriteOptions, BulkWriteResult } from 'mongoose/node_modules/mongodb';
 import { CreatedModel, RemovedModel, UpdatedModel } from './helper-types';
 
 export abstract class GlobalRepository<T extends Document, TSchema> {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Subject } from '../../repositories/subject/schema';
-import { SubjectsRepository } from '../../repositories/subject/repository';
+import { SubjectsRepositoryFactory } from '../../repositories/subject/repository';
 import { CreatedModel, UpdatedModel } from '../../repositories/helper-types';
 import { SubjectProcessor } from './subject.processor';
 
@@ -8,11 +8,11 @@ import { SubjectProcessor } from './subject.processor';
 export class SubjectService {
   constructor(
     private readonly subjectProcessor: SubjectProcessor,
-    private readonly subjectsRepository: SubjectsRepository,
+    private readonly subjectsRepositoryFactory: SubjectsRepositoryFactory,
   ) {}
 
-  getAll(pageNum: number, pageSize: number): Promise<Array<Subject>> {
-    return this.subjectsRepository.find(
+  getAll(realm: string, pageNum: number, pageSize: number): Promise<Array<Subject>> {
+    return this.subjectsRepositoryFactory.create(realm).find(
       {},
       {},
       {
@@ -22,19 +22,19 @@ export class SubjectService {
     );
   }
 
-  getOrCreate(subjectId: string): Promise<Subject> {
+  getOrCreate(realm: string, subjectId: string): Promise<Subject> {
     this.subjectProcessor.validateSubjectKey(subjectId);
     const title = this.subjectProcessor.getTitleFormId(subjectId);
-    return this.subjectsRepository.findOrCreate({ id: subjectId, title });
+    return this.subjectsRepositoryFactory.create(realm).findOrCreate({ id: subjectId, title });
   }
 
-  async create(subject: Subject): Promise<CreatedModel> {
+  create(realm: string, subject: Subject): Promise<CreatedModel> {
     this.subjectProcessor.validateSubjectKey(subject.id);
-    return await this.subjectsRepository.create(subject);
+    return this.subjectsRepositoryFactory.create(realm).create(subject);
   }
 
-  async update(subject: Subject): Promise<UpdatedModel> {
+  update(realm: string, subject: Subject): Promise<UpdatedModel> {
     this.subjectProcessor.validateSubjectKey(subject.id);
-    return await this.subjectsRepository.update(subject.id, subject);
+    return this.subjectsRepositoryFactory.create(realm).update(subject.id, subject);
   }
 }

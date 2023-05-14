@@ -6,7 +6,7 @@ import { TopicService } from '../../services/topic/topic.service';
 @Injectable()
 export class TopicsManager {
   constructor(private readonly topicsService: TopicService) {}
-  async create(topic: Topic): Promise<CreatedModel> {
-    return await this.topicsService.create(topic);
+  async create(realm: string, topic: Topic): Promise<CreatedModel> {
+    return await this.topicsService.create(realm, topic);
   }
 }

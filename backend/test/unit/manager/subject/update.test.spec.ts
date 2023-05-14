@@ -25,26 +25,29 @@ describe('SubjectManager update', () => {
       matchedCount: 1,
       acknowledged: true,
     };
+
+    const realm = 'test-realm';
     const subject = new Subject();
     subject.id = '123';
     subject.id = 'Invoice';
 
     jest.spyOn(subjectService, 'update').mockResolvedValue(expected);
 
-    const result = await subjectManager.update(subject);
+    const result = await subjectManager.update(realm, subject);
 
     expect(result).toEqual(expected);
-    expect(subjectService.update).toHaveBeenCalledWith(subject);
+    expect(subjectService.update).toHaveBeenCalledWith(realm, subject);
   });
 
   it('should throw an error if subjectService.update throws an error', async () => {
+    const realm = 'test-realm';
     const subject = new Subject();
     jest.spyOn(subjectService, 'update').mockImplementation((subject) => {
       throw new MongooseError('Error');
     });
 
-    expect(subjectManager.update(subject)).rejects.toThrowError(MongooseError);
-    expect(subjectService.update).toHaveBeenCalledWith(subject);
+    expect(subjectManager.update(realm, subject)).rejects.toThrowError(MongooseError);
+    expect(subjectService.update).toHaveBeenCalledWith(realm, subject);
   });
 
   it('should set the return modifiedCount and matchedCount with 0 of the returned object', async () => {
@@ -55,16 +58,18 @@ describe('SubjectManager update', () => {
       matchedCount: 0,
       acknowledged: true,
     };
+
+    const realm = 'test-realm';
     const subject = new Subject();
     subject.id = '123';
     subject.id = 'Invoice';
 
     jest.spyOn(subjectService, 'update').mockResolvedValue(expected);
 
-    const result = await subjectManager.update(subject);
+    const result = await subjectManager.update(realm, subject);
 
     expect(result).toEqual(expected);
     expect(result.matchedCount).toEqual(result.modifiedCount);
-    expect(subjectService.update).toHaveBeenCalledWith(subject);
+    expect(subjectService.update).toHaveBeenCalledWith(realm, subject);
   });
 });

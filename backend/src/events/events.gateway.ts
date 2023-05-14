@@ -1,13 +1,23 @@
-import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { Notification } from '../repositories/subscriber/notification/schema';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { Socket } from 'socket.io'
 
 @WebSocketGateway({
   cors: true
 })
-export class EventsGateway {
+export class EventsGateway implements OnGatewayConnection{
   constructor(private readonly eventEmitter: EventEmitter2) {}
+  private socket: Socket;
+
+  handleConnection(socket: Socket, ...args: any[]) {
+    this.socket = socket;
+  }
+
+  protected get Realm () : string {
+    return this.socket.handshake?.headers['x-realm'] as string;
+  }
 
   @WebSocketServer()
   private server: Server;
@@ -15,7 +25,7 @@ export class EventsGateway {
   @SubscribeMessage('joinGroup')
   joinGroup(@MessageBody() subscriberId: string) {
     this.server.socketsJoin(subscriberId);
-    this.eventEmitter.emit('subscriber.joined', subscriberId);
+    this.eventEmitter.emit('subscriber.joined', this.Realm, subscriberId);
   }
 
   notifySubscribers(notification: Notification, subscriberIds: Array<string>) {

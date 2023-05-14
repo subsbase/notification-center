@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CreatedModel } from '../../repositories/helper-types';
-import { SubscribersRepository } from '../../repositories/subscriber/repository';
+import { SubscribersRepositoryFactory } from '../../repositories/subscriber/repository';
 import { Subscriber } from '../../repositories/subscriber/schema';
 
 @Injectable()
 export class SubscriberService {
-  constructor(private readonly subscriberRepository: SubscribersRepository) {}
+  constructor(private readonly subscriberRepositoryFactory: SubscribersRepositoryFactory) {}
 
-  public createIfNotExists(subscriberId: string) {
-    return this.subscriberRepository.findOrCreate({ id: subscriberId });
+  public createIfNotExists(realm: string, subscriberId: string) {
+    return this.subscriberRepositoryFactory.create(realm).findOrCreate({ id: subscriberId });
   }
 
-  async create(subscriber: Subscriber): Promise<CreatedModel> {
-    return await this.subscriberRepository.create(subscriber);
+  async create(realm: string, subscriber: Subscriber): Promise<CreatedModel> {
+    return await this.subscriberRepositoryFactory.create(realm).create(subscriber);
   }
 }

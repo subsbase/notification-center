@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { RepositoryFactory } from './repository.factory';
+import { RepositoryFactoryGenerator } from './repository.factory.generator';
 
 @Module({
-  providers: [RepositoryFactory],
-  exports: [RepositoryFactory],
+  providers: [RepositoryFactoryGenerator],
+  exports: [RepositoryFactoryGenerator],
 })
 export class RepositoryFactoryModule {}

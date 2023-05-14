@@ -7,7 +7,7 @@ export class SubscriberEventHandler {
   constructor(private readonly subscriberService: SubscriberService) {}
 
   @OnEvent('subscriber.joined')
-  async handleSubscriberJoind(subscriberId: string) {
-    await this.subscriberService.createIfNotExists(subscriberId);
+  async handleSubscriberJoind(realm: string, subscriberId: string) {
+    await this.subscriberService.createIfNotExists(realm, subscriberId);
   }
 }

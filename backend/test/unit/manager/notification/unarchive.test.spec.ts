@@ -18,14 +18,15 @@ describe('NotificationManager unarchive', () => {
       mockedTopicsService,
       mockedSubjectService,
     );
+    const realm = 'test-realm';
     const subscriberId = '123';
     const notificationsIds = ['1', '2'];
 
     // Act
-    const result = await notificationManager.unarchive(subscriberId, notificationsIds);
+    const result = await notificationManager.unarchive(realm, subscriberId, notificationsIds);
 
     // Assert
-    expect(mockedNotificationService.unarchive).toHaveBeenCalledWith(subscriberId, notificationsIds);
+    expect(mockedNotificationService.unarchive).toHaveBeenCalledWith(realm, subscriberId, notificationsIds);
   });
 
   it('should return result of notification service unarchive method', async () => {
@@ -40,6 +41,7 @@ describe('NotificationManager unarchive', () => {
       mockedTopicsService,
       mockedSubjectService,
     );
+    const realm = 'test-realm';
     const subscriberId = '123';
     const notificationsIds = ['1', '2'];
     const mockResult = {
@@ -53,7 +55,7 @@ describe('NotificationManager unarchive', () => {
     mockedNotificationService.unarchive.mockResolvedValue(mockResult);
 
     //Act
-    const result = await notificationManager.unarchive(subscriberId, notificationsIds);
+    const result = await notificationManager.unarchive(realm, subscriberId, notificationsIds);
 
     //Assert
     expect(result).toEqual(mockResult);
