@@ -6,24 +6,26 @@ import { AppModule } from './app.module';
 import { MongoErrorFilter } from './filters/mongo-error.filter';
 import { ValidationErrorFilter } from './filters/validation-error.filter';
 import { InvalidArgumentErrorFilter } from './filters/invalid-argument-error.filter';
+import { NotificationCenterSocketAdapter } from './events/notification.center.socket.adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ logger: true }));
 
-  app.enableCors({
-    origin: (process.env.ALLOWED_ORIGINS as string).split(','),
-  });
-
-  app.setGlobalPrefix('notifc', {
-    exclude: [
-      {
-        path: '/healthz',
-        method: RequestMethod.GET,
-      },
-    ],
-  });
-  app.useGlobalPipes(new ValidationPipe())
-  app.useGlobalFilters(new MongoErrorFilter(), new ValidationErrorFilter(), new InvalidArgumentErrorFilter());
+  app
+    .setGlobalPrefix('notifc', {
+      exclude: [
+        {
+          path: '/healthz',
+          method: RequestMethod.GET,
+        },
+      ],
+    })
+    .useWebSocketAdapter(new NotificationCenterSocketAdapter(app))
+    .useGlobalPipes(new ValidationPipe())
+    .useGlobalFilters(new MongoErrorFilter(), new ValidationErrorFilter(), new InvalidArgumentErrorFilter())
+    .enableCors({
+      origin: (process.env.ALLOWED_ORIGINS as string).split(','),
+    });
 
   await app.listen(process.env.PORT || 3000, '0.0.0.0');
 
