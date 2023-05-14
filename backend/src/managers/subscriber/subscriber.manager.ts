@@ -6,7 +6,7 @@ import { SubscriberService } from '../../services/subscriber/subscriber.service'
 @Injectable()
 export class SubscriberManager {
   constructor(private readonly subscriberService: SubscriberService) {}
-  async create(subscriber: Subscriber): Promise<CreatedModel> {
-    return await this.subscriberService.create(subscriber);
+  async create(realm: string, subscriber: Subscriber): Promise<CreatedModel> {
+    return await this.subscriberService.create(realm, subscriber);
   }
 }

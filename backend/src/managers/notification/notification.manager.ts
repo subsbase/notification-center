@@ -17,57 +17,75 @@ export class NotificationManager {
     private readonly subjectService: SubjectService,
   ) {}
 
-  async getAllNotifications(subscriberId: string, pageNum: number, pageSize: number): Promise<Array<Notification>> {
-    const notifications = await this.notificationService.getNotifications(subscriberId, pageNum, pageSize);
+  async getAllNotifications(
+    realm: string,
+    subscriberId: string,
+    pageNum: number,
+    pageSize: number,
+  ): Promise<Array<Notification>> {
+    const notifications = await this.notificationService.getNotifications(realm, subscriberId, pageNum, pageSize);
     return notifications ?? new Array();
   }
 
   async getAllArchivedNotifications(
+    realm: string,
     subscriberId: string,
     pageNum: number,
     pageSize: number,
   ): Promise<Array<ArchivedNotification>> {
-    const notifications = await this.notificationService.getArchivedNotifications(subscriberId, pageNum, pageSize);
+    const notifications = await this.notificationService.getArchivedNotifications(
+      realm,
+      subscriberId,
+      pageNum,
+      pageSize,
+    );
     return notifications ?? new Array();
   }
 
-  archive(subscriberId: string, notificationsIds: Array<string>): Promise<UpdatedModel> {
-    return this.notificationService.archive(subscriberId, notificationsIds);
+  archive(realm: string, subscriberId: string, notificationsIds: Array<string>): Promise<UpdatedModel> {
+    return this.notificationService.archive(realm, subscriberId, notificationsIds);
   }
 
-  unarchive(subscriberId: string, archivedNotificationsIds: Array<string>): Promise<UpdatedModel> {
-    return this.notificationService.unarchive(subscriberId, archivedNotificationsIds);
+  unarchive(realm: string, subscriberId: string, archivedNotificationsIds: Array<string>): Promise<UpdatedModel> {
+    return this.notificationService.unarchive(realm, subscriberId, archivedNotificationsIds);
   }
 
-  async markAsRead(subscriberId: string, notificationId: string) {
-    await this.notificationService.markAsRead(subscriberId, notificationId);
+  async markAsRead(realm: string, subscriberId: string, notificationId: string) {
+    await this.notificationService.markAsRead(realm, subscriberId, notificationId);
   }
 
-  async markManyAsRead(subscriberId: string, notificationsIds: Array<string>) {
-    await this.notificationService.markManyAsRead(subscriberId, notificationsIds);
+  async markManyAsRead(realm: string, subscriberId: string, notificationsIds: Array<string>) {
+    await this.notificationService.markManyAsRead(realm, subscriberId, notificationsIds);
   }
 
-  async markAllAsRead(subscriberId: string) {
-    await this.notificationService.markAllAsRead(subscriberId);
+  async markAllAsRead(realm: string, subscriberId: string) {
+    await this.notificationService.markAllAsRead(realm, subscriberId);
   }
 
-  async markAsUnread(subscriberId: string, notificationId: string) {
-    await this.notificationService.markAsUnread(subscriberId, notificationId);
+  async markAsUnread(realm: string, subscriberId: string, notificationId: string) {
+    await this.notificationService.markAsUnread(realm, subscriberId, notificationId);
   }
 
-  async markManyAsUnread(subscriberId: string, notificationsIds: Array<string>) {
-    await this.notificationService.markManyAsUnread(subscriberId, notificationsIds);
+  async markManyAsUnread(realm: string, subscriberId: string, notificationsIds: Array<string>) {
+    await this.notificationService.markManyAsUnread(realm, subscriberId, notificationsIds);
   }
 
-  async markAllAsUnread(subscriberId: string) {
-    await this.notificationService.markAllAsUnread(subscriberId);
+  async markAllAsUnread(realm: string, subscriberId: string) {
+    await this.notificationService.markAllAsUnread(realm, subscriberId);
   }
 
-  async notify(subjectId: string, topicId: string, actionUrl: string, payload: Payload, subscribersIds: Array<string>) {
-    const subject = await this.subjectService.getOrCreate(subjectId);
+  async notify(
+    realm: string,
+    subjectId: string,
+    topicId: string,
+    actionUrl: string,
+    payload: Payload,
+    subscribersIds: Array<string>,
+  ) {
+    const subject = await this.subjectService.getOrCreate(realm, subjectId);
 
     //gets or creates topic by the event
-    const topic = await this.topicsService.getOrCreate(topicId, subject);
+    const topic = await this.topicsService.getOrCreate(realm, topicId, subject);
 
     const notificationTemplate = topic.notificationTemplate;
 
@@ -75,7 +93,7 @@ export class NotificationManager {
 
     const notification = this.notificationService.buildNotification(topic, content, actionUrl);
 
-    await this.notificationService.notifyAll(subscribersIds, notification);
+    await this.notificationService.notifyAll(realm, subscribersIds, notification);
 
     this.eventsGateway.notifySubscribers(notification, subscribersIds);
   }

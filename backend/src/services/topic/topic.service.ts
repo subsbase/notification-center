@@ -1,22 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { CreatedModel } from '../../repositories/helper-types';
-import { TopicsRepository } from '../../repositories/topic/repository';
+import { TopicsRepositoryFactory } from '../../repositories/topic/repository';
 import { Topic } from '../../repositories/topic/schema';
 import { Subject } from '../../repositories/subject/schema';
 import { TopicProcessor } from './topic.processor';
 
 @Injectable()
 export class TopicService {
-  constructor(private readonly topicProcessor: TopicProcessor, private readonly topicsRepository: TopicsRepository) {}
+  constructor(
+    private readonly topicProcessor: TopicProcessor,
+    private readonly topicsRepositoryFactory: TopicsRepositoryFactory,
+  ) {}
 
-  async create(topic: Topic): Promise<CreatedModel> {
+  async create(realm: string, topic: Topic): Promise<CreatedModel> {
     this.topicProcessor.validateId(topic.id);
-    return await this.topicsRepository.create(topic);
+    return await this.topicsRepositoryFactory.create(realm).create(topic);
   }
 
-  async getOrCreate(id: string, subject: Subject): Promise<Topic> {
+  async getOrCreate(realm: string, id: string, subject: Subject): Promise<Topic> {
     this.topicProcessor.validateId(id);
     const name = this.topicProcessor.getTopicNameFormId(id);
-    return await this.topicsRepository.findOrCreate({ id: id, name: name, subject: subject });
+    return await this.topicsRepositoryFactory.create(realm).findOrCreate({ id: id, name: name, subject: subject });
   }
 }

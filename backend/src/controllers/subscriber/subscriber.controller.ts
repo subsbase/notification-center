@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { NotificationManager } from '../../managers/notification/notification.manager';
 import { SubscriberManager } from '../../managers/subscriber/subscriber.manager';
 import { Subscriber } from '../../repositories/subscriber/schema';
@@ -6,20 +6,23 @@ import { BaseController } from '../base-controller';
 import { NumberPipeTransform } from '../pipes/number.pipe-transform';
 import { IActionResult } from '../response-helpers/action-result.interface';
 import { Authorize } from '../decorators/authorize.decorator';
+import { REQUEST } from '@nestjs/core';
+import { FastifyRequest } from '../../types/global-types';
 
 @Controller('subscribers')
 export class SubscribersController extends BaseController {
   constructor(
+    @Inject(REQUEST) protected readonly request: FastifyRequest,
     private readonly notificationManager: NotificationManager,
     private readonly subscriberManager: SubscriberManager,
   ) {
-    super();
+    super(request);
   }
 
   @Authorize()
   @Post()
   async create(@Body() subscriber: Subscriber): Promise<IActionResult> {
-    const result = await this.subscriberManager.create(subscriber);
+    const result = await this.subscriberManager.create(this.Realm, subscriber);
     return this.ok(result);
   }
 
@@ -32,7 +35,12 @@ export class SubscribersController extends BaseController {
     @Query('pageSize', new NumberPipeTransform(5))
     pageSize: number,
   ): Promise<IActionResult> {
-    const notifications = await this.notificationManager.getAllNotifications(subscriberId, pageNum, pageSize);
+    const notifications = await this.notificationManager.getAllNotifications(
+      this.Realm,
+      subscriberId,
+      pageNum,
+      pageSize,
+    );
 
     return this.ok(notifications);
   }
@@ -47,6 +55,7 @@ export class SubscribersController extends BaseController {
     pageSize: number,
   ): Promise<IActionResult> {
     const archivedNotifications = await this.notificationManager.getAllArchivedNotifications(
+      this.Realm,
       subscriberId,
       pageNum,
       pageSize,
@@ -62,7 +71,7 @@ export class SubscribersController extends BaseController {
     @Param('notificationId')
     notificationId: string,
   ): Promise<IActionResult> {
-    await this.notificationManager.markAsRead(subscriberId, notificationId);
+    await this.notificationManager.markAsRead(this.Realm, subscriberId, notificationId);
     return this.ok();
   }
 
@@ -73,43 +82,43 @@ export class SubscribersController extends BaseController {
     @Param('notificationId')
     notificationId: string,
   ): Promise<IActionResult> {
-    await this.notificationManager.markAsUnread(subscriberId, notificationId);
+    await this.notificationManager.markAsUnread(this.Realm, subscriberId, notificationId);
     return this.ok();
   }
 
   @Patch(':subscriberId/notifications/markasread')
   async markAllAsRead(@Param('subscriberId') subscriberId: string): Promise<IActionResult> {
-    await this.notificationManager.markAllAsRead(subscriberId);
+    await this.notificationManager.markAllAsRead(this.Realm, subscriberId);
     return this.ok();
   }
 
   @Patch(':subscriberId/notifications/markasunread')
   async markAllAsUnread(@Param('subscriberId') subscriberId: string): Promise<IActionResult> {
-    await this.notificationManager.markAllAsUnread(subscriberId);
+    await this.notificationManager.markAllAsUnread(this.Realm, subscriberId);
     return this.ok();
   }
 
   @Patch(':subscriberId/notifications/markmanyasread')
   async markManyAsRead(@Param('subscriberId') subscriberId: string, @Body() notificationsIds: Array<string>) {
-    await this.notificationManager.markManyAsRead(subscriberId, notificationsIds);
+    await this.notificationManager.markManyAsRead(this.Realm, subscriberId, notificationsIds);
     return this.ok();
   }
 
   @Patch(':subscriberId/notifications/markmanyasunread')
   async markManyAsUnread(@Param('subscriberId') subscriberId: string, @Body() notificationsIds: Array<string>) {
-    await this.notificationManager.markManyAsUnread(subscriberId, notificationsIds);
+    await this.notificationManager.markManyAsUnread(this.Realm, subscriberId, notificationsIds);
     return this.ok();
   }
 
   @Put(':subscriberId/notifications/archive')
   async archive(@Param('subscriberId') subscriberId: string, @Body() notificationsIds: Array<string>) {
-    const result = await this.notificationManager.archive(subscriberId, notificationsIds);
+    const result = await this.notificationManager.archive(this.Realm, subscriberId, notificationsIds);
     return this.ok(result);
   }
 
   @Put(':subscriberId/notifications/unarchive')
   async unarchive(@Param('subscriberId') subscriberId: string, @Body() archivedNotificationsIds: Array<string>) {
-    const result = await this.notificationManager.unarchive(subscriberId, archivedNotificationsIds);
+    const result = await this.notificationManager.unarchive(this.Realm, subscriberId, archivedNotificationsIds);
     return this.ok(result);
   }
 }
