@@ -1,16 +1,22 @@
 import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import { Subject, SubjectDocument } from './schema';
 import { BaseRepository } from '../base-repository';
+import { RepositoryFactory } from '../repository.factory';
 
 @Injectable()
 export class SubjectsRepository extends BaseRepository<SubjectDocument, Subject> {
-  constructor(
-    @InjectModel(Subject.name)
-    protected readonly model: Model<SubjectDocument>,
-    protected readonly realm: string,
-  ) {
+  constructor(model: Model<SubjectDocument>, realm: string) {
     super(model, realm);
+  }
+}
+
+@Injectable()
+export class SubjectsRepositoryFactory extends RepositoryFactory<SubjectDocument, SubjectsRepository> {
+  constructor(
+    model: Model<SubjectDocument>,
+    repositoryType: { new (model: Model<SubjectDocument>, realm: string): SubjectsRepository },
+  ) {
+    super(model, repositoryType);
   }
 }
