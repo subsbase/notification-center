@@ -45,12 +45,6 @@ export class SubscribersController extends BaseController {
     return this.ok(notifications);
   }
 
-  @Get(':subscriberId/notifications/countunread')
-  async countUnreadNotifications(@Param('subscriberId') subscriberId: string) : Promise<IActionResult> {
-    const result = this.notificationManager.countUnread(this.Realm, subscriberId)
-    return this.ok(result)
-  }
-
   @Get(':subscriberId/notifications/archived')
   async listArchivedNotifications(
     @Param('subscriberId')
