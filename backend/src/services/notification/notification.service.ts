@@ -66,6 +66,33 @@ export class NotificationService {
     return subscribers[0]?.notifications;
   }
 
+  async countUnread(realm: string, subscriberId: string) : Promise<number> {
+
+    return this.subscribersRepositoryFactory.create(realm)
+        .aggregate([
+          { $match: { _id: subscriberId } },
+          {
+            $project: {
+              unreadNotifications: {
+                $filter: {
+                  input: '$notifications',
+                  as: 'notification',
+                  cond: { $eq: ['$$notification.read', false] }
+                }
+              }
+            }
+          },
+          {
+            $project: {
+              count: { $size: '$unreadNotifications' }
+            }
+          }
+        ]).then(aggregationResult => {
+          const countResult: any = aggregationResult[0];
+           return countResult?.count ?? 0;
+        });        
+  }
+
   async getArchivedNotifications(
     realm: string,
     subscriberId: string,
