@@ -51,8 +51,22 @@ export const markAsRead = (subscriberId, notificationId) => {
 export const archiveNotification = (subscriberId, data) => {
   return new Promise((resolve, reject) => {
     axios({
+      headers: HEADERS,
       method: "put",
       url: `${BASE_URL}notifc/subscribers/${subscriberId}/notifications/archive`,
+      data
+    })
+      .then(res => resolve(res.data))
+      .catch(err => reject(err))
+  })
+}
+
+export const unArchiveNotification = (subscriberId, data) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      headers: HEADERS,
+      method: "put",
+      url: `${BASE_URL}notifc/subscribers/${subscriberId}/notifications/unarchive`,
       data
     })
       .then(res => resolve(res.data))

@@ -1,21 +1,10 @@
 <template>
   <div class="x-between px-20">
     <h4 class="font-size-16 mb-10">
-      <i v-if="source === 'page'" class="fa fa-chevron-left mr-20 clickable"></i>
+      <i @click="goBack" v-if="source === 'page'" class="fa fa-chevron-left mr-20 clickable"></i>
       Notifications</h4>
     <!-- <i class="fa fa-times my-21 clickable"></i> -->
   </div>
-  <div class="x-between px-20 font-size-12">
-    <p class="mt-0">
-      <span v-if="selectedFilter === 'All'">
-        You’ve got <strong> {{ getUnreadCount }} unread</strong> notifications
-      </span>
-    </p>
-    <p @click="handleMarkAllAsRead" class="link clickable mt-0 text-right">
-      Mark all as read
-    </p>
-  </div>
-
   <div class="x-between px-20 font-size-12">
     <div class="d-flex filters mb-30">
       <div
@@ -29,6 +18,19 @@
     </div>
   </div>
 
+  <div class="x-between px-20 font-size-12" v-if="selectedFilter === 'All'">
+    <p class="mt-0">
+      <span>
+        You’ve got <strong> {{ getUnreadCount }} unread</strong> notifications
+      </span>
+    </p>
+    <p v-if="notifications.length > 0" @click="handleMarkAllAsRead" class="link clickable mt-0 text-right">
+      Mark all as read
+    </p>
+  </div>
+
+
+
   <div :class="['px-20', source === 'page' ? '' : 'notification-list']">
     <!-- <p class="font-size-12 mb-10 text-left medium">Today</p> -->
     <div
@@ -41,7 +43,7 @@
       ]"
     >
       <div class="x-between font-size-12">
-        <p class="bold m-0">{{ notification.topic.displayText }}</p>
+        <p class="bold m-0">{{ notification.topic.name }}</p>
         <div>
           <span v-if="!notification.read" class="blue-circle mr-10"> </span>
           <img
@@ -85,6 +87,7 @@ import {
   archiveNotification,
   markAllAsRead,
   markAsRead,
+  unArchiveNotification
 } from "@/services/notifications";
 
 const emit = defineEmits(["on-click-mark-read"]);
@@ -117,6 +120,10 @@ onMounted(() => {
   }, 1000);
 });
 
+const goBack = () => {
+  history.back();
+}
+
 const onChangeFilter = (filterType) => {
   selectedFilter.value = filterType;
   if (filterType === "All") {
@@ -129,9 +136,10 @@ const onChangeFilter = (filterType) => {
 const handleArchiveNotification = (notificationId) => {
   const payload = [];
   payload.push(notificationId);
-  archiveNotification("test1", payload)
+  archiveNotification("5513489", payload)
     .then((res) => {
       console.log("res", res);
+      onChangeFilter()
       emit("on-click-mark-read");
     })
     .catch((err) => {
@@ -142,9 +150,10 @@ const handleArchiveNotification = (notificationId) => {
 const handleUnArchiveNotification = (notificationId) => {
   const payload = [];
   payload.push(notificationId);
-  archiveNotification("test1", payload)
+  unArchiveNotification("5513489", payload)
     .then((res) => {
       console.log("res", res);
+      onChangeFilter()
       emit("on-click-mark-read");
     })
     .catch((err) => {
@@ -165,7 +174,7 @@ const getNotificationTime = (time) => {
 };
 
 const handleMarkAllAsRead = () => {
-  markAllAsRead("test1")
+  markAllAsRead("5513489")
     .then((res) => {
       console.log("res", res);
       emit("on-click-mark-read");
@@ -176,7 +185,8 @@ const handleMarkAllAsRead = () => {
 };
 
 const handleMarkAsRead = (notificationId, actionUrl) => {
-  markAsRead("test1", notificationId)
+  if(selectedFilter.value === 'All') {
+    markAsRead("5513489", notificationId)
     .then((res) => {
       console.log("res", res);
       emit("on-click-mark-read");
@@ -188,6 +198,8 @@ const handleMarkAsRead = (notificationId, actionUrl) => {
     .catch((err) => {
       console.error(err);
     });
+  }
+
 };
 </script>
 

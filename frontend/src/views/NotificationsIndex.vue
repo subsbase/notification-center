@@ -4,7 +4,7 @@
     :notifications="notifications"
     :archivedNotifications="archivedNotifications"
     :source="'page'"
-    @on-click-mark-read="fetchAllNotifications"
+    @on-click-mark-read="refreshNotifications"
     />
   </div>
 </template>
@@ -33,8 +33,13 @@ onBeforeMount(() => {
   fetchArchivedNotifications()
 });
 
+const refreshNotifications = () => { 
+  fetchAllNotifications()
+  fetchArchivedNotifications()
+}
+
 const fetchAllNotifications = () => { 
-  getAllNotifications("test1")
+  getAllNotifications("5513489")
     .then((res) => {
       notifications.value = res.reverse()
     })
@@ -44,7 +49,7 @@ const fetchAllNotifications = () => {
 }
 
 const fetchArchivedNotifications = () => { 
-  getArchivedNotifications("test1")
+  getArchivedNotifications("5513489")
     .then((res) => {
       archivedNotifications.value = res.reverse()
     })

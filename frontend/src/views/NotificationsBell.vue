@@ -21,7 +21,7 @@ const socket = io("http://127.0.0.1:3000", {
   }
 });
 socket.on("connect", function () {
-  socket.emit("joinGroup", "test1");
+  socket.emit("joinGroup", "5513489");
   console.log("Connected");
 });
 socket.on("notification", function (data) {
@@ -41,12 +41,13 @@ socket.on("NotificationArchived", function () {
   fetchAllNotifications()
 });
 
+
 onBeforeMount(() => {
   fetchAllNotifications() 
 });
 
 const fetchAllNotifications = () => { 
-  getAllNotifications("test1")
+  getAllNotifications("5513489")
     .then((res) => {
       notificationCount.value =  res.filter((notification) => !notification.read)
     .length
@@ -56,5 +57,6 @@ const fetchAllNotifications = () => {
       console.error(err);
     });
 }
+
 
 </script>

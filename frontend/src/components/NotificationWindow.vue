@@ -3,7 +3,7 @@
   <div v-if="showNotificationWindowTrigger" class="notification-window">
     <NotificationList
       :notifications="notifications"
-      @on-click-mark-read="fetchAllNotifications"
+      @on-click-mark-read="refreshNotifications"
       :archivedNotifications="archivedNotifications"
     />
     <div>
@@ -38,13 +38,19 @@ const socket = io("http://127.0.0.1:3000", {
   }
 });
 socket.on("connect", function () {
-  socket.emit("joinGroup", "test1");
+  socket.emit("joinGroup", "5513489");
   console.log("Connected");
 });
 socket.on("notification", function (data) {
   fetchAllNotifications()
+  // fetchArchivedNotifications();
   console.log("notification", data);
 });
+
+const refreshNotifications = () => {
+  fetchAllNotifications()
+  fetchArchivedNotifications();
+};
 
 onBeforeMount(() => {
   //getSubscriberId()
@@ -67,13 +73,13 @@ onBeforeMount(() => {
 
 const showAllNotificationsPage = () => {
   let a = document.createElement("a");
-  a.target = "_blank";
+  a.target = "_top";
   a.href = "http://localhost:3100/notifications";
   a.click();
 };
 
 const fetchAllNotifications = () => {
-  getAllNotifications("test1")
+  getAllNotifications("5513489")
     .then((res) => {
       notifications.value = res.reverse();
     })
@@ -83,7 +89,7 @@ const fetchAllNotifications = () => {
 };
 
 const fetchArchivedNotifications = () => {
-  getArchivedNotifications("test1")
+  getArchivedNotifications("5513489")
     .then((res) => {
       archivedNotifications.value = res;
     })
