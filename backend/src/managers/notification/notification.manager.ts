@@ -27,6 +27,11 @@ export class NotificationManager {
     return notifications ?? new Array();
   }
 
+  async countUnread(realm: string, subscriberId: string) {
+    const unreadNotificationsCount = await this.notificationService.countUnread(realm, subscriberId);
+    return { count: unreadNotificationsCount }
+  }
+
   async getAllArchivedNotifications(
     realm: string,
     subscriberId: string,
