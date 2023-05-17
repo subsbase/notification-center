@@ -15,8 +15,8 @@ export class Topic extends BaseModel {
   @Prop({ required: true, type: String, ref: 'Subject' })
   subject: Subject;
 
-  @Prop({ type: NotificationTemplate })
-  notificationTemplate?: NotificationTemplate;
+  @Prop({ type: MongoSchema.Types.Map })
+  notificationTemplates?: Map<string, NotificationTemplate>;
 
   @Prop({ required: true, ref: 'Realm' })
   realm: string;
