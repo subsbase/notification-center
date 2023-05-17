@@ -23,6 +23,7 @@ export class Topic extends BaseModel {
 
   @Prop({ type: String, ref: 'Topic' })
   parentTopic?: Topic;
+
 }
 
 export const TopicSchema = SchemaFactory.createForClass(Topic);

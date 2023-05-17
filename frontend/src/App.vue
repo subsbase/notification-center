@@ -1,14 +1,10 @@
 <template>
-  <NotificationWindow msg="Welcome to Your Vue.js App"/>
+ <router-view />
 </template>
 
-<script>
-import NotificationWindow from './components/NotificationWindow.vue'
 
+<script>
 export default {
   name: 'App',
-  components: {
-    NotificationWindow
-  }
 }
 </script>
