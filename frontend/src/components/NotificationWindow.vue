@@ -4,7 +4,7 @@
     <NotificationList
       :notifications="notifications"
       @on-click-mark-read="refreshNotifications"
-      :archivedNotifications="archivedNotifications"
+      @on-handle-archive-unarchive="onArchiveUnArchive"
     />
     <div>
       <p
@@ -26,11 +26,16 @@ import {
   getArchivedNotifications,
 } from "@/services/notifications";
 
+import { getSubscriberId } from "../utils.js"
+
 const notifications = ref([]);
-const archivedNotifications = ref([]);
-// const subID = ref('')
-// const themeID = ref('')
+const subscriberID = ref("");
+
 const showNotificationWindowTrigger = ref(true);
+
+onBeforeMount(() => {
+  subscriberID.value = getSubscriberId()
+});
 
 const socket = io("http://127.0.0.1:3000", {
   extraHeaders: {
@@ -38,13 +43,10 @@ const socket = io("http://127.0.0.1:3000", {
   }
 });
 socket.on("connect", function () {
-  socket.emit("joinGroup", "5513489");
-  console.log("Connected");
+  socket.emit("joinGroup", subscriberID.value);
 });
-socket.on("notification", function (data) {
+socket.on("notification", function () {
   fetchAllNotifications()
-  // fetchArchivedNotifications();
-  console.log("notification", data);
 });
 
 const refreshNotifications = () => {
@@ -57,6 +59,16 @@ onBeforeMount(() => {
   fetchAllNotifications();
   fetchArchivedNotifications();
 });
+
+const onArchiveUnArchive = (param) => {
+  if (param === 'All') {
+    fetchAllNotifications()
+  }
+  else {
+    fetchArchivedNotifications();
+  }
+
+};
 
 // const showNotificationWindow = () => {
 //   showNotificationWindowTrigger.value = !showNotificationWindowTrigger.value
@@ -79,7 +91,7 @@ const showAllNotificationsPage = () => {
 };
 
 const fetchAllNotifications = () => {
-  getAllNotifications("5513489")
+  getAllNotifications(subscriberID.value)
     .then((res) => {
       notifications.value = res.reverse();
     })
@@ -89,9 +101,9 @@ const fetchAllNotifications = () => {
 };
 
 const fetchArchivedNotifications = () => {
-  getArchivedNotifications("5513489")
+  getArchivedNotifications(subscriberID.value)
     .then((res) => {
-      archivedNotifications.value = res;
+      notifications.value = res;
     })
     .catch((err) => {
       console.error(err);
@@ -99,20 +111,3 @@ const fetchArchivedNotifications = () => {
 };
 </script>
 
-<!-- <style>
-.link {
-    color: v-bind(themeID);
-    text-decoration: underline;
-    font-weight: 500;
-}
-.blue-circle {
-    background-color: v-bind(themeID);
-    height: 10px;
-    width: 10px;
-    border-radius: 50%;
-    display: inline-block;
-}
-/* :root {
-  --accent-color: v-bind(themeID);
-} */
-</style> -->

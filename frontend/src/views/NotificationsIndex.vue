@@ -15,20 +15,23 @@ import NotificationList from "../components/NotificationList.vue";
 import { getAllNotifications, getArchivedNotifications } from "@/services/notifications";
 import { io } from "socket.io-client";
 
+import { getSubscriberId } from "../utils.js"
+
 const notifications = ref([])
 const archivedNotifications = ref([])
+const subscriberID = ref("");
 
 const socket = io("http://127.0.0.1:3000", {
   extraHeaders: {
     "x-realm": "admin-portal"
   }
 });
-socket.on("notification", function (data) {
+socket.on("notification", function () {
   fetchAllNotifications()
-  console.log("notification", data);
 });
 
 onBeforeMount(() => {
+  subscriberID.value = getSubscriberId()
   fetchAllNotifications()
   fetchArchivedNotifications()
 });
@@ -39,7 +42,7 @@ const refreshNotifications = () => {
 }
 
 const fetchAllNotifications = () => { 
-  getAllNotifications("5513489")
+  getAllNotifications(subscriberID.value)
     .then((res) => {
       notifications.value = res.reverse()
     })
@@ -49,7 +52,7 @@ const fetchAllNotifications = () => {
 }
 
 const fetchArchivedNotifications = () => { 
-  getArchivedNotifications("5513489")
+  getArchivedNotifications(subscriberID.value)
     .then((res) => {
       archivedNotifications.value = res.reverse()
     })

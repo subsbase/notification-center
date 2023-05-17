@@ -13,7 +13,10 @@ import { ref, onBeforeMount } from "vue";
 import { getAllNotifications } from "@/services/notifications";
 import { io } from "socket.io-client";
 
+import { getSubscriberId } from "../utils.js"
+
 const notificationCount = ref(0)
+const subscriberID = ref("");
 
 const socket = io("http://127.0.0.1:3000", {
   extraHeaders: {
@@ -21,12 +24,10 @@ const socket = io("http://127.0.0.1:3000", {
   }
 });
 socket.on("connect", function () {
-  socket.emit("joinGroup", "5513489");
-  console.log("Connected");
+  socket.emit("joinGroup", subscriberID.value);
 });
-socket.on("notification", function (data) {
+socket.on("notification", function () {
   fetchAllNotifications()
-  console.log("notification", data);
 });
 
 socket.on("NotificationRead", function () {
@@ -43,15 +44,15 @@ socket.on("NotificationArchived", function () {
 
 
 onBeforeMount(() => {
+  subscriberID.value = getSubscriberId()
   fetchAllNotifications() 
 });
 
 const fetchAllNotifications = () => { 
-  getAllNotifications("5513489")
+  getAllNotifications(subscriberID.value)
     .then((res) => {
       notificationCount.value =  res.filter((notification) => !notification.read)
     .length
-    console.log('hi',  notificationCount.value)
     })
     .catch((err) => {
       console.error(err);

@@ -3,7 +3,7 @@
     <h4 class="font-size-16 mb-10">
       <i @click="goBack" v-if="source === 'page'" class="fa fa-chevron-left mr-20 clickable"></i>
       Notifications</h4>
-    <!-- <i class="fa fa-times my-21 clickable"></i> -->
+  {{ notifications.length }}
   </div>
   <div class="x-between px-20 font-size-12">
     <div class="d-flex filters mb-30">
@@ -35,7 +35,7 @@
     <!-- <p class="font-size-12 mb-10 text-left medium">Today</p> -->
     <div
       @click="handleMarkAsRead(notification._id, notification.actionUrl)"
-      v-for="notification in notificationsData"
+      v-for="notification in notifications"
       :key="notification._id"
       :class="[
         'notification-row mb-10',
@@ -79,8 +79,7 @@ import {
   computed,
   defineEmits,
   onBeforeMount,
-  ref,
-  onMounted,
+  ref
 } from "vue";
 import moment from "moment";
 import {
@@ -90,19 +89,21 @@ import {
   unArchiveNotification
 } from "@/services/notifications";
 
+import { getSubscriberId, getThemeId } from "../utils.js"
+
 const emit = defineEmits(["on-click-mark-read"]);
 
 const props = defineProps({
   notifications: { type: Array, default: () => [] },
-  archivedNotifications: { type: Array, default: () => [] },
+  // archivedNotifications: { type: Array, default: () => [] },
   source: { type: String },
 });
 
-const subID = ref("");
+const subscriberID = ref("");
 const themeID = ref("");
 const selectedFilter = ref("All");
 const filters = ref(["All", "Archive"]);
-const notificationsData = ref([]);
+// const notificationsData = ref([]);
 
 const getUnreadCount = computed(() => {
   return props.notifications.filter((notification) => !notification.read)
@@ -110,15 +111,14 @@ const getUnreadCount = computed(() => {
 });
 
 onBeforeMount(() => {
-  getSubscriberId();
+  subscriberID.value = getSubscriberId()
+  themeID.value = getThemeId()
+  emit("on-handle-archive-unarchive", 'All');
 });
 
-onMounted(() => {
-  getSubscriberId();
-  setTimeout(() => {
-    notificationsData.value = props.notifications;
-  }, 1000);
-});
+// onMounted(() => {
+//   getSubscriberId();
+// });
 
 const goBack = () => {
   history.back();
@@ -126,20 +126,15 @@ const goBack = () => {
 
 const onChangeFilter = (filterType) => {
   selectedFilter.value = filterType;
-  if (filterType === "All") {
-    notificationsData.value = props.notifications;
-  } else {
-    notificationsData.value = props.archivedNotifications;
-  }
+  emit("on-handle-archive-unarchive", filterType);
 };
 
 const handleArchiveNotification = (notificationId) => {
   const payload = [];
   payload.push(notificationId);
-  archiveNotification("5513489", payload)
-    .then((res) => {
-      console.log("res", res);
-      onChangeFilter()
+  archiveNotification(subscriberID, payload)
+    .then(() => {
+      onChangeFilter('Archive')
       emit("on-click-mark-read");
     })
     .catch((err) => {
@@ -150,10 +145,9 @@ const handleArchiveNotification = (notificationId) => {
 const handleUnArchiveNotification = (notificationId) => {
   const payload = [];
   payload.push(notificationId);
-  unArchiveNotification("5513489", payload)
-    .then((res) => {
-      console.log("res", res);
-      onChangeFilter()
+  unArchiveNotification(subscriberID.value, payload)
+    .then(() => {
+      onChangeFilter('All')
       emit("on-click-mark-read");
     })
     .catch((err) => {
@@ -161,22 +155,21 @@ const handleUnArchiveNotification = (notificationId) => {
     });
 };
 
-const getSubscriberId = () => {
-  let url = new URL(window.location);
-  let params = new URLSearchParams(url.search);
-  subID.value = params.get("subscriberId");
-  themeID.value = `#` + params.get("themeID");
-  window.console.log("themeID.value", themeID.value);
-};
+// const getSubscriberId = () => {
+//   let url = new URL(window.location);
+//   let params = new URLSearchParams(url.search);
+//   subID.value = params.get("subscriberId");
+//   themeID.value = `#` + params.get("themeID");
+//   window.console.log("themeID.value", themeID.value);
+// };
 
 const getNotificationTime = (time) => {
   return moment(time).fromNow();
 };
 
 const handleMarkAllAsRead = () => {
-  markAllAsRead("5513489")
-    .then((res) => {
-      console.log("res", res);
+  markAllAsRead(subscriberID.value)
+    .then(() => {
       emit("on-click-mark-read");
     })
     .catch((err) => {
@@ -186,9 +179,8 @@ const handleMarkAllAsRead = () => {
 
 const handleMarkAsRead = (notificationId, actionUrl) => {
   if(selectedFilter.value === 'All') {
-    markAsRead("5513489", notificationId)
-    .then((res) => {
-      console.log("res", res);
+    markAsRead(subscriberID.value, notificationId)
+    .then(() => {
       emit("on-click-mark-read");
       let a = document.createElement("a");
       a.target = "_blank";
