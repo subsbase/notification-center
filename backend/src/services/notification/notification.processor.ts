@@ -4,6 +4,7 @@ import { Topic } from '../../repositories/topic/schema';
 import { Notification } from '../../repositories/subscriber/notification/schema';
 import { InvalidArgumentError } from '../../types/exceptions';
 import { StringUtilts } from '../../utils/string-utils';
+import { ValidationUtils } from 'src/utils/validation-utils';
 
 export class NotificationProcessor {
   build(topic: Topic, content: string, actionUrl: string): Notification {
@@ -11,9 +12,7 @@ export class NotificationProcessor {
       throw new InvalidArgumentError('topic');
     }
 
-    if (this.isNotValidContent(content)) {
-      throw new InvalidArgumentError('content');
-    }
+    ValidationUtils.validateString(content, 'content');
 
     let notification = new Notification();
 
@@ -26,9 +25,5 @@ export class NotificationProcessor {
 
   compileContent(template: string | undefined, payload: Payload): string {
     return StringUtilts.isString(payload) ? payload.toString() : Handlebars.compile(template)(payload);
-  }
-
-  isNotValidContent(content: string): boolean {
-    return typeof content !== 'string' || StringUtilts.isEmptyOrWhiteSpace(content);
   }
 }

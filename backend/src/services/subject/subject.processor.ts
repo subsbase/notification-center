@@ -1,4 +1,4 @@
-import { InvalidArgumentError } from '../../types/exceptions';
+import { ValidationUtils } from '../../utils/validation-utils';
 import { StringUtilts } from '../../utils/string-utils';
 
 export class SubjectProcessor {
@@ -6,16 +6,7 @@ export class SubjectProcessor {
     return StringUtilts.kebabToNormal(subjectKey);
   }
 
-  validateSubjectKey(subjectKey: string): void {
-    if (this.isNotValidSubjectKey(subjectKey)) {
-      throw new InvalidArgumentError(
-        'subject',
-        `Invalid subject key ${subjectKey} subject key must be provided in kebab-case`,
-      );
-    }
-  }
-
-  private isNotValidSubjectKey(subjectKey: string): boolean {
-    return !StringUtilts.isKebabCase(subjectKey);
+  validateSubjectId(subjectId: string): void {
+    ValidationUtils.validateStringId(subjectId, 'subject.id');
   }
 }

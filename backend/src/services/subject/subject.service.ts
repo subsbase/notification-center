@@ -23,18 +23,18 @@ export class SubjectService {
   }
 
   getOrCreate(realm: string, subjectId: string): Promise<Subject> {
-    this.subjectProcessor.validateSubjectKey(subjectId);
+    this.subjectProcessor.validateSubjectId(subjectId);
     const title = this.subjectProcessor.getTitleFormId(subjectId);
     return this.subjectsRepositoryFactory.create(realm).findOrCreate({ id: subjectId, title });
   }
 
   create(realm: string, subject: Subject): Promise<CreatedModel> {
-    this.subjectProcessor.validateSubjectKey(subject.id);
+    this.subjectProcessor.validateSubjectId(subject.id);
     return this.subjectsRepositoryFactory.create(realm).create(subject);
   }
 
   update(realm: string, subject: Subject): Promise<UpdatedModel> {
-    this.subjectProcessor.validateSubjectKey(subject.id);
+    this.subjectProcessor.validateSubjectId(subject.id);
     return this.subjectsRepositoryFactory.create(realm).update(subject.id, subject);
   }
 }

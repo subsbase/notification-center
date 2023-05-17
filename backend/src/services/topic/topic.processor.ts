@@ -1,18 +1,16 @@
 import { StringUtilts } from '../../utils/string-utils';
-import { InvalidArgumentError } from '../../types/exceptions';
+import { NotificationTemplate } from '../../repositories/topic/notification-template/schema';
+import { Topic } from '../../repositories/topic/schema';
+import { ValidationUtils } from '../../utils/validation-utils';
 
 export class TopicProcessor {
-  validateId(id: string): void {
-    if (this.isNotValidTopicId(id)) {
-      throw new InvalidArgumentError('event', `Invalid topic event ${id} event must be provided in kebab-case`);
+  validateId(id: string, propertyName: string) {
+    ValidationUtils.validateStringId(id, propertyName);
+  }
     }
   }
 
   getTopicNameFormId(id: string): string {
     return StringUtilts.kebabToNormal(id);
-  }
-
-  private isNotValidTopicId(id: string): boolean {
-    return !StringUtilts.isKebabCase(id);
   }
 }
