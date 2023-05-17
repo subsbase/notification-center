@@ -1,12 +1,9 @@
 export class StringUtilts {
   static kebabToNormal(kebabString: string): string {
-    return kebabString
-      .split('-')
-      .map((word) => {
-        const [first, ...rest] = word;
-        return first.toUpperCase() + rest.join('');
-      })
-      .join(' ');
+    const words = kebabString.split('-');
+    const firstWord = words[0];
+    words[0] = firstWord.replace(firstWord[0], firstWord[0].toUpperCase());
+    return words.join(' ');
   }
 
   static normalToKebab(str: string): string {
@@ -26,6 +23,6 @@ export class StringUtilts {
   }
 
   static isEmptyOrWhiteSpace(str: string): boolean {
-    return str.trim().length === 0;
+    return str?.trim().length === 0;
   }
 }
