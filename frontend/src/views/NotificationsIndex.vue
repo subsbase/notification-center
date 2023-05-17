@@ -15,7 +15,7 @@ import NotificationList from "../components/NotificationList.vue";
 import { getAllNotifications, getArchivedNotifications } from "@/services/notifications";
 import { io } from "socket.io-client";
 
-import { getSubscriberId } from "../utils.js"
+import { getSubscriberId, getRealmHeader } from "../utils.js"
 
 const notifications = ref([])
 const archivedNotifications = ref([])
@@ -23,7 +23,7 @@ const subscriberID = ref("");
 
 const socket = io("http://127.0.0.1:3000", {
   extraHeaders: {
-    "x-realm": "admin-portal"
+    "x-realm": getRealmHeader
   }
 });
 socket.on("notification", function () {

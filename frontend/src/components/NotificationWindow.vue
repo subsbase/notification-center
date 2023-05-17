@@ -1,5 +1,4 @@
 <template>
-  <!-- <i @click="showNotificationWindow" class="fa fa-bell clickable"></i> -->
   <div v-if="showNotificationWindowTrigger" class="notification-window">
     <NotificationList
       :notifications="notifications"
@@ -26,7 +25,7 @@ import {
   getArchivedNotifications,
 } from "@/services/notifications";
 
-import { getSubscriberId } from "../utils.js"
+import { getSubscriberId, getRealmHeader } from "../utils.js"
 
 const notifications = ref([]);
 const subscriberID = ref("");
@@ -37,9 +36,9 @@ onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
 });
 
-const socket = io("http://127.0.0.1:3000", {
+const socket = io(process.env.SERVER_BASE_URL, {
   extraHeaders: {
-    "x-realm": "admin-portal"
+    "x-realm": getRealmHeader()
   }
 });
 socket.on("connect", function () {
@@ -55,7 +54,6 @@ const refreshNotifications = () => {
 };
 
 onBeforeMount(() => {
-  //getSubscriberId()
   fetchAllNotifications();
   fetchArchivedNotifications();
 });
@@ -70,23 +68,10 @@ const onArchiveUnArchive = (param) => {
 
 };
 
-// const showNotificationWindow = () => {
-//   showNotificationWindowTrigger.value = !showNotificationWindowTrigger.value
-
-//  }
-
-// const getSubscriberId = () => {
-//   let url = new URL(window.location)
-//   let params = new URLSearchParams(url.search)
-//   subID.value = params.get('subscriberId')
-//   themeID.value = `#`+params.get('themeID')
-//   window.console.log('themeID.value', themeID.value)
-// }
-
 const showAllNotificationsPage = () => {
   let a = document.createElement("a");
   a.target = "_top";
-  a.href = "http://localhost:3100/notifications";
+  a.href = process.env.HOST_NOTIFICATIONS_URL;
   a.click();
 };
 

@@ -13,14 +13,14 @@ import { ref, onBeforeMount } from "vue";
 import { getAllNotifications } from "@/services/notifications";
 import { io } from "socket.io-client";
 
-import { getSubscriberId } from "../utils.js"
+import { getSubscriberId, getRealmHeader } from "../utils.js"
 
 const notificationCount = ref(0)
 const subscriberID = ref("");
 
-const socket = io("http://127.0.0.1:3000", {
+const socket = io(process.env.SERVER_BASE_URL, {
   extraHeaders: {
-    "x-realm": "admin-portal"
+    "x-realm": getRealmHeader()
   }
 });
 socket.on("connect", function () {

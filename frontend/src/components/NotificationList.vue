@@ -32,7 +32,6 @@
 
 
   <div :class="['px-20', source === 'page' ? '' : 'notification-list']">
-    <!-- <p class="font-size-12 mb-10 text-left medium">Today</p> -->
     <div
       @click="handleMarkAsRead(notification._id, notification.actionUrl)"
       v-for="notification in notifications"
@@ -95,7 +94,6 @@ const emit = defineEmits(["on-click-mark-read"]);
 
 const props = defineProps({
   notifications: { type: Array, default: () => [] },
-  // archivedNotifications: { type: Array, default: () => [] },
   source: { type: String },
 });
 
@@ -103,7 +101,7 @@ const subscriberID = ref("");
 const themeID = ref("");
 const selectedFilter = ref("All");
 const filters = ref(["All", "Archive"]);
-// const notificationsData = ref([]);
+
 
 const getUnreadCount = computed(() => {
   return props.notifications.filter((notification) => !notification.read)
@@ -115,10 +113,6 @@ onBeforeMount(() => {
   themeID.value = getThemeId()
   emit("on-handle-archive-unarchive", 'All');
 });
-
-// onMounted(() => {
-//   getSubscriberId();
-// });
 
 const goBack = () => {
   history.back();
@@ -154,14 +148,6 @@ const handleUnArchiveNotification = (notificationId) => {
       console.error(err);
     });
 };
-
-// const getSubscriberId = () => {
-//   let url = new URL(window.location);
-//   let params = new URLSearchParams(url.search);
-//   subID.value = params.get("subscriberId");
-//   themeID.value = `#` + params.get("themeID");
-//   window.console.log("themeID.value", themeID.value);
-// };
 
 const getNotificationTime = (time) => {
   return moment(time).fromNow();
@@ -216,7 +202,5 @@ const handleMarkAsRead = (notificationId, actionUrl) => {
         }
     }
 }
-/* :root {
---accent-color: v-bind(themeID);
-} */
+
 </style>

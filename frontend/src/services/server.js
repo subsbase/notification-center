@@ -1,4 +1,5 @@
-export const BASE_URL = 'http://127.0.0.1:3000/'
+import { getRealmHeader } from "../utils.js"
+export const BASE_URL = process.env.SERVER_BASE_URL
 export const HEADERS = {
-    "x-realm": "admin-portal"
+    "x-realm": getRealmHeader()
 }

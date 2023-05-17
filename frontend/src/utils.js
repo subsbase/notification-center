@@ -9,3 +9,9 @@ export const getThemeId = () => {
     let params = new URLSearchParams(url.search);
     return `#` + params.get("themeID")
 }
+
+export const getRealmHeader = () => {
+    let url = new URL(window.location);
+    let params = new URLSearchParams(url.search);
+    return params.get("realmHeader");
+}
