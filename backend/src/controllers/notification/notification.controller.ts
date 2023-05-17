@@ -30,6 +30,8 @@ export class NotificationsController extends BaseController {
       notificationDto.actionUrl,
       notificationDto.payload,
       notificationDto.to,
+      notificationDto.notificationTemplate?.templeteId,
+      notificationDto.notificationTemplate?.notificationTemplate,
     );
     return this.ok();
   }

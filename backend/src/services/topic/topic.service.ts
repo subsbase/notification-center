@@ -4,6 +4,7 @@ import { TopicsRepositoryFactory } from '../../repositories/topic/repository';
 import { Topic } from '../../repositories/topic/schema';
 import { Subject } from '../../repositories/subject/schema';
 import { TopicProcessor } from './topic.processor';
+import { NotificationTemplate } from '../../repositories/topic/notification-template/schema';
 
 @Injectable()
 export class TopicService {
@@ -21,5 +22,26 @@ export class TopicService {
     this.topicProcessor.validateId(id, 'topic.id');
     const name = this.topicProcessor.getTopicNameFormId(id);
     return await this.topicsRepositoryFactory.create(realm).findOrCreate({ id: id, name: name, subject: subject });
+  }
+
+  async getNotificationTemplate(
+    realm: string,
+    templateId: string,
+    recivedNotificationTemplate: NotificationTemplate,
+    topic: Topic,
+  ): Promise<string | undefined> {
+    const [template, needTopicUpdate, updatedTopic] = this.topicProcessor.tryGetNotificationTemplate(
+      templateId,
+      recivedNotificationTemplate,
+      topic,
+    );
+    if (needTopicUpdate) {
+      await this.topicsRepositoryFactory.create(realm).update(topic.id, updatedTopic);
+    }
+    return template;
+  }
+
+  update(realm: string, topic: Topic) {
+    return this.topicsRepositoryFactory.create(realm).update(topic.id, topic);
   }
 }

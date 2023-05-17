@@ -7,6 +7,7 @@ import { Payload } from '../../types/global-types';
 import { UpdatedModel } from '../../repositories/helper-types';
 import { SubjectService } from '../../services/subject/subject.service';
 import { ArchivedNotification } from '../../repositories/subscriber/archived-notification/schema';
+import { NotificationTemplate } from '../../repositories/topic/notification-template/schema';
 
 @Injectable()
 export class NotificationManager {
@@ -29,7 +30,7 @@ export class NotificationManager {
 
   async countUnread(realm: string, subscriberId: string) {
     const unreadNotificationsCount = await this.notificationService.countUnread(realm, subscriberId);
-    return { count: unreadNotificationsCount }
+    return { count: unreadNotificationsCount };
   }
 
   async getAllArchivedNotifications(
@@ -86,15 +87,17 @@ export class NotificationManager {
     actionUrl: string,
     payload: Payload,
     subscribersIds: Array<string>,
+    templateId: string,
+    notificationTemplate: NotificationTemplate,
   ) {
     const subject = await this.subjectService.getOrCreate(realm, subjectId);
 
-    //gets or creates topic by the event
+    //gets or creates topic by the topicId
     const topic = await this.topicsService.getOrCreate(realm, topicId, subject);
 
-    const notificationTemplate = topic.notificationTemplate;
+    const template = await this.topicsService.getNotificationTemplate(realm, templateId, notificationTemplate, topic);
 
-    const content = this.notificationService.compileContent(notificationTemplate?.template, payload);
+    const content = this.notificationService.compileContent(template, payload);
 
     const notification = this.notificationService.buildNotification(topic, content, actionUrl);
 
