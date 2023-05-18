@@ -39,22 +39,6 @@ export class NotificationService {
         },
       },
       {
-        $unwind: '$notifications',
-      },
-      {
-        $lookup: {
-          from: 'topics',
-          let: { referenceId: '$notifications.topic' },
-          pipeline: [{ $match: { $expr: { $eq: ['$_id', '$$referenceId'] } } }],
-          as: 'topic',
-        },
-      },
-      {
-        $addFields: {
-          'notifications.topic': { $arrayElemAt: ['$topic', 0] },
-        },
-      },
-      {
         $group: {
           _id: '$_id',
           id: { $first: '$_id' },
