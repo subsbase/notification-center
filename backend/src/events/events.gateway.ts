@@ -5,7 +5,8 @@ import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { Socket } from 'socket.io'
 
 @WebSocketGateway({
-  cors: true
+  cors: true,
+  path: '/notifc/socket'
 })
 export class EventsGateway implements OnGatewayConnection{
   constructor(private readonly eventEmitter: EventEmitter2) {}
