@@ -13,6 +13,18 @@ export const getAllNotifications = (subscriberId) => {
     })
 }
 
+export const getNotificationsUnreadCount = (subscriberId) => {
+   return new Promise((resolve, reject) => {
+     axios({
+       headers: HEADERS,
+       method: "get",
+       url: `${BASE_URL}/notifc/subscribers/${subscriberId}/notifications/countunread`
+     })
+       .then(res => resolve(res.data))
+       .catch(err => reject(err))
+   })
+}
+
 export const getArchivedNotifications = (subscriberId) => {
   return new Promise((resolve, reject) => {
     axios({

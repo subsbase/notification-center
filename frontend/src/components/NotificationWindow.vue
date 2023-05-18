@@ -4,6 +4,7 @@
       :notifications="notifications"
       @on-click-mark-read="refreshNotifications"
       @on-handle-archive-unarchive="onArchiveUnArchive"
+      @on-read="handleRead"
     />
     <div>
       <p
@@ -36,7 +37,7 @@ onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
 });
 
-const socket = io(process.env.SERVER_BASE_URL, {
+const socket = io(process.env.VUE_APP_HOST_NOTIFICATIONS_URL, {
   extraHeaders: {
     "x-realm": getRealmHeader()
   }
@@ -47,6 +48,10 @@ socket.on("connect", function () {
 socket.on("notification", function () {
   fetchAllNotifications()
 });
+
+const handleRead = () => {
+  fetchAllNotifications()
+}
 
 const refreshNotifications = () => {
   fetchAllNotifications()
@@ -71,7 +76,7 @@ const onArchiveUnArchive = (param) => {
 const showAllNotificationsPage = () => {
   let a = document.createElement("a");
   a.target = "_top";
-  a.href = process.env.HOST_NOTIFICATIONS_URL;
+  a.href = process.env.VUE_APP_HOST_NOTIFICATIONS_URL;
   a.click();
 };
 

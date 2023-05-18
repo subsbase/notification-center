@@ -5,6 +5,7 @@
     :archivedNotifications="archivedNotifications"
     :source="'page'"
     @on-click-mark-read="refreshNotifications"
+    @on-read="handleRead"
     />
   </div>
 </template>
@@ -21,9 +22,9 @@ const notifications = ref([])
 const archivedNotifications = ref([])
 const subscriberID = ref("");
 
-const socket = io("http://127.0.0.1:3000", {
+const socket = io(process.env.VUE_APP_SERVER_BASE_URL, {
   extraHeaders: {
-    "x-realm": getRealmHeader
+    "x-realm": getRealmHeader()
   }
 });
 socket.on("notification", function () {
@@ -35,6 +36,10 @@ onBeforeMount(() => {
   fetchAllNotifications()
   fetchArchivedNotifications()
 });
+
+const handleRead = () => {
+  fetchAllNotifications()
+}
 
 const refreshNotifications = () => { 
   fetchAllNotifications()

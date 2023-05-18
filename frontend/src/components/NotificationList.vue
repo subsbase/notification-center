@@ -3,7 +3,7 @@
     <h4 class="font-size-16 mb-10">
       <i @click="goBack" v-if="source === 'page'" class="fa fa-chevron-left mr-20 clickable"></i>
       Notifications</h4>
-  {{ notifications.length }}
+      {{ ifReadNotificationsExist }}
   </div>
   <div class="x-between px-20 font-size-12">
     <div class="d-flex filters mb-30">
@@ -24,14 +24,13 @@
         You’ve got <strong> {{ getUnreadCount }} unread</strong> notifications
       </span>
     </p>
-    <p v-if="notifications.length > 0" @click="handleMarkAllAsRead" class="link clickable mt-0 text-right">
+    <p v-if="notifications.length > 0 || ifReadNotificationsExist" @click="handleMarkAllAsRead" class="link clickable mt-0 text-right">
       Mark all as read
     </p>
   </div>
 
 
-
-  <div :class="['px-20', source === 'page' ? '' : 'notification-list']">
+  <div v-if="notifications.length > 0" :class="['px-20', source === 'page' ? '' : 'notification-list']">
     <div
       @click="handleMarkAsRead(notification._id, notification.actionUrl)"
       v-for="notification in notifications"
@@ -70,6 +69,10 @@
       </div>
     </div>
   </div>
+
+  <div v-else class="no-data">
+    No notifications
+  </div>
 </template>
 
 <script setup>
@@ -90,7 +93,7 @@ import {
 
 import { getSubscriberId, getThemeId } from "../utils.js"
 
-const emit = defineEmits(["on-click-mark-read"]);
+const emit = defineEmits(["on-click-mark-read", "on-read"]);
 
 const props = defineProps({
   notifications: { type: Array, default: () => [] },
@@ -106,6 +109,11 @@ const filters = ref(["All", "Archive"]);
 const getUnreadCount = computed(() => {
   return props.notifications.filter((notification) => !notification.read)
     .length;
+});
+
+const ifReadNotificationsExist = computed(() => {
+  return  props.notifications.some(el => el.read === false);
+
 });
 
 onBeforeMount(() => {
@@ -126,7 +134,7 @@ const onChangeFilter = (filterType) => {
 const handleArchiveNotification = (notificationId) => {
   const payload = [];
   payload.push(notificationId);
-  archiveNotification(subscriberID, payload)
+  archiveNotification(subscriberID.value, payload)
     .then(() => {
       onChangeFilter('Archive')
       emit("on-click-mark-read");
@@ -156,7 +164,7 @@ const getNotificationTime = (time) => {
 const handleMarkAllAsRead = () => {
   markAllAsRead(subscriberID.value)
     .then(() => {
-      emit("on-click-mark-read");
+      emit("on-read");
     })
     .catch((err) => {
       console.error(err);
@@ -167,7 +175,7 @@ const handleMarkAsRead = (notificationId, actionUrl) => {
   if(selectedFilter.value === 'All') {
     markAsRead(subscriberID.value, notificationId)
     .then(() => {
-      emit("on-click-mark-read");
+      emit("on-read");
       let a = document.createElement("a");
       a.target = "_blank";
       a.href = actionUrl;
