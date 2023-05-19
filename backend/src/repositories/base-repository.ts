@@ -54,6 +54,22 @@ export abstract class BaseRepository<T extends Document, TSchema> extends Global
     );
   }
 
+  async findOrCreateById(
+    id: string,
+    query: FilterQuery<T>,
+    projection?: ProjectionType<T>,
+    queryOptions?: QueryOptions<T>,
+    saveOptions?: SaveOptions,
+  ): Promise<TSchema> {
+    return super.findOrCreateById(
+      id,
+      { ...query, realm: this.realm },
+      projection,
+      { ...queryOptions, realm: this.realm },
+      { ...saveOptions, realm: this.realm },
+    );
+  }
+
   async insertMany(
     docs: Array<TSchema>,
     options: InsertManyOptions,
