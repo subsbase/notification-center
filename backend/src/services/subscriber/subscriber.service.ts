@@ -8,7 +8,7 @@ export class SubscriberService {
   constructor(private readonly subscriberRepositoryFactory: SubscribersRepositoryFactory) {}
 
   public createIfNotExists(realm: string, subscriberId: string) {
-    return this.subscriberRepositoryFactory.create(realm).findOrCreate({ id: subscriberId });
+    return this.subscriberRepositoryFactory.create(realm).findOrCreate({ _id: subscriberId });
   }
 
   async create(realm: string, subscriber: Subscriber): Promise<CreatedModel> {
