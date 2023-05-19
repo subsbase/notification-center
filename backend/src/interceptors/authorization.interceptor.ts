@@ -30,7 +30,9 @@ export class AuthorizationInterceptor implements NestInterceptor {
 
       const [_, token] = this.extractAuthorizationHeader(headers);
       const user = await this.jwtService.verifyAsync(token);
-      if (user.realm !== headers['x-realm']) {
+      const body = request.body as any;
+      const bodyRealm = body?.realm;
+      if (user.realm !== headers['x-realm'] || (bodyRealm && bodyRealm !== headers['x-realm'])) {
         throw new UnauthorizedException('realm not match');
       }
       request.user = user;
