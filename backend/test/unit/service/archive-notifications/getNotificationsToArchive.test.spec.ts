@@ -4,11 +4,11 @@ import { SubscribersGlobalRepository } from '../../../../src/repositories/subscr
 import { Types } from 'mongoose';
 import { BulkWriteResult } from 'mongoose/node_modules/mongodb';
 import { ArchiveNotificationService } from '../../../../src/services/archived-notifications/archive.notifications.service';
-import { Topic } from '../../../../src/repositories/topic/schema';
 import { InvalidArgumentError } from '../../../../src/types/exceptions';
 import { ArchivedNotificationProcessor } from '../../../../src/services/archived-notifications/archived.notification.processor';
 import { Subscriber } from '../../../../src/repositories/subscriber/schema';
 import { ArchivedNotification } from '../../../../src/repositories/subscriber/archived-notification/schema';
+import { Subject } from '../../../../src/repositories/subject/schema';
 
 describe('ArchiveNotificationService - getNotificationsToArchive', () => {
   let service: ArchiveNotificationService;
@@ -52,8 +52,8 @@ describe('ArchiveNotificationService - getNotificationsToArchive', () => {
     const realm = 'test-realm';
     const notification: ArchivedNotification = new ArchivedNotification();
     notification.id = '6457a58fc3efba97726d7e99';
-    notification.content = 'test-notification';
-    notification.topic = new Topic();
+    notification.message = 'test-notification';
+    notification.subject = new Subject();
     notification.archivedAt = new Date(Date.now() - (thresholdDays + 1) * 24 * 60 * 60 * 1000);
     notification.read = false;
     notification.actionUrl = 'google.com';
