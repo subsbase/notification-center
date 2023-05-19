@@ -9,12 +9,13 @@ import { Subject } from '../../repositories/subject/schema';
 export class NotificationProcessor {
   build(subject: Subject, topicId: string ,title: string, message: string, actionUrl: string): Notification {
     if (subject == null || subject == undefined) {
-      throw new InvalidArgumentError('topic');
+      throw new InvalidArgumentError('subject');
     }
 
     ValidationUtils.validateString(title, 'title');
     ValidationUtils.validateString(message, 'message');
-    
+    ValidationUtils.validateUrl(actionUrl, 'actionUrl')
+
     let notification = new Notification();
 
     notification.subject = subject;
