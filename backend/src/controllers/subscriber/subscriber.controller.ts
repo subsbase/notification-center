@@ -70,7 +70,7 @@ export class SubscribersController extends BaseController {
     return this.ok(archivedNotifications);
   }
 
-  @Patch(':subscriberId/notification/:notificationId/markasread')
+  @Patch(':subscriberId/notifications/:notificationId/markasread')
   async markAsRead(
     @Param('subscriberId')
     subscriberId: string,
@@ -81,7 +81,7 @@ export class SubscribersController extends BaseController {
     return this.ok();
   }
 
-  @Patch(':subscriberId/notification/:notificationId/markasunread')
+  @Patch(':subscriberId/notifications/:notificationId/markasunread')
   async markAsUnread(
     @Param('subscriberId')
     subscriberId: string,
