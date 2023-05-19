@@ -6,7 +6,6 @@ import { Notification } from '../../repositories/subscriber/notification/schema'
 import { Payload } from '../../types/global-types';
 import { UpdatedModel } from '../../repositories/helper-types';
 import { ArchivedNotification } from '../../repositories/subscriber/archived-notification/schema';
-import { Topic } from '../../repositories/topic/schema';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   NotificationArchived,
@@ -16,6 +15,7 @@ import {
   NotificationsRead,
   NotificationsUnread,
 } from '../../internal-events/notification';
+import { Subject } from '../../repositories/subject/schema';
 
 @Injectable()
 export class NotificationService {
@@ -37,6 +37,9 @@ export class NotificationService {
         $project: {
           notifications: { $slice: ['$notifications', (pageNum - 1) * pageSize, pageSize] },
         },
+      },
+      {
+        $unwind: '$notifications',
       },
       {
         $group: {
@@ -92,19 +95,6 @@ export class NotificationService {
       },
       {
         $unwind: '$archivedNotifications',
-      },
-      {
-        $lookup: {
-          from: 'topics',
-          let: { referenceId: '$archivedNotifications.topic' },
-          pipeline: [{ $match: { $expr: { $eq: ['$_id', '$$referenceId'] } } }],
-          as: 'topic',
-        },
-      },
-      {
-        $addFields: {
-          'archivedNotifications.topic': { $arrayElemAt: ['$topic', 0] },
-        },
       },
       {
         $group: {
@@ -293,8 +283,10 @@ export class NotificationService {
     return result;
   }
 
-  buildNotification(topic: Topic, content: string, actionUrl: string): Notification {
-    return this.notificationProcessor.build(topic, content, actionUrl);
+  buildNotification(subject: Subject, topicId: string, titleTemplate: string, messageTemplate: string, actionUrl: string, payload: Payload): Notification {
+    const title: string = this.compileContent(titleTemplate, payload);
+    const message: string = this.compileContent(messageTemplate, payload);
+    return this.notificationProcessor.build(subject, topicId, title, message, actionUrl);
   }
 
   compileContent(template: string | undefined, payload: Payload): string {
@@ -344,9 +336,9 @@ export class NotificationService {
     await this.subscribersRepositoryFactory
       .create(realm)
       .updateOne(
-        { _id: subscriberId, 'notifications._id': notificationsIds },
+        { _id: subscriberId, 'notifications._id': { $in: notificationsIds} },
         { $set: { 'notifications.$[notification].read': true } },
-        { arrayFilters: [{ 'notification._id': notificationsIds }] },
+        { arrayFilters: [{ 'notification._id': { $in: notificationsIds} }] },
       );
 
     this.eventEmitter.emit('notification.read', new NotificationRead(subscriberId, notificationsIds));
@@ -376,9 +368,9 @@ export class NotificationService {
     await this.subscribersRepositoryFactory
       .create(realm)
       .updateOne(
-        { _id: subscriberId, 'notifications._id': notificationsIds },
+        { _id: subscriberId, 'notifications._id': { $in: notificationsIds } },
         { $set: { 'notifications.$[notification].read': false } },
-        { arrayFilters: [{ 'notification._id': notificationsIds }] },
+        { arrayFilters: [{ 'notification._id': { $in: notificationsIds } }] },
       );
 
     this.eventEmitter.emit('notification.unread', new NotificationUnread(subscriberId, notificationsIds));

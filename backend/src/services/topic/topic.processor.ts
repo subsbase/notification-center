@@ -1,6 +1,5 @@
-import { StringUtilts } from '../../utils/string-utils';
-import { NotificationTemplate } from '../../repositories/topic/notification-template/schema';
-import { Topic } from '../../repositories/topic/schema';
+import { NotificationTemplate } from '../../repositories/subject/topic/notification-template/schema';
+import { Topic } from '../../repositories/subject/topic/schema';
 import { ValidationUtils } from '../../utils/validation-utils';
 
 export class TopicProcessor {
@@ -8,31 +7,25 @@ export class TopicProcessor {
     ValidationUtils.validateStringId(id, propertyName);
   }
 
-  tryGetNotificationTemplate(
-    templateId: string,
-    recivedNotificationTemplate: NotificationTemplate,
-    topic: Topic,
-  ): [string | undefined, boolean, Topic] {
-    let template: string | undefined;
-    let needTopicUpdate: boolean = false;
-
-    const notificationTemplates = topic.notificationTemplates ?? new Map<string, NotificationTemplate>();
-
-    if (recivedNotificationTemplate) {
-      this.validateId(templateId, 'templateId');
-      notificationTemplates.set(templateId, recivedNotificationTemplate);
-      topic.notificationTemplates = notificationTemplates;
-      needTopicUpdate = true;
-      template = recivedNotificationTemplate.template!;
-    } else if (templateId) {
-      template = notificationTemplates.get(templateId)?.template;
-    } else {
-      template = notificationTemplates.values().next()?.value?.template;
-    }
-    return [template, needTopicUpdate, topic];
+  buildEmptyTopic(): Topic {
+    const topic = new Topic()
+    topic.notificationTemplates = new Map<string, NotificationTemplate>()
+    return topic;
   }
 
-  getTopicNameFormId(id: string): string {
-    return StringUtilts.kebabToNormal(id);
+  buildNotificationTemplate(titleTemplate: string, messageTemplate: string) : NotificationTemplate {
+    const notificationTemplate: NotificationTemplate = new NotificationTemplate()
+    notificationTemplate.title = titleTemplate
+    notificationTemplate.message = messageTemplate
+    return notificationTemplate;
+  }
+
+  tryGetNotificationTemplate(topic: Topic, templateId: string, title: string, message: string): [string,string] {
+    const propertyDescriptor = Object.getOwnPropertyDescriptor(topic?.notificationTemplates, templateId)
+    const template: NotificationTemplate = propertyDescriptor?.value
+    const titleTemplate: string = title ?? template?.title;
+    const messageTemplate: string = message ?? template?.message;
+
+    return [titleTemplate, messageTemplate]
   }
 }

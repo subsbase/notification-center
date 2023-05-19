@@ -1,24 +1,27 @@
 import Handlebars from 'handlebars';
 import { Payload } from '../../types/global-types';
-import { Topic } from '../../repositories/topic/schema';
 import { Notification } from '../../repositories/subscriber/notification/schema';
 import { InvalidArgumentError } from '../../types/exceptions';
 import { StringUtilts } from '../../utils/string-utils';
-import { ValidationUtils } from 'src/utils/validation-utils';
+import { ValidationUtils } from '../../utils/validation-utils';
+import { Subject } from '../../repositories/subject/schema';
 
 export class NotificationProcessor {
-  build(topic: Topic, content: string, actionUrl: string): Notification {
-    if (topic == null || topic == undefined) {
+  build(subject: Subject, topicId: string ,title: string, message: string, actionUrl: string): Notification {
+    if (subject == null || subject == undefined) {
       throw new InvalidArgumentError('topic');
     }
 
-    ValidationUtils.validateString(content, 'content');
-
+    ValidationUtils.validateString(title, 'title');
+    ValidationUtils.validateString(message, 'message');
+    
     let notification = new Notification();
 
-    notification.topic = topic;
+    notification.subject = subject;
+    notification.topicId = topicId
     notification.actionUrl = actionUrl;
-    notification.content = content;
+    notification.title = title;
+    notification.message = message;
 
     return notification;
   }

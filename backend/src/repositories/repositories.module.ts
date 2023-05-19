@@ -2,8 +2,6 @@ import { DynamicModule, Module, Scope } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Subject, SubjectSchema } from './subject/schema';
 import { SubjectsRepository, SubjectsRepositoryFactory } from './subject/repository';
-import { Topic, TopicSchema } from './topic/schema';
-import { TopicsRepository, TopicsRepositoryFactory } from './topic/repository';
 import { Subscriber, SubscriberSchema } from './subscriber/schema';
 import { SubscribersRepository, SubscribersRepositoryFactory } from './subscriber/repository';
 import { Realm, RealmSchema } from './realm/schema';
@@ -38,14 +36,6 @@ export class RepositoriesModule {
             },
           },
           {
-            name: Topic.name,
-            imports: [SchemaModule],
-            inject: [SchemaFactory],
-            useFactory: (schemaFactory: SchemaFactory) => {
-              return schemaFactory.create(TopicSchema);
-            },
-          },
-          {
             name: Subscriber.name,
             imports: [SchemaModule],
             inject: [SchemaFactory],
@@ -73,13 +63,6 @@ export class RepositoriesModule {
           },
         },
         {
-          provide: TopicsRepositoryFactory,
-          inject: [RepositoryFactoryGenerator],
-          useFactory: (repositoryFactory: RepositoryFactoryGenerator) => {
-            return repositoryFactory.generate(Topic.name, TopicsRepository, TopicsRepositoryFactory);
-          },
-        },
-        {
           provide: SubscribersRepositoryFactory,
           inject: [RepositoryFactoryGenerator],
           useFactory: (repositoryFactory: RepositoryFactoryGenerator) => {
@@ -92,7 +75,6 @@ export class RepositoriesModule {
       exports: [
         RealmGlobalRepository,
         SubjectsRepositoryFactory,
-        TopicsRepositoryFactory,
         SubscribersRepositoryFactory,
         ArchivedNotificationsGlobalRepository,
         SubscribersGlobalRepository,

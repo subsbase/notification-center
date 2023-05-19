@@ -8,12 +8,12 @@ export class ArchivedNotificationProcessor {
         let notification: ArchivedNotification = new ArchivedNotification();
         notification.actionUrl = notificationToArchive.actionUrl;
         notification.archivedAt = notificationToArchive.archivedAt;
-        notification.content = notificationToArchive.content;
+        notification.message = notificationToArchive.message;
         notification.createdAt = notificationToArchive.createdAt;
         notification.updatedAt = notificationToArchive.updatedAt;
         notification.id = notificationToArchive.id;
         notification.read = notificationToArchive.read;
-        notification.topic = notificationToArchive.topic;
+        notification.subject = notificationToArchive.subject;
         notification.realm = subscriber.realm;
         notification.subscriber = subscriber;
 

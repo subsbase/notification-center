@@ -3,6 +3,7 @@ import { Subject } from '../../repositories/subject/schema';
 import { SubjectsRepositoryFactory } from '../../repositories/subject/repository';
 import { CreatedModel, UpdatedModel } from '../../repositories/helper-types';
 import { SubjectProcessor } from './subject.processor';
+import { Topic } from '../../repositories/subject/topic/schema';
 
 @Injectable()
 export class SubjectService {
@@ -24,12 +25,13 @@ export class SubjectService {
 
   getOrCreate(realm: string, subjectId: string): Promise<Subject> {
     this.subjectProcessor.validateSubjectId(subjectId);
-    const title = this.subjectProcessor.getTitleFormId(subjectId);
-    return this.subjectsRepositoryFactory.create(realm).findOrCreate({ id: subjectId, title });
+    const name = this.subjectProcessor.getNameFormId(subjectId);
+    return this.subjectsRepositoryFactory.create(realm).findOrCreateById(subjectId, { _id: subjectId, name: name });
   }
 
   create(realm: string, subject: Subject): Promise<CreatedModel> {
     this.subjectProcessor.validateSubjectId(subject.id);
+    subject = subject.topics ? subject : this.subjectProcessor.buildSubjectWithEmptyTopics(subject)
     return this.subjectsRepositoryFactory.create(realm).create(subject);
   }
 

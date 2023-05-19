@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Schema as MongoSchema, ObjectId, Types } from 'mongoose';
+import { Schema as MongoSchema, Types } from 'mongoose';
 import { SchemaOptions } from '../../schema.options';
 import { BaseModel } from '../../base-model';
-import { Topic } from '../../topic/schema';
+import { Subject } from '../../subject/schema'; 
 
 @Schema(SchemaOptions)
 export class Notification extends BaseModel {
@@ -13,11 +13,17 @@ export class Notification extends BaseModel {
   })
   protected declare _id: string; // override _id property with ObjectId type
 
-  @Prop({ required: true, type: MongoSchema.Types.ObjectId, ref: 'Topic' })
-  topic: Topic;
+  @Prop({ required: true, type: MongoSchema.Types.String, ref: 'Subject' })
+  subject: Subject;
 
   @Prop({ required: true })
-  content: string;
+  topicId: string;
+
+  @Prop({ required: true })
+  title: string;
+
+  @Prop({ required: true })
+  message: string;
 
   @Prop()
   actionUrl: string;
