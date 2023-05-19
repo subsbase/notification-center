@@ -1,6 +1,5 @@
 import { ArrayMinSize, IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { Payload } from '../../types/global-types';
-import { NotificationTemplateDto } from './notification.template.dto';
 
 export class NotificationDto {
   @IsNotEmpty({ message: 'subscribers ids (to) must be specifed' })
@@ -9,11 +8,12 @@ export class NotificationDto {
   to: Array<string>;
 
   @IsNotEmpty()
-  payload: Payload;
-
-  @IsNotEmpty()
   @IsString()
   actionUrl: string;
+  
+  title: string;
+  message: string;
 
-  notificationTemplate: NotificationTemplateDto;
+  templateId: string;
+  payload: Payload;
 }

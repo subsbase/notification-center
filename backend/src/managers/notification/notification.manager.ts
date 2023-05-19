@@ -7,7 +7,6 @@ import { Payload } from '../../types/global-types';
 import { UpdatedModel } from '../../repositories/helper-types';
 import { SubjectService } from '../../services/subject/subject.service';
 import { ArchivedNotification } from '../../repositories/subscriber/archived-notification/schema';
-import { NotificationTemplate } from '../../repositories/topic/notification-template/schema';
 
 @Injectable()
 export class NotificationManager {
@@ -85,21 +84,20 @@ export class NotificationManager {
     subjectId: string,
     topicId: string,
     actionUrl: string,
-    payload: Payload,
     subscribersIds: Array<string>,
+    title: string,
+    message: string,
     templateId: string,
-    notificationTemplate: NotificationTemplate,
+    payload: Payload,
   ) {
     const subject = await this.subjectService.getOrCreate(realm, subjectId);
 
     //gets or creates topic by the topicId
     const topic = await this.topicsService.getOrCreate(realm, topicId, subject);
 
-    const template = await this.topicsService.getNotificationTemplate(realm, templateId, notificationTemplate, topic);
+    const [titleTemplate, messageTemplate] = this.topicsService.getNotificationTemplate(topic, title, message, templateId)
 
-    const content = this.notificationService.compileContent(template, payload);
-
-    const notification = this.notificationService.buildNotification(topic, content, actionUrl);
+    const notification = this.notificationService.buildNotification(subject, topicId, titleTemplate, messageTemplate, actionUrl, payload);
 
     await this.notificationService.notifyAll(realm, subscribersIds, notification);
 
