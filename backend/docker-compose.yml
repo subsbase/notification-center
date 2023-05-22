@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   notification-center:
     build: .
@@ -17,7 +16,7 @@ services:
       JWT_ISSUER: http://localhost:8080/
       JWT_AUDIENCE: http://localhost:8080/
   subsbase-notification-center:
-    image: mongo:6.0.5
+    image: mongo
     restart: always
     ports:
       - '27017:27017'
