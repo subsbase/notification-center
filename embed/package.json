@@ -1,6 +1,6 @@
 {
   "name": "@ibrahimogod/notification-center-embedding-testing",
-  "version": "1.0.0",
+  "version": "0.0.01",
   "description": "This is the script that is used to embed the notification center in your project.",
   "main": "index.js",
   "scripts": {
