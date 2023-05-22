@@ -15,9 +15,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install dependencies
-        run: npm ci
-
       - name: Create min directory
         run: mkdir min
 
