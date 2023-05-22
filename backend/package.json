@@ -1,10 +1,10 @@
 {
   "name": "notification-center",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
-  "private": true,
-  "license": "UNLICENSED",
+  "version": "1.0.0",
+  "description": "notification-center api backend project build to make it easy for developers to push notification",
+  "author": "Subsbase",
+  "private": false,
+  "license": "LGPL-3.0-or-later",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
