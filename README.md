@@ -32,17 +32,18 @@
 
 ## Support
 
-Notification Center is an MIT-licensed open source project. It can grow. If you'd like to join them, please contact us.
+Notification Center is LGPL-licensed open source project. It can grow. If you'd like to join, please contact us.
 
 ## Stay in touch
 
 - Authors 
-    - [SubsBase Core Team](https://github.com/orgs/subsbase/teams/core-team)
+    - [Subsbase Core Team](https://github.com/orgs/subsbase/teams/core-team)
         - Ibrahim Ahmed Badr
         - Hamza Rashed
+        - Fahd Arafat
 - Website - [https://subsbase.com](https://subsbase.com/)
 - Twitter - [@mysubsbase](https://twitter.com/mysubsbase)
 
 ## License
 
-Notification-Center is [MIT licensed](LICENSE).
+Notification-Center is [LGPL licensed](LICENSE).
