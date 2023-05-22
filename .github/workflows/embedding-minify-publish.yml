@@ -1,8 +1,8 @@
-name: Auto-Minify and Push to Azure Static Web
+name: Auto-Minify and Push to npm and Github Pages
 on:
-  pull_request:
-    # branches:
-    #   - main
+  push:
+    branches:
+      - main
     paths:
       - "embed/**"
   workflow_dispatch:
