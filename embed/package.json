@@ -1,0 +1,19 @@
+{
+  "name": "@subsbase/notification-center-embedding-testing",
+  "version": "1.0.0",
+  "description": "This is the script that is used to embed the notification center in your project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/subsbase/notification-center.git"
+  },
+  "author": "Subsbase",
+  "license": "LGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/subsbase/notification-center/issues"
+  },
+  "homepage": "https://github.com/subsbase/notification-center#readme"
+}

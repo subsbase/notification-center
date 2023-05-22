@@ -1,0 +1,36 @@
+name: Auto-Minify and Push to Azure Static Web
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "embedding/**"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create min directory
+        run: mkdir min
+
+      - name: Minify JavaScript file
+        run: npx uglify-js embed/embedding.js -o min/embedding.min.js
+
+      - name: Publish to npm
+        run: |
+          npm config set '//registry.npmjs.org/:_authToken' ${{ secrets.NPM_AUTH_TOKEN }}
+          npm publish
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./min
