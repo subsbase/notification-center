@@ -1,21 +1,15 @@
-# Use an official Node.js runtime as a parent image
-FROM node:18-alpine as build
+# Stage 1: Building the Vue application
+FROM node:18-alpine AS build
 
-# Set the working directory to /app
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy the rest of the application code to the working directory
 COPY . .
-
-# Build the application
 RUN npm run build
 
+# Stage 2: Run the built application
 FROM node:18-alpine as prod
 
 LABEL org.opencontainers.image.source=https://github.com/subsbase/notification-center
@@ -26,9 +20,9 @@ WORKDIR /app
 
 COPY --from=build /app/dist .
 
-# Expose the port the application will listen on
-ENV PORT=8080
-EXPOSE 8080
+RUN npm install -g serve
 
-# Start the application
-CMD ["npm", "run", "start:prod"]
+EXPOSE 3600
+ENV VUE_APP_PORT=3600
+
+CMD ["serve", "-s", "."]
