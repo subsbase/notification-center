@@ -25,8 +25,7 @@ export class SubjectService {
 
   getOrCreate(realm: string, subjectId: string): Promise<Subject> {
     this.subjectProcessor.validateSubjectId(subjectId);
-    const name = this.subjectProcessor.getNameFormId(subjectId);
-    return this.subjectsRepositoryFactory.create(realm).findOrCreateById(subjectId, { _id: subjectId, name: name });
+    return this.subjectsRepositoryFactory.create(realm).findOrCreateById(subjectId, { _id: subjectId, name: subjectId });
   }
 
   create(realm: string, subject: Subject): Promise<CreatedModel> {

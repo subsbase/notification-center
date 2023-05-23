@@ -4,10 +4,6 @@ import { Subject } from '../../repositories/subject/schema';
 import { Topic } from '../../repositories/subject/topic/schema';
 
 export class SubjectProcessor {
-  getNameFormId(subjectId: string) : string {
-    return StringUtilts.kebabToNormal(subjectId);
-  }
-
   buildSubjectWithEmptyTopics(receivedSubject: Subject): Subject {
     const subject: Subject = new Subject()
     subject.id = receivedSubject.id

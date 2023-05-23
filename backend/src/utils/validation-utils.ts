@@ -3,8 +3,8 @@ import { StringUtilts } from './string-utils';
 
 export class ValidationUtils {
   static validateStringId(id: string, propertyName: string) {
-    if (!StringUtilts.isString(id) || StringUtilts.isEmptyOrWhiteSpace(id) || !StringUtilts.isKebabCase(id)) {
-      throw new InvalidArgumentError(propertyName, `invalid ${propertyName} ${id} must be provided in kebab-case`);
+    if (!StringUtilts.isString(id) || StringUtilts.isEmptyOrWhiteSpace(id) || !StringUtilts.isValidUrlContent(id)) {
+      throw new InvalidArgumentError(propertyName, `invalid ${propertyName} ${id} must be provided in as valid url content prams`);
     }
   }
 
