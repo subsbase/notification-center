@@ -10,8 +10,8 @@ import { ArchivedNotification, ArchivedNotificationSchema } from './archived-not
 import { ArchivedNotificationsGlobalRepository } from './archived-notifications/global-repositorty';
 import { SchemaModule } from '../schema/schema.module';
 import { SchemaFactory } from '../schema/schema.factory';
-import { RepositoryFactoryGenerator } from '../repository-factory/repository.factory.generator';
-import { RepositoryFactoryModule } from '../repository-factory/repository.factory.module';
+import { RepositoryFactoryBuilder } from '../repository-factory/repository-factory.builder';
+import { RepositoryFactoryModule } from '../repository-factory/repository-factory.module';
 import { SubscribersGlobalRepository } from './subscriber/global-repository';
 
 @Module({})
@@ -57,16 +57,16 @@ export class RepositoriesModule {
         RealmGlobalRepository,
         {
           provide: SubjectsRepositoryFactory,
-          inject: [RepositoryFactoryGenerator],
-          useFactory: (repositoryFactory: RepositoryFactoryGenerator) => {
-            return repositoryFactory.generate(Subject.name, SubjectsRepository, SubjectsRepositoryFactory);
+          inject: [RepositoryFactoryBuilder],
+          useFactory: (repositoryFactoryBuilder: RepositoryFactoryBuilder) => {
+            return repositoryFactoryBuilder.build(Subject.name, SubjectsRepository, SubjectsRepositoryFactory);
           },
         },
         {
           provide: SubscribersRepositoryFactory,
-          inject: [RepositoryFactoryGenerator],
-          useFactory: (repositoryFactory: RepositoryFactoryGenerator) => {
-            return repositoryFactory.generate(Subscriber.name, SubscribersRepository, SubscribersRepositoryFactory);
+          inject: [RepositoryFactoryBuilder],
+          useFactory: (repositoryFactoryBuilder: RepositoryFactoryBuilder) => {
+            return repositoryFactoryBuilder.build(Subscriber.name, SubscribersRepository, SubscribersRepositoryFactory);
           },
         },
         ArchivedNotificationsGlobalRepository,
