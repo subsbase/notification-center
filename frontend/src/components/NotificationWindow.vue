@@ -27,7 +27,7 @@ const showNotificationWindowTrigger = ref(true)
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
 })
-const socket = io(process.env.VUE_APP_SERVER_BASE_URL, {
+const socket = io(import.meta.env.SERVER_BASE_URL, {
   extraHeaders: {
     'x-realm': getRealmHeader()
   }
@@ -60,7 +60,7 @@ const onArchiveUnArchive = (param) => {
 const showAllNotificationsPage = () => {
   let a = document.createElement('a')
   a.target = '_top'
-  a.href = process.env.VUE_APP_HOST_NOTIFICATIONS_URL
+  a.href = import.meta.env.HOST_NOTIFICATIONS_URL
   a.click()
 }
 
