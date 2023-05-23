@@ -8,4 +8,5 @@ export const SchemaOptions = {
     virtuals: true,
     getters: true,
   },
+  versionKey: false,
 };

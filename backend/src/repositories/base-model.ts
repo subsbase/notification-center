@@ -1,7 +1,7 @@
 import { Prop } from '@nestjs/mongoose';
 
 export abstract class BaseModel {
-  @Prop({ type: String, lowercase: true, alias: 'id' })
+  @Prop({ type: String, alias: 'id' })
   protected _id: string;
   id: string;
 

@@ -1,34 +1,33 @@
 import Handlebars from 'handlebars';
 import { Payload } from '../../types/global-types';
-import { Topic } from '../../repositories/topic/schema';
 import { Notification } from '../../repositories/subscriber/notification/schema';
 import { InvalidArgumentError } from '../../types/exceptions';
 import { StringUtilts } from '../../utils/string-utils';
+import { ValidationUtils } from '../../utils/validation-utils';
+import { Subject } from '../../repositories/subject/schema';
 
 export class NotificationProcessor {
-  build(topic: Topic, content: string, actionUrl: string): Notification {
-    if (topic == null || topic == undefined) {
-      throw new InvalidArgumentError('topic');
+  build(subject: Subject, topicId: string ,title: string, message: string, actionUrl: string): Notification {
+    if (subject == null || subject == undefined) {
+      throw new InvalidArgumentError('subject');
     }
 
-    if (this.isNotValidContent(content)) {
-      throw new InvalidArgumentError('content');
-    }
+    ValidationUtils.validateString(title, 'title');
+    ValidationUtils.validateString(message, 'message');
+    ValidationUtils.validateUrl(actionUrl, 'actionUrl')
 
     let notification = new Notification();
 
-    notification.topic = topic;
+    notification.subject = subject;
+    notification.topicId = topicId
     notification.actionUrl = actionUrl;
-    notification.content = content;
+    notification.title = title;
+    notification.message = message;
 
     return notification;
   }
 
   compileContent(template: string | undefined, payload: Payload): string {
     return StringUtilts.isString(payload) ? payload.toString() : Handlebars.compile(template)(payload);
-  }
-
-  isNotValidContent(content: string): boolean {
-    return typeof content !== 'string' || StringUtilts.isEmptyOrWhiteSpace(content);
   }
 }

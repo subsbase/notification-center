@@ -8,9 +8,12 @@ export class NotificationDto {
   to: Array<string>;
 
   @IsNotEmpty()
-  payload: Payload;
-
-  @IsNotEmpty()
   @IsString()
   actionUrl: string;
+  
+  title: string;
+  message: string;
+
+  templateId: string;
+  payload: Payload;
 }

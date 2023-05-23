@@ -1,21 +1,18 @@
-import { InvalidArgumentError } from '../../types/exceptions';
+import { ValidationUtils } from '../../utils/validation-utils';
 import { StringUtilts } from '../../utils/string-utils';
+import { Subject } from '../../repositories/subject/schema';
+import { Topic } from '../../repositories/subject/topic/schema';
 
 export class SubjectProcessor {
-  getTitleFormId(subjectKey: string) {
-    return StringUtilts.kebabToNormal(subjectKey);
+  buildSubjectWithEmptyTopics(receivedSubject: Subject): Subject {
+    const subject: Subject = new Subject()
+    subject.id = receivedSubject.id
+    subject.name = receivedSubject.name
+    subject.topics = new Map<string, Topic>() 
+    return subject;
   }
 
-  validateSubjectKey(subjectKey: string): void {
-    if (this.isNotValidSubjectKey(subjectKey)) {
-      throw new InvalidArgumentError(
-        'subject',
-        `Invalid subject key ${subjectKey} subject key must be provided in kebab-case`,
-      );
-    }
-  }
-
-  private isNotValidSubjectKey(subjectKey: string): boolean {
-    return !StringUtilts.isKebabCase(subjectKey);
+  validateSubjectId(subjectId: string): void {
+    ValidationUtils.validateStringId(subjectId, 'subject.id');
   }
 }
