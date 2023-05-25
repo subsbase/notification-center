@@ -1,5 +1,5 @@
 <template>
-  <div class="x-between px-20">
+  <div class="x-between px-20 py-20">
     <h4 class="font-size-16 mb-10">
       <i @click="goBack" v-if="source === 'page'" class="fa fa-chevron-left mr-20 clickable"></i>
       Notifications
@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <div class="x-between px-20 font-size-12" v-if="selectedFilter === 'All'">
+  <div class="x-between px-20 mb-20 font-size-12" v-if="selectedFilter === 'All'">
     <p class="mt-0">
       <span>
         You’ve got <strong> {{ getUnreadCount }} unread</strong> notifications
@@ -37,7 +37,10 @@
       :class="['notification-row mb-10', { 'read-notification': notification.read }]"
     >
       <div class="x-between font-size-12">
-        <p class="bold m-0">{{ notification?.topic?.name }}</p>
+        <div>
+          <p class="bold m-0">{{ notification?.title }}</p>
+          <p class="m-0">{{ notification?.message }}</p>
+        </div>
         <div>
           <span v-if="!notification.read" class="blue-circle mr-10"> </span>
           <img
@@ -89,7 +92,7 @@ const filters = ref(['All', 'Archive'])
 const getUnreadCount = computed(() => {
   return props.notifications.filter((notification) => !notification.read).length
 })
-
+console.log(props.notifications)
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
   themeID.value = getThemeId()
