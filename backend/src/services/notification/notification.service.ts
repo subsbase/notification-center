@@ -34,13 +34,24 @@ export class NotificationService {
     const subscribers = await this.subscribersRepositoryFactory.create(realm).aggregate([
       { $match: { _id: subscriberId } },
       {
-        $project: {
-          notifications: { $slice: ['$notifications', (pageNum - 1) * pageSize, pageSize] },
+        $unwind: '$notifications',
+      },
+      { $sort: { 'notifications.createdAt': -1 } },
+      {
+        $group: {
+          _id: '$_id',
+          id: { $first: '$_id' },
+          notifications: { $push: '$notifications' },
         },
       },
       {
-        $unwind: '$notifications',
+        $project: {
+          notifications: {
+            $slice: ['$notifications', (pageNum - 1) * pageSize, pageSize],
+          },
+        },
       },
+      { $unwind: '$notifications' },
       {
         $group: {
           _id: '$_id',
@@ -89,13 +100,24 @@ export class NotificationService {
     const subscribers = await this.subscribersRepositoryFactory.create(realm).aggregate([
       { $match: { _id: subscriberId } },
       {
-        $project: {
-          archivedNotifications: { $slice: ['$archivedNotifications', (pageNum - 1) * pageSize, pageSize] },
+        $unwind: '$archivedNotifications',
+      },
+      { $sort: { 'archivedNotifications.archivedAt': -1 } },
+      {
+        $group: {
+          _id: '$_id',
+          id: { $first: '$_id' },
+          notifications: { $push: '$archivedNotifications' },
         },
       },
       {
-        $unwind: '$archivedNotifications',
+        $project: {
+          notifications: {
+            $slice: ['$archivedNotifications', (pageNum - 1) * pageSize, pageSize],
+          },
+        },
       },
+      { $unwind: '$archivedNotifications' },
       {
         $group: {
           _id: '$_id',
