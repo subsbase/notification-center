@@ -21,10 +21,11 @@ const notifications = ref([])
 const archivedNotifications = ref([])
 const subscriberID = ref('')
 
-const socket = io('http://127.0.0.1:3000', {
+const socket = io(process.env.VUE_APP_SERVER_BASE_URL, {
   extraHeaders: {
     'x-realm': getRealmHeader
-  }
+  },
+  path: '/notifc/socket'
 })
 socket.on('notification', function () {
   fetchAllNotifications()

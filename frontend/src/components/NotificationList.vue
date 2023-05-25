@@ -4,7 +4,6 @@
       <i @click="goBack" v-if="source === 'page'" class="fa fa-chevron-left mr-20 clickable"></i>
       Notifications
     </h4>
-    {{ notifications.length }}
   </div>
   <div class="x-between px-20 font-size-12">
     <div class="d-flex filters mb-30">
@@ -38,7 +37,7 @@
       :class="['notification-row mb-10', { 'read-notification': notification.read }]"
     >
       <div class="x-between font-size-12">
-        <p class="bold m-0">{{ notification.topic.name }}</p>
+        <p class="bold m-0">{{ notification?.topic?.name }}</p>
         <div>
           <span v-if="!notification.read" class="blue-circle mr-10"> </span>
           <img

@@ -30,7 +30,8 @@ onBeforeMount(() => {
 const socket = io(process.env.VUE_APP_SERVER_BASE_URL, {
   extraHeaders: {
     'x-realm': getRealmHeader()
-  }
+  },
+  path: '/notifc/socket'
 })
 socket.on('connect', function () {
   socket.emit('joinGroup', subscriberID.value)
