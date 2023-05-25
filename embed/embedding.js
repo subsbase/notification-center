@@ -6,11 +6,18 @@
 function init() {
   sb.p = sb.p || {};
   for (p of sb.s) {
-    sb.css = "../../assets/embed.css";
     if (p[0] === "url") sb.url = p[1];
     if (p[0] === "subscriberId") sb.subid = p[1];
     if (p[0] === "realmHeader") sb.realm = p[1];
     if (p[0] === "theme") sb.t = p[1];
+    if (p[0] === "bellOptions") {
+      sb.bellOptions = sb.bellOptions || {};
+      if (sb["bellOptions"][p[2]] === "auto") {
+        sb["bellOptions"][p[1]] = "auto";
+      } else {
+        sb["bellOptions"][p[1]] = p[2];
+      }
+    }
     if (p[0] === "attachBell") {
       sb.p.bell = sb.p.bell || {};
       sb.p["bell"]["type"] = p[1];
@@ -18,7 +25,7 @@ function init() {
       try {
       } catch (error) {
         console.warn(
-          `Unable to attach notification center to element with ${p[1]}, make sure your configuration is set properly.`
+          `Unable to attach notification center to element with ${p[1]} ${p[2]}, make sure your configuration is set properly.`
         );
       }
     }
@@ -51,13 +58,19 @@ function createIframe() {
     e.stopPropagation();
     openNcWindow();
   });
-
-  window.addEventListener("message", function (e) {
-    iframeBell.height = e.data.height;
-    iframeBell.width = e.data.height;
-    bellParent.style.height = e.data.height + "px";
-    bellParent.style.width = e.data.height + "px";
-  });
+  if (sb.bellOptions.height === "auto") {
+    window.addEventListener("message", function (e) {
+      iframeBell.height = e.data.height;
+      iframeBell.width = e.data.height;
+      bellParent.style.height = e.data.height + "px";
+      bellParent.style.width = e.data.height + "px";
+    });
+  } else {
+    iframeBell.height = sb.bellOptions.height;
+    iframeBell.width = sb.bellOptions.width;
+    bellParent.style.height = sb.bellOptions.height + "px";
+    bellParent.style.width = sb.bellOptions.width + "px";
+  }
 
   const notificationWindowParent = document.createElement("div");
   notificationWindowParent.id = "notification-window";
@@ -136,13 +149,4 @@ function getBellPosition() {
 
   iframeNotification.style.top = topPosition;
   iframeNotification.style.left = leftPosition;
-}
-
-function requireCss(href) {
-  var l = document.createElement("link");
-  l.rel = "stylesheet";
-  l.type = "text/css";
-  l.href = href;
-  var head = document.getElementsByTagName("head")[0];
-  head.appendChild(l);
 }
