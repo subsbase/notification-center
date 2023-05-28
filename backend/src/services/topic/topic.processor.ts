@@ -7,14 +7,16 @@ export class TopicProcessor {
     ValidationUtils.validateStringId(id, propertyName);
   }
 
-  buildEmptyTopic(): Topic {
+  buildEmptyTopic(id: string): Topic {
     const topic = new Topic()
+    topic.id = id
     topic.notificationTemplates = new Map<string, NotificationTemplate>()
     return topic;
   }
 
-  buildNotificationTemplate(titleTemplate: string, messageTemplate: string) : NotificationTemplate {
+  buildNotificationTemplate(id: string,titleTemplate: string, messageTemplate: string) : NotificationTemplate {
     const notificationTemplate: NotificationTemplate = new NotificationTemplate()
+    notificationTemplate.id = id
     notificationTemplate.title = titleTemplate
     notificationTemplate.message = messageTemplate
     return notificationTemplate;

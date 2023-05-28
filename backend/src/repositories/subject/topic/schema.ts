@@ -5,6 +5,9 @@ import { NotificationTemplate } from './notification-template/schema';
 
 @Schema(SchemaOptions)
 export class Topic {
+  @Prop( { required: true } )
+  id: string;
+
   @Prop({ type: MongoSchema.Types.Map })
   notificationTemplates?: Map<string, NotificationTemplate>;
 }

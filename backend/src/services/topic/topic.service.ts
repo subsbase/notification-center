@@ -58,7 +58,7 @@ export class TopicService {
     topic = topics.get(id)!
     if(!topic){
       this.topicProcessor.validateId(id, 'topic.id');
-      topic = this.topicProcessor.buildEmptyTopic();
+      topic = this.topicProcessor.buildEmptyTopic(id);
       topics.set(id, topic)
       await this.subjectsRepositoryFactory.create(realm).update(subject.id, { topics: topics })
     }
@@ -70,7 +70,7 @@ export class TopicService {
     this.topicProcessor.validateId(topicId, 'topic id');
     this.topicProcessor.validateId(templateId, 'templateId');
     const subjectRepository = this.subjectsRepositoryFactory.create(realm);
-    const notificationTemplate = this.topicProcessor.buildNotificationTemplate(title, message)
+    const notificationTemplate = this.topicProcessor.buildNotificationTemplate(templateId, title, message)
     const updateResult = await subjectRepository.update(subjectId, { $set: { [`topics.${topicId}.notificationTemplates.${templateId}`] : notificationTemplate } });
     return { id: templateId, created: updateResult.modifiedCount > 0 }
   }

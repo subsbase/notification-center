@@ -33,7 +33,7 @@ export class TopicsController extends BaseController {
   @Authorize()
   @Post(':subjectId')
   async create(@Param('subjectId') subjectId: string, @Body() topicDto: TopicDto): Promise<IActionResult> {
-    const topic = { notificationTemplates: topicDto.notificationTemplates }
+    const topic = { id: topicDto.id, notificationTemplates: topicDto.notificationTemplates }
     const result = await this.topicManager.create(this.Realm,subjectId, topicDto.id, topic);
     if(!result.created){
       return this.notFound({ message: `subject id ${subjectId} was not found` })
