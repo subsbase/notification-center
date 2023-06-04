@@ -9,15 +9,14 @@
 
 <script setup>
 import { ref, onBeforeMount, onMounted } from 'vue'
-import { getAllNotifications } from '@/services/notifications'
+import { getAllNotifications, getNotificationsUnreadCount } from '@/services/notifications'
 import { io } from 'socket.io-client'
 
 import { getSubscriberId, getRealmHeader } from '../utils.js'
 
 const notificationCount = ref(0)
 const subscriberID = ref('')
-
-const socket = io(process.env.VUE_APP_SERVER_BASE_URL, {
+const socket = io(process.env.VUE_APP_WEBSOCKET_BASE_URL, {
   extraHeaders: {
     'x-realm': getRealmHeader()
   },
@@ -27,24 +26,24 @@ socket.on('connect', function () {
   socket.emit('joinGroup', subscriberID.value)
 })
 socket.on('notification', function () {
-  fetchAllNotifications()
+  fetchNotificationsUnreadCount()
 })
 
 socket.on('NotificationRead', function () {
-  fetchAllNotifications()
+  fetchNotificationsUnreadCount()
 })
 
 socket.on('NotificationsRead', function () {
-  fetchAllNotifications()
+  fetchNotificationsUnreadCount()
 })
 
 socket.on('NotificationArchived', function () {
-  fetchAllNotifications()
+  fetchNotificationsUnreadCount()
 })
 
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
-  fetchAllNotifications()
+  fetchNotificationsUnreadCount()
 })
 onMounted(() => {
   const height = document.body.offsetHeight
@@ -55,6 +54,16 @@ const fetchAllNotifications = () => {
   getAllNotifications(subscriberID.value)
     .then((res) => {
       notificationCount.value = res.filter((notification) => !notification.read).length
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+}
+
+const fetchNotificationsUnreadCount = () => {
+  getNotificationsUnreadCount(subscriberID.value)
+    .then((res) => {
+      notificationCount.value = res.count
     })
     .catch((err) => {
       console.error(err)

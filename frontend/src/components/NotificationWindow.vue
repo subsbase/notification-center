@@ -17,7 +17,7 @@ import { io } from 'socket.io-client'
 import NotificationList from './NotificationList.vue'
 import { getAllNotifications, getArchivedNotifications } from '@/services/notifications'
 
-import { getSubscriberId, getRealmHeader } from '../utils.js'
+import { getSubscriberId, getRealmHeader, getNotificationsPageURL } from '../utils.js'
 
 const notifications = ref([])
 const subscriberID = ref('')
@@ -27,7 +27,7 @@ const showNotificationWindowTrigger = ref(true)
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
 })
-const socket = io(process.env.VUE_APP_SERVER_BASE_URL, {
+const socket = io(process.env.VUE_APP_WEBSOCKET_BASE_URL, {
   extraHeaders: {
     'x-realm': getRealmHeader()
   },
@@ -61,7 +61,7 @@ const onArchiveUnArchive = (param) => {
 const showAllNotificationsPage = () => {
   let a = document.createElement('a')
   a.target = '_top'
-  a.href = process.env.VUE_APP_HOST_NOTIFICATIONS_URL
+  a.href = `http://${getNotificationsPageURL()}`
   a.click()
 }
 

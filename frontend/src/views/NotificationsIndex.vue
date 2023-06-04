@@ -21,7 +21,7 @@ const notifications = ref([])
 const archivedNotifications = ref([])
 const subscriberID = ref('')
 
-const socket = io(process.env.VUE_APP_SERVER_BASE_URL, {
+const socket = io(process.env.VUE_APP_WEBSOCKET_BASE_URL, {
   extraHeaders: {
     'x-realm': getRealmHeader
   },

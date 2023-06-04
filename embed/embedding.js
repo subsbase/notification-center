@@ -8,20 +8,21 @@ function init() {
   for (p of sb.s) {
     if (p[0] === "url") sb.url = p[1];
     if (p[0] === "subscriberId") sb.subid = p[1];
-    if (p[0] === "realmHeader") sb.realm = p[1];
+    if (p[0] === "realm") sb.realm = p[1];
     if (p[0] === "theme") sb.t = p[1];
-    if (p[0] === "bellOptions") {
-      sb.bellOptions = sb.bellOptions || {};
-      if (sb["bellOptions"][p[2]] === "auto") {
-        sb["bellOptions"][p[1]] = "auto";
+    if (p[0] === "allNotifications") sb.notifRoute = p[1];
+    if (p[0] === "iconOptions") {
+      sb.iconOptions = sb.iconOptions || {};
+      if (sb["iconOptions"][p[2]] === "auto") {
+        sb["iconOptions"][p[1]] = "auto";
       } else {
-        sb["bellOptions"][p[1]] = p[2];
+        sb["iconOptions"][p[1]] = p[2];
       }
     }
-    if (p[0] === "attachBell") {
-      sb.p.bell = sb.p.bell || {};
-      sb.p["bell"]["type"] = p[1];
-      sb.p["bell"][p[1]] = `${p[2]}`;
+    if (p[0] === "attachIon") {
+      sb.p.icon = sb.p.icon || {};
+      sb.p["icon"]["type"] = p[1];
+      sb.p["icon"][p[1]] = `${p[2]}`;
       try {
       } catch (error) {
         console.warn(
@@ -33,43 +34,43 @@ function init() {
 }
 
 function createIframe() {
-  const bellParent =
-    sb.p.bell.type === "id"
-      ? document.getElementById(sb.p.bell.id)
-      : document.getElementsByClassName(sb.p.bell.class)[0];
-  bellParent.style.position = "relative";
-  bellParent.style.cursor = "pointer";
+  const iconParent =
+    sb.p.icon.type === "id"
+      ? document.getElementById(sb.p.icon.id)
+      : document.getElementsByClassName(sb.p.icon.class)[0];
+  iconParent.style.position = "relative";
+  iconParent.style.cursor = "pointer";
 
-  const bellWrapper = document.createElement("div");
-  bellWrapper.style.position = "absolute";
-  bellWrapper.style.top = "0";
-  bellWrapper.style.left = "0";
-  bellWrapper.style.width = "100%";
-  bellWrapper.style.height = "100%";
-  bellParent.appendChild(bellWrapper);
+  const iconWrapper = document.createElement("div");
+  iconWrapper.style.position = "absolute";
+  iconWrapper.style.top = "0";
+  iconWrapper.style.left = "0";
+  iconWrapper.style.width = "100%";
+  iconWrapper.style.height = "100%";
+  iconParent.appendChild(iconWrapper);
 
-  const iframeBell = document.createElement("iframe");
-  iframeBell.setAttribute("id", "nc-iframe-bell");
-  iframeBell.allowTransparency = "true";
-  iframeBell.style.border = "0";
-  iframeBell.style.overflow = "hidden";
-  bellParent.appendChild(iframeBell);
-  bellWrapper.addEventListener("click", function (e) {
+  const iframeIcon = document.createElement("iframe");
+  iframeIcon.setAttribute("id", "nc-iframe-icon");
+  iframeIcon.allowTransparency = "true";
+  iframeIcon.style.border = "0";
+  iframeIcon.style.overflow = "hidden";
+  iconParent.appendChild(iframeIcon);
+  iconWrapper.addEventListener("click", function (e) {
     e.stopPropagation();
     openNcWindow();
   });
-  if (sb.bellOptions.height === "auto") {
+  if (sb.iconOptions.height === "auto") {
     window.addEventListener("message", function (e) {
-      iframeBell.height = e.data.height;
-      iframeBell.width = e.data.height;
-      bellParent.style.height = e.data.height + "px";
-      bellParent.style.width = e.data.height + "px";
+      iframeIcon.height = e.data.height;
+      iframeIcon.width = e.data.height;
+      iconParent.style.height = e.data.height + "px";
+      iconParent.style.width = e.data.height + "px";
     });
   } else {
-    iframeBell.height = sb.bellOptions.height;
-    iframeBell.width = sb.bellOptions.width;
-    bellParent.style.height = sb.bellOptions.height + "px";
-    bellParent.style.width = sb.bellOptions.width + "px";
+    iframeIcon.height = sb.iconOptions.height;
+    iframeIcon.width = sb.iconOptions.width;
+    iconParent.style.height = sb.iconOptions.height + "px";
+    iconParent.style.width = sb.iconOptions.width + "px";
   }
 
   const notificationWindowParent = document.createElement("div");
@@ -82,11 +83,11 @@ function createIframe() {
   iframeNotification.style.border = "0";
   notificationWindowParent.style.display = "none";
   loadNotificationsIndexPage();
-  loadIframeBell();
+  loadiframeIcon();
   setTimeout(() => {
-    getBellPosition();
+    getIconPosition();
   }, 700);
-  window.addEventListener("resize", getBellPosition);
+  window.addEventListener("resize", getIconPosition);
 }
 
 function loadNotificationsIndexPage() {
@@ -99,7 +100,7 @@ function loadNotificationsIndexPage() {
     notificationIndexParent.appendChild(iframeNotificationIndex);
     iframeNotificationIndex.style.height = "100vh";
     iframeNotificationIndex.setAttribute("width", "100%");
-    const src = `${sb.url}/notificationsIndex?subscriberId=${sb.subid}&themeID=${sb.t}`;
+    const src = `${sb.url}/notificationsIndex?subscriberId=${sb.subid}&themeID=${sb.t}&allNotifications=${sb.notifRoute}`;
     iframeNotificationIndex.setAttribute("src", src);
   }
 }
@@ -113,7 +114,7 @@ function openNcWindow() {
     iframeNotification.style.height = "0";
     notificationIndexParent.style.display = "none";
   } else {
-    const src = `${sb.url}?subscriberId=${sb.subid}&themeID=${sb.t}&realmHeader=${sb.realm}`;
+    const src = `${sb.url}?subscriberId=${sb.subid}&themeID=${sb.t}&realmHeader=${sb.realm}&allNotifications=${sb.notifRoute}`;
     document.getElementById("iframeNotification").setAttribute("src", src);
     notificationIndexParent.style.display = "block";
     iframeNotification.style.height = "430px";
@@ -133,19 +134,19 @@ function openNcWindow() {
   });
 }
 
-function loadIframeBell() {
-  const src = `${sb.url}/notificationsBell?subscriberId=${sb.subid}&themeID=${sb.t}&realmHeader=${sb.realm}`;
-  document.getElementById("nc-iframe-bell").setAttribute("src", src);
+function loadiframeIcon() {
+  const src = `${sb.url}/notificationsicon?subscriberId=${sb.subid}&themeID=${sb.t}&realmHeader=${sb.realm}&allNotifications=${sb.notifRoute}`;
+  document.getElementById("nc-iframe-icon").setAttribute("src", src);
 }
 
-function getBellPosition() {
-  const bellRect = document
-    .getElementById("nc-iframe-bell")
+function getIconPosition() {
+  const iconRect = document
+    .getElementById("nc-iframe-icon")
     .getBoundingClientRect();
   const iframeNotification = document.getElementById("iframeNotification");
 
-  const topPosition = bellRect.bottom + "px";
-  const leftPosition = bellRect.left - 410 + "px";
+  const topPosition = iconRect.bottom + "px";
+  const leftPosition = iconRect.left - 410 + "px";
 
   iframeNotification.style.top = topPosition;
   iframeNotification.style.left = leftPosition;
