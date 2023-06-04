@@ -6,7 +6,7 @@
       @on-handle-archive-unarchive="onArchiveUnArchive"
     />
     <div>
-      <p @click="showAllNotificationsPage()" class="medium clickable view-all-btn py-30">View all notifications</p>
+      <p class="medium clickable view-all-btn py-30" @click="showAllNotificationsPage()">View all notifications</p>
     </div>
   </div>
 </template>

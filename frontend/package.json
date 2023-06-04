@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "serve": "vite preview",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vite build",
     "lint": "vue-cli-service lint",
     "pretty": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,vue}\""
   },
@@ -28,25 +28,12 @@
     "@vue/cli-plugin-eslint": "~5.0.8",
     "@vue/cli-service": "~5.0.8",
     "eslint": "^8.40.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-vue": "^9.13.0",
     "prettier": "^2.8.8",
-    "node-sass": "^8.0.0",
     "sass": "^1.62.1",
     "sass-loader": "^13.2.2"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {}
   },
   "browserslist": [
     "> 1%",

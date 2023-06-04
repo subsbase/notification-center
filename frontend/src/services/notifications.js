@@ -3,7 +3,6 @@ import { BASE_URL, HEADERS } from './server'
 
 export const getAllNotifications = (subscriberId) => {
   return new Promise((resolve, reject) => {
-    console.log(`baassssssss ${BASE_URL}`)
     axios({
       headers: HEADERS,
       method: 'get',

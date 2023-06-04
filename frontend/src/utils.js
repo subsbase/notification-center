@@ -7,7 +7,7 @@ export const getSubscriberId = () => {
 export const getThemeId = () => {
   let url = new URL(window.location)
   let params = new URLSearchParams(url.search)
-  return `#` + params.get('themeID')
+  return '#' + params.get('themeID')
 }
 
 export const getRealmHeader = () => {
