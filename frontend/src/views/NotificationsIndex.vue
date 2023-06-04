@@ -2,7 +2,7 @@
   <div>
     <NotificationList
       :notifications="notifications"
-      :archivedNotifications="archivedNotifications"
+      :archived-notifications="archivedNotifications"
       :source="'page'"
       @on-click-mark-read="refreshNotifications"
     />

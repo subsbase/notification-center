@@ -1,7 +1,7 @@
 <template>
   <div class="x-between px-20">
     <h4 class="font-size-16 mb-10">
-      <i @click="goBack" v-if="source === 'page'" class="fa fa-chevron-left mr-20 clickable"></i>
+      <i v-if="source === 'page'" class="fa fa-chevron-left mr-20 clickable" @click="goBack" />
       Notifications
     </h4>
     {{ notifications.length }}
@@ -19,39 +19,41 @@
     </div>
   </div>
 
-  <div class="x-between px-20 font-size-12" v-if="selectedFilter === 'All'">
+  <div v-if="selectedFilter === 'All'" class="x-between px-20 font-size-12">
     <p class="mt-0">
       <span>
         You’ve got <strong> {{ getUnreadCount }} unread</strong> notifications
       </span>
     </p>
-    <p v-if="notifications.length > 0" @click="handleMarkAllAsRead" class="link clickable mt-0 text-right">
+    <p v-if="notifications.length > 0" class="link clickable mt-0 text-right" @click="handleMarkAllAsRead">
       Mark all as read
     </p>
   </div>
 
   <div :class="['px-20', source === 'page' ? '' : 'notification-list']">
     <div
-      @click="handleMarkAsRead(notification._id, notification.actionUrl)"
       v-for="notification in notifications"
       :key="notification._id"
       :class="['notification-row mb-10', { 'read-notification': notification.read }]"
+      @click="handleMarkAsRead(notification._id, notification.actionUrl)"
     >
       <div class="x-between font-size-12">
-        <p class="bold m-0">{{ notification.topic.name }}</p>
+        <p class="bold m-0">
+          {{ notification.topic.name }}
+        </p>
         <div>
-          <span v-if="!notification.read" class="blue-circle mr-10"> </span>
+          <span v-if="!notification.read" class="blue-circle mr-10" />
           <img
             v-if="notification.archivedAt"
-            @click.stop="handleUnArchiveNotification(notification._id)"
             class="clickable top-1 pos-relative"
             src="../assets/unarchive-icon.svg"
+            @click.stop="handleUnArchiveNotification(notification._id)"
           />
           <img
             v-else
-            @click.stop="handleArchiveNotification(notification._id)"
             class="clickable top-1 pos-relative"
             src="../assets/archive-icon.svg"
+            @click.stop="handleArchiveNotification(notification._id)"
           />
         </div>
       </div>
