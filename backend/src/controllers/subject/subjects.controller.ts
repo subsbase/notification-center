@@ -33,31 +33,20 @@ export class SubjectsController extends BaseController {
   @Authorize()
   @Post()
   async create(@Body() subject: Subject): Promise<IActionResult> {
-    try {
-      const result = await this.subjectManager.create(this.Realm, subject);
-
-      if (!result.created) {
-        return this.badRequest(result);
-      } else {
-        return this.created(result);
-      }
-    } catch (error) {
-      return this.internalServerError(error);
+    const result = await this.subjectManager.create(this.Realm, subject)
+    if (!result.created) {
+      return this.badRequest();
     }
+    return this.created(result);
   }
 
   @Authorize()
   @Put()
   async update(@Body() subject: Subject): Promise<IActionResult> {
-    try {
-      const result = await this.subjectManager.update(this.Realm, subject);
-      if (result.modifiedCount < 1) {
-        return this.notFound();
-      } else {
-        return this.ok();
-      }
-    } catch (error) {
-      return this.internalServerError(error);
-    }
+    const result = await this.subjectManager.update(this.Realm, subject);
+    if (result.modifiedCount < 1) {
+      return this.notFound();
+    } 
+    return this.ok(result);
   }
 }

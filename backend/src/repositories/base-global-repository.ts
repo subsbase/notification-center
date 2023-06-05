@@ -51,6 +51,20 @@ export abstract class GlobalRepository<T extends Document, TSchema> {
     return result;
   }
 
+  async findOrCreateById(
+    id: any,
+    query: FilterQuery<T>,
+    projection?: ProjectionType<T>,
+    queryOptions?: QueryOptions<T>,
+    saveOptions?: SaveOptions,
+  ): Promise<TSchema> {
+    const result = (await this.model.findById(id, projection, queryOptions)) as TSchema;
+    if (!result) {
+      return (await this.save(query as TSchema, saveOptions)) as TSchema;
+    }
+    return result;
+  }
+
   async insertMany(
     docs: Array<TSchema>,
     options: InsertManyOptions,

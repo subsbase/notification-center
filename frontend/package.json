@@ -1,21 +1,23 @@
 {
   "name": "frontend",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "private": false,
+  "type": "module",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "dev": "vite",
+    "serve": "vite preview",
+    "build": "vite build",
     "lint": "vue-cli-service lint",
     "pretty": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,vue}\""
   },
   "dependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
     "axios": "^1.4.0",
     "babel": "^6.23.0",
     "core-js": "^3.30.2",
     "moment": "^2.29.4",
-    "node-sass": "^8.0.0",
-    "sass-loader": "^13.2.2",
     "socket.io-client": "^4.6.1",
+    "vite": "^4.3.8",
     "vue": "^3.3.4",
     "vue-router": "^4.2.1"
   },
@@ -25,23 +27,13 @@
     "@vue/cli-plugin-babel": "~5.0.8",
     "@vue/cli-plugin-eslint": "~5.0.8",
     "@vue/cli-service": "~5.0.8",
-    "prettier": "^2.8.8",
     "eslint": "^8.40.0",
-    "eslint-plugin-vue": "^9.13.0"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {}
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-vue": "^9.13.0",
+    "prettier": "^2.8.8",
+    "sass": "^1.62.1",
+    "sass-loader": "^13.2.2"
   },
   "browserslist": [
     "> 1%",

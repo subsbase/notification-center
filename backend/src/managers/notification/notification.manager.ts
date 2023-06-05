@@ -29,7 +29,7 @@ export class NotificationManager {
 
   async countUnread(realm: string, subscriberId: string) {
     const unreadNotificationsCount = await this.notificationService.countUnread(realm, subscriberId);
-    return { count: unreadNotificationsCount }
+    return { count: unreadNotificationsCount };
   }
 
   async getAllArchivedNotifications(
@@ -84,19 +84,20 @@ export class NotificationManager {
     subjectId: string,
     topicId: string,
     actionUrl: string,
-    payload: Payload,
     subscribersIds: Array<string>,
+    title: string,
+    message: string,
+    templateId: string,
+    payload: Payload,
   ) {
     const subject = await this.subjectService.getOrCreate(realm, subjectId);
 
-    //gets or creates topic by the event
+    //gets or creates topic by the topicId
     const topic = await this.topicsService.getOrCreate(realm, topicId, subject);
 
-    const notificationTemplate = topic.notificationTemplate;
+    const [titleTemplate, messageTemplate] = this.topicsService.getNotificationTemplate(topic, title, message, templateId)
 
-    const content = this.notificationService.compileContent(notificationTemplate?.template, payload);
-
-    const notification = this.notificationService.buildNotification(topic, content, actionUrl);
+    const notification = this.notificationService.buildNotification(subject, topicId, titleTemplate, messageTemplate, actionUrl, payload);
 
     await this.notificationService.notifyAll(realm, subscribersIds, notification);
 

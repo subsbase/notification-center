@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { ArchivedNotificationsGlobalRepository } from '../../repositories/archived-notifications/global-repositorty';
 import { SubscribersGlobalRepository } from '../../repositories/subscriber/global-repository';
 import { Types } from 'mongoose';
-import { InvalidArgumentError } from '../../types/exceptions';
 import { Subscriber } from '../../repositories/subscriber/schema';
 import { ArchivedNotificationProcessor } from './archived.notification.processor';
+import { ValidationUtils } from '../../utils/validation-utils';
 
 @Injectable()
 export class ArchiveNotificationService {
@@ -15,9 +15,8 @@ export class ArchiveNotificationService {
   ) {}
 
   getNotificationsToArchive(thresholdDays: number): Promise<Array<Subscriber>> {
-    if (this.isInvalidThresholdDays(thresholdDays)) {
-      throw new InvalidArgumentError('thresholdDays');
-    }
+    //validate thresholdDays to make sure it is correct number
+    ValidationUtils.validateNaturalNumber(thresholdDays, 'thresholdDays');
 
     return this.subscribersGlobalRepository
       .aggregate([
@@ -58,10 +57,6 @@ export class ArchiveNotificationService {
 
         return aggregationResult;
       });
-  }
-
-  private isInvalidThresholdDays(thresholdDays: number): boolean {
-    return typeof thresholdDays !== 'number' || isNaN(thresholdDays) || thresholdDays < 0;
   }
 
   async archive(subscribers: Array<Subscriber>): Promise<void> {

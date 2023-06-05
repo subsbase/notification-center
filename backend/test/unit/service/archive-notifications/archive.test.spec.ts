@@ -2,11 +2,11 @@ import { ArchiveNotificationService } from '../../../../src/services/archived-no
 import { ArchivedNotificationsGlobalRepository } from '../.../../../../../src/repositories/archived-notifications/global-repositorty';
 import { SubscribersGlobalRepository } from '../../../../src/repositories/subscriber/global-repository';
 import { createMock } from '@golevelup/ts-jest';
-import { Topic } from '../../../../src/repositories/topic/schema';
 import { Subscriber } from '../../../../src/repositories/subscriber/schema';
 import { ArchivedNotificationProcessor } from '../../../../src/services/archived-notifications/archived.notification.processor';
 import { ArchivedNotification as SubscriberArchivedNotification } from '../../../../src/repositories/subscriber/archived-notification/schema';
 import { ArchivedNotification } from '../../../../src/repositories/archived-notifications/schema';
+import { Subject } from '../../../../src/repositories/subject/schema';
 
 describe('ArchiveNotificationService - archive', () => {
   let service: ArchiveNotificationService;
@@ -44,8 +44,8 @@ describe('ArchiveNotificationService - archive', () => {
   it('should insert notifications only for subscribers that have notifications to archive', async () => {
     const notification: SubscriberArchivedNotification = new SubscriberArchivedNotification();
     notification.id = '6457a58fc3efba97726d7e99';
-    notification.content = 'test-notification';
-    notification.topic = new Topic();
+    notification.message = 'test-notification';
+    notification.subject = new Subject();
     notification.archivedAt = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     notification.read = false;
     notification.actionUrl = 'google.com';
@@ -83,11 +83,11 @@ describe('ArchiveNotificationService - archive', () => {
     expected.realm = 'realm2';
     expected.actionUrl = notification.actionUrl;
     expected.archivedAt = notification.archivedAt;
-    expected.content = notification.content;
+    expected.message = notification.message;
     expected.createdAt = notification.createdAt;
     expected.id = notification.id;
     expected.read = notification.read;
-    expected.topic = new Topic();
+    expected.subject = new Subject();
     expected.updatedAt = notification.updatedAt;
 
     await service.archive(subscribers);
@@ -97,8 +97,8 @@ describe('ArchiveNotificationService - archive', () => {
   function getSubscriberArchivedNotification(): SubscriberArchivedNotification {
     const subscriberArchivedNotification: SubscriberArchivedNotification = new SubscriberArchivedNotification();
     subscriberArchivedNotification.id = '6457a58fc3efba97726d7e99';
-    subscriberArchivedNotification.content = 'test-notification';
-    subscriberArchivedNotification.topic = new Topic();
+    subscriberArchivedNotification.message = 'test-notification';
+    subscriberArchivedNotification.subject = new Subject();
     subscriberArchivedNotification.archivedAt = expect.any(Date);
     subscriberArchivedNotification.read = false;
     subscriberArchivedNotification.actionUrl = 'google.com';
@@ -141,8 +141,8 @@ describe('ArchiveNotificationService - archive', () => {
     notification1.subscriber = subscriber1;
     notification1.realm = subscriber1.realm;
     notification1.id = notification.id;
-    notification1.content = notification.content;
-    notification1.topic = notification.topic;
+    notification1.message = notification.message;
+    notification1.subject = notification.subject;
     notification1.archivedAt = notification.archivedAt;
     notification1.read = notification.read;
     notification1.actionUrl = notification.actionUrl;
@@ -153,8 +153,8 @@ describe('ArchiveNotificationService - archive', () => {
     notification2.subscriber = subscriber1;
     notification2.realm = subscriber1.realm;
     notification2.id = notification.id;
-    notification2.content = notification.content;
-    notification2.topic = notification.topic;
+    notification2.message = notification.message;
+    notification2.subject = notification.subject;
     notification2.archivedAt = notification.archivedAt;
     notification2.read = notification.read;
     notification2.actionUrl = notification.actionUrl;
@@ -165,8 +165,8 @@ describe('ArchiveNotificationService - archive', () => {
     notification3.subscriber = subscriber2;
     notification3.realm = subscriber2.realm;
     notification3.id = notification.id;
-    notification3.content = notification.content;
-    notification3.topic = notification.topic;
+    notification3.message = notification.message;
+    notification3.subject = notification.subject;
     notification3.archivedAt = notification.archivedAt;
     notification3.read = notification.read;
     notification3.actionUrl = notification.actionUrl;

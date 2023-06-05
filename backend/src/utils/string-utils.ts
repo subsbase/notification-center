@@ -1,20 +1,6 @@
 export class StringUtilts {
-  static kebabToNormal(kebabString: string): string {
-    return kebabString
-      .split('-')
-      .map((word) => {
-        const [first, ...rest] = word;
-        return first.toUpperCase() + rest.join('');
-      })
-      .join(' ');
-  }
-
-  static normalToKebab(str: string): string {
-    return str.replace(/\s+/g, '-').toLowerCase();
-  }
-
-  static isKebabCase(str: string): boolean {
-    return /^[a-z]+(-[a-z]+)*$/.test(str);
+  static isValidUrlContent(str: string){
+    return /^[a-zA-Z0-9\-._#[@!$'()*,;]*$/.test(str);
   }
 
   static isString(obj: any): boolean {
@@ -26,6 +12,6 @@ export class StringUtilts {
   }
 
   static isEmptyOrWhiteSpace(str: string): boolean {
-    return str.trim().length === 0;
+    return str?.trim().length === 0;
   }
 }

@@ -16,7 +16,7 @@ import { getSubscriberId, getRealmHeader } from '../utils.js'
 
 const notificationCount = ref(0)
 const subscriberID = ref('')
-const socket = io(process.env.VUE_APP_WEBSOCKET_BASE_URL, {
+const socket = io(import.meta.env.SERVER_BASE_URL, {
   extraHeaders: {
     'x-realm': getRealmHeader()
   },

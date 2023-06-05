@@ -10,11 +10,11 @@ describe('SubjectService.getOrCreate', () => {
   it('should return an Subject object', async () => {
     // Arrange
     const realm = 'test-realm';
-    const subjectKey = 'invoice';
+    const subjectId = 'invoice';
     const existingSubject = new Subject();
-    existingSubject.id = subjectKey;
+    existingSubject.id = subjectId;
     const mockSubjectsRepository = createMock<SubjectsRepository>({
-      findOrCreate: jest.fn().mockResolvedValue(existingSubject),
+      findOrCreateById: jest.fn().mockResolvedValue(existingSubject),
     });
     const mockSubjectsRepositoryFactory = createMock<SubjectsRepositoryFactory>({
       create: jest.fn().mockReturnValueOnce(mockSubjectsRepository),
@@ -23,7 +23,7 @@ describe('SubjectService.getOrCreate', () => {
     const subjectProcessor = new SubjectProcessor();
     const subjectService = new SubjectService(subjectProcessor, mockSubjectsRepositoryFactory);
     // Act
-    const result = await subjectService.getOrCreate(realm, subjectKey);
+    const result = await subjectService.getOrCreate(realm, subjectId);
 
     // Assert
     expect(result).toBe(existingSubject);
@@ -32,9 +32,9 @@ describe('SubjectService.getOrCreate', () => {
   it('should throw error if findOrCreate throws error', async () => {
     // Arrange
     const realm = 'test-realm';
-    const subjectKey = 'invoice';
+    const subjectId = 'invoice';
     const existingSubject = new Subject();
-    existingSubject.id = subjectKey;
+    existingSubject.id = subjectId;
     const mockSubjectsRepository = createMock<SubjectsRepository>();
     const mockSubjectsRepositoryFactory = createMock<SubjectsRepositoryFactory>({
       create: jest.fn().mockReturnValueOnce(mockSubjectsRepository),
@@ -42,19 +42,19 @@ describe('SubjectService.getOrCreate', () => {
     const subjectProcessor = new SubjectProcessor();
     const subjectService = new SubjectService(subjectProcessor, mockSubjectsRepositoryFactory);
 
-    jest.spyOn(mockSubjectsRepository, 'findOrCreate').mockRejectedValue(new MongoServerError({}));
+    jest.spyOn(mockSubjectsRepository, 'findOrCreateById').mockRejectedValue(new MongoServerError({}));
 
     // Assert
-    await expect(subjectService.getOrCreate(realm, subjectKey)).rejects.toThrowError(MongoError);
-    expect(mockSubjectsRepository.findOrCreate).toHaveBeenCalledWith({ id: subjectKey, title: 'Invoice' });
+    await expect(subjectService.getOrCreate(realm, subjectId)).rejects.toThrowError(MongoError);
+    expect(mockSubjectsRepository.findOrCreateById).toHaveBeenCalledWith(subjectId, { _id: subjectId, name: 'Invoice' });
   });
 
   it('should throw error if invalid subject key', async () => {
     // Arrange
     const realm = 'test-realm';
-    const subjectKey = 'INVOICE';
+    const subjectId = 'INVOICE';
     const existingSubject = new Subject();
-    existingSubject.id = subjectKey;
+    existingSubject.id = subjectId;
     const mockSubjectsRepository = createMock<SubjectsRepository>();
     const mockSubjectsRepositoryFactory = createMock<SubjectsRepositoryFactory>({
       create: jest.fn().mockResolvedValue(mockSubjectsRepository),
@@ -64,11 +64,11 @@ describe('SubjectService.getOrCreate', () => {
 
     try {
       //Act
-      await subjectService.getOrCreate(realm, subjectKey);
+      await subjectService.getOrCreate(realm, subjectId);
     } catch (err) {
       // Assert
       expect(err).toBeInstanceOf(InvalidArgumentError);
     }
-    expect(mockSubjectsRepository.findOrCreate).not.toHaveBeenCalled();
+    expect(mockSubjectsRepository.findOrCreateById).not.toHaveBeenCalled();
   });
 });
