@@ -19,7 +19,7 @@ function init() {
         sb["iconOptions"][p[1]] = p[2];
       }
     }
-    if (p[0] === "attachIon") {
+    if (p[0] === "attachIcon") {
       sb.p.icon = sb.p.icon || {};
       sb.p["icon"]["type"] = p[1];
       sb.p["icon"][p[1]] = `${p[2]}`;
