@@ -47,6 +47,35 @@ body {
 .notification-list {
     max-height: 300px;
     overflow-y: auto;
+    /*
+ * Sidebar scrollbar styling for Chrome & Safari
+ */
+    &::-webkit-scrollbar {
+        width: 7px !important;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #eeeeee !important;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #838383 !important;
+    }
+
+    &::-webkit-scrollbar {
+        width: 7px !important;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #eeeeee !important;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #838383 !important;
+    }
+
+    scrollbar-color: #838383 #eeeeee;
+    scrollbar-width: thin;
 }
 
 .view-all-btn {

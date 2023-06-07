@@ -27,7 +27,7 @@ const showNotificationWindowTrigger = ref(true)
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
 })
-const socket = io(process.env.VUE_APP_WEBSOCKET_BASE_URL, {
+const socket = io(import.meta.env.VITE_WEBSOCKET_BASE_URL, {
   extraHeaders: {
     'x-realm': getRealmHeader()
   },
@@ -68,7 +68,7 @@ const showAllNotificationsPage = () => {
 const fetchAllNotifications = () => {
   getAllNotifications(subscriberID.value)
     .then((res) => {
-      notifications.value = res.reverse()
+      notifications.value = res
     })
     .catch((err) => {
       console.error(err)

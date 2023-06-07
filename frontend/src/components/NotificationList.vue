@@ -19,7 +19,7 @@
   </div>
 
   <div v-if="selectedFilter === 'All'" class="x-between px-20 font-size-12">
-    <p class="mt-0">
+    <p class="mb-10">
       <span>
         You’ve got <strong> {{ getUnreadCount }} unread</strong> notifications
       </span>
@@ -37,9 +37,12 @@
       @click="handleMarkAsRead(notification._id, notification.actionUrl)"
     >
       <div class="x-between font-size-12">
-        <p class="bold m-0">
-          {{ notification.topic.name }}
-        </p>
+        <div class="my-5">
+          <p class="bold m-0">
+            {{ notification.title }}
+          </p>
+          <p class="" v-html="notification.message"></p>
+        </div>
         <div>
           <span v-if="!notification.read" class="blue-circle mr-10" />
           <img
@@ -91,7 +94,6 @@ const filters = ref(['All', 'Archive'])
 const getUnreadCount = computed(() => {
   return props.notifications.filter((notification) => !notification.read).length
 })
-console.log(props.notifications)
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
   themeID.value = getThemeId()
@@ -110,7 +112,7 @@ const onChangeFilter = (filterType) => {
 const handleArchiveNotification = (notificationId) => {
   const payload = []
   payload.push(notificationId)
-  archiveNotification(subscriberID, payload)
+  archiveNotification(subscriberID.value, payload)
     .then(() => {
       onChangeFilter('Archive')
       emit('on-click-mark-read')
@@ -152,10 +154,7 @@ const handleMarkAsRead = (notificationId, actionUrl) => {
     markAsRead(subscriberID.value, notificationId)
       .then(() => {
         emit('on-click-mark-read')
-        let a = document.createElement('a')
-        a.target = '_blank'
-        a.href = actionUrl
-        a.click()
+        window.top.location.href = actionUrl
       })
       .catch((err) => {
         console.error(err)

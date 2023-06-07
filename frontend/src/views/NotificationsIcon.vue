@@ -1,7 +1,7 @@
 <template>
   <div class="clickable notification-bell" @click="fetchAllNotifications()">
     <div class="py-5 px-5 pos-relative">
-      <span class="notification-count">{{ notificationCount }}</span>
+      <span v-if="notificationCount > 0" class="notification-count">{{ notificationCount }}</span>
       <img class="clickable top-1" src="../assets/notification.png" />
     </div>
   </div>
@@ -16,7 +16,7 @@ import { getSubscriberId, getRealmHeader } from '../utils.js'
 
 const notificationCount = ref(0)
 const subscriberID = ref('')
-const socket = io(import.meta.env.SERVER_BASE_URL, {
+const socket = io(import.meta.env.VITE_WEBSOCKET_BASE_URL, {
   extraHeaders: {
     'x-realm': getRealmHeader()
   },
