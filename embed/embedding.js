@@ -35,7 +35,7 @@ function init() {
 
 function createIframe() {
   const iconParent =
-    sb.p.icon.type === "id"
+    sb.p.icon?.type === "id"
       ? document.getElementById(sb.p.icon.id)
       : document.getElementsByClassName(sb.p.icon.class)[0];
   iconParent.style.position = "relative";
@@ -72,17 +72,12 @@ function createIframe() {
     iconParent.style.height = sb.iconOptions.height + "px";
     iconParent.style.width = sb.iconOptions.width + "px";
   }
-
   const notificationWindowParent = document.createElement("div");
-  notificationWindowParent.id = "notification-window";
-  document.body.appendChild(notificationWindowParent);
-  const iframeNotification = document.createElement("iframe");
-  iframeNotification.id = "iframeNotification";
-  notificationWindowParent.appendChild(iframeNotification);
-  iframeNotification.allowTransparency = "true";
-  iframeNotification.style.border = "0";
-  notificationWindowParent.style.display = "none";
-  loadNotificationsIndexPage();
+  if (!document.getElementById("notification-window")) {
+    notificationWindowParent.id = "notification-window";
+    document.body.appendChild(notificationWindowParent);
+    loadNotificationsIndexPage();
+  }
   loadiframeIcon();
   setTimeout(() => {
     getIconPosition();
@@ -91,17 +86,18 @@ function createIframe() {
 }
 
 function loadNotificationsIndexPage() {
-  const notificationIndexParent = document.getElementById("notificationIndex");
+  const notificationIndexParent = document.getElementById(
+    "notification-window"
+  );
   if (notificationIndexParent) {
     const iframeNotificationIndex = document.createElement("iframe");
     iframeNotificationIndex.setAttribute("id", "iframeNotificationIndex");
     iframeNotificationIndex.allowTransparency = "true";
     iframeNotificationIndex.style.border = "0";
     notificationIndexParent.appendChild(iframeNotificationIndex);
-    iframeNotificationIndex.style.height = "100vh";
+    notificationIndexParent.style.display = "none";
+    iframeNotificationIndex.style.height = "0";
     iframeNotificationIndex.setAttribute("width", "100%");
-    const src = `${sb.url}/notificationsIndex?subscriberId=${sb.subid}&themeID=${sb.t}&allNotifications=${sb.notifRoute}`;
-    iframeNotificationIndex.setAttribute("src", src);
   }
 }
 
@@ -109,26 +105,28 @@ function openNcWindow() {
   const notificationIndexParent = document.getElementById(
     "notification-window"
   );
-  if (document.getElementById("iframeNotification").getAttribute("src")) {
-    document.getElementById("iframeNotification").setAttribute("src", "");
-    iframeNotification.style.height = "0";
+  const notificationWindow = document.getElementById("iframeNotificationIndex");
+  if (notificationWindow.getAttribute("src")) {
+    notificationWindow.setAttribute("src", "");
+    notificationWindow.style.height = "0";
     notificationIndexParent.style.display = "none";
   } else {
     const src = `${sb.url}?subscriberId=${sb.subid}&themeID=${sb.t}&realmHeader=${sb.realm}&allNotifications=${sb.notifRoute}`;
-    document.getElementById("iframeNotification").setAttribute("src", src);
+    notificationWindow.setAttribute("src", src);
     notificationIndexParent.style.display = "block";
-    iframeNotification.style.height = "430px";
-    iframeNotification.style.width = "450px";
-    iframeNotification.style.position = "fixed";
-    iframeNotification.style.zIndex = "1100";
+    notificationWindow.style.height = "550px";
+    notificationWindow.style.overflow = "hidden";
+    notificationWindow.style.width = "450px";
+    notificationWindow.style.position = "fixed";
+    notificationWindow.style.zIndex = "1100";
   }
 
   document.addEventListener("click", function (event) {
     const targetElement = event.target;
     // Check if the clicked element is outside the notification div
-    if (!iframeNotification.contains(targetElement)) {
-      iframeNotification.setAttribute("src", "");
-      iframeNotification.style.height = "0";
+    if (!notificationWindow.contains(targetElement)) {
+      notificationWindow.setAttribute("src", "");
+      notificationWindow.style.height = "0";
       document.removeEventListener("click", arguments.callee);
     }
   });
@@ -143,7 +141,7 @@ function getIconPosition() {
   const iconRect = document
     .getElementById("nc-iframe-icon")
     .getBoundingClientRect();
-  const iframeNotification = document.getElementById("iframeNotification");
+  const iframeNotification = document.getElementById("iframeNotificationIndex");
 
   const topPosition = iconRect.bottom + "px";
   const leftPosition = iconRect.left - 410 + "px";
