@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router'
 import NotificationsPopup from '@/views/NotificationsPopup.vue'
 import NotificationsIndex from '@/views/NotificationsIndex.vue'
-import NotificationsBell from '@/views/NotificationsBell.vue'
+import NotificationsIcon from '@/views/NotificationsIcon.vue'
 
 const routes = [
   {
@@ -15,9 +15,9 @@ const routes = [
     component: NotificationsIndex
   },
   {
-    path: '/notificationsBell',
-    name: 'NotificationsBell',
-    component: NotificationsBell
+    path: '/notificationsIcon',
+    name: 'NotificationsIcon',
+    component: NotificationsIcon
   }
 ]
 

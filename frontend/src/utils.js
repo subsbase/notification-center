@@ -15,3 +15,9 @@ export const getRealmHeader = () => {
   let params = new URLSearchParams(url.search)
   return params.get('realmHeader')
 }
+
+export const getNotificationsPageURL = () => {
+  let url = new URL(window.location)
+  let params = new URLSearchParams(url.search)
+  return params.get('allNotifications')
+}

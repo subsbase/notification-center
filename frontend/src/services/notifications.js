@@ -12,6 +12,17 @@ export const getAllNotifications = (subscriberId) => {
       .catch((err) => reject(err))
   })
 }
+export const getNotificationsUnreadCount = (subscriberId) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      headers: HEADERS,
+      method: 'get',
+      url: `${BASE_URL}/subscribers/${subscriberId}/notifications/countunread`
+    })
+      .then((res) => resolve(res.data))
+      .catch((err) => reject(err))
+  })
+}
 
 export const getArchivedNotifications = (subscriberId) => {
   return new Promise((resolve, reject) => {
@@ -28,6 +39,7 @@ export const getArchivedNotifications = (subscriberId) => {
 export const markAllAsRead = (subscriberId) => {
   return new Promise((resolve, reject) => {
     axios({
+      headers: HEADERS,
       method: 'patch',
       url: `${BASE_URL}/subscribers/${subscriberId}/notifications/markasread`
     })
@@ -41,7 +53,7 @@ export const markAsRead = (subscriberId, notificationId) => {
     axios({
       headers: HEADERS,
       method: 'patch',
-      url: `${BASE_URL}/subscribers/${subscriberId}/notification/${notificationId}/markasread`
+      url: `${BASE_URL}/subscribers/${subscriberId}/notifications/${notificationId}/markasread`
     })
       .then((res) => resolve(res.data))
       .catch((err) => reject(err))
