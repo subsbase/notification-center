@@ -28,7 +28,7 @@ export class ServicesModule {
           global: true,
           secret: process.env.JWT_SECRET,
           signOptions: {
-            expiresIn: '1d',
+            expiresIn: process.env.JWT_EXPIRIN,
             issuer: process.env.JWT_ISSUER,
             audience: process.env.JWT_AUDIENCE,
           },
