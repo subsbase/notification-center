@@ -17,7 +17,6 @@ import { io } from 'socket.io-client'
 import NotificationList from './NotificationList.vue'
 import { getAllNotifications, getArchivedNotifications } from '@/services/notifications'
 import { BASE_URL } from '@/services/server'
-
 import { getSubscriberId, getRealmHeader, getNotificationsPageURL } from '../utils.js'
 
 const notifications = ref([])

@@ -11,7 +11,6 @@
 import { ref, onBeforeMount, onMounted } from 'vue'
 import { getAllNotifications, getNotificationsUnreadCount } from '@/services/notifications'
 import { io } from 'socket.io-client'
-
 import { getSubscriberId, getRealmHeader } from '../utils.js'
 import { BASE_URL } from '@/services/server'
 
