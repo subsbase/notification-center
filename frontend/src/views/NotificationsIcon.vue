@@ -13,10 +13,11 @@ import { getAllNotifications, getNotificationsUnreadCount } from '@/services/not
 import { io } from 'socket.io-client'
 
 import { getSubscriberId, getRealmHeader } from '../utils.js'
+import { BASE_URL } from '@/services/server'
 
 const notificationCount = ref(0)
 const subscriberID = ref('')
-const socket = io(import.meta.env.VITE_WEBSOCKET_BASE_URL, {
+const socket = io(BASE_URL, {
   extraHeaders: {
     'x-realm': getRealmHeader()
   },
