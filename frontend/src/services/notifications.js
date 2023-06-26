@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { BASE_URL, API_URL, HEADERS } from './server'
+import { API_URL, HEADERS } from './server'
 
 export const getAllNotifications = (subscriberId) => {
   return new Promise((resolve, reject) => {
