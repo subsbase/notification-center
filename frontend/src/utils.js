@@ -21,9 +21,3 @@ export const getNotificationsPageURL = () => {
   let params = new URLSearchParams(url.search)
   return params.get('allNotifications')
 }
-
-export const getServerUrl = () => {
-  let url = new URL(window.location)
-  let params = new URLSearchParams(url.search)
-  return params.get('serverUrl')
-}
