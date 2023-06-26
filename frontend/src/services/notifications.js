@@ -17,7 +17,7 @@ export const getNotificationsUnreadCount = (subscriberId) => {
     axios({
       headers: HEADERS,
       method: 'get',
-      url: `${BASE_URL}/subscribers/${subscriberId}/notifications/countunread`
+      url: `${API_URL}/subscribers/${subscriberId}/notifications/countunread`
     })
       .then((res) => resolve(res.data))
       .catch((err) => reject(err))
