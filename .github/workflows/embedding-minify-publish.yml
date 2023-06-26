@@ -20,14 +20,14 @@ jobs:
 
       - name: Minify JavaScript file
         run: npx uglify-js embed/embedding.js -o min/embedding.min.js
-
-      - name: Publish to npm
-        run: |
-          npm config set '//registry.npmjs.org/:_authToken' ${{ secrets.NPM_AUTH_TOKEN }}
-          cd embed && npm publish --access public
-
+      
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./min
+      
+      - name: Publish to npm
+        run: |
+          npm config set '//registry.npmjs.org/:_authToken' ${{ secrets.NPM_AUTH_TOKEN }}
+          cd embed && npm publish --access public
