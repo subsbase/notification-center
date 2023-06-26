@@ -1,12 +1,12 @@
 import axios from 'axios'
-import { BASE_URL, HEADERS } from './server'
+import { BASE_URL, API_URL, HEADERS } from './server'
 
 export const getAllNotifications = (subscriberId) => {
   return new Promise((resolve, reject) => {
     axios({
       headers: HEADERS,
       method: 'get',
-      url: `${BASE_URL}/subscribers/${subscriberId}/notifications`
+      url: `${API_URL}/subscribers/${subscriberId}/notifications`
     })
       .then((res) => resolve(res.data))
       .catch((err) => reject(err))
@@ -29,7 +29,7 @@ export const getArchivedNotifications = (subscriberId) => {
     axios({
       headers: HEADERS,
       method: 'get',
-      url: `${BASE_URL}/subscribers/${subscriberId}/notifications/archived`
+      url: `${API_URL}/subscribers/${subscriberId}/notifications/archived`
     })
       .then((res) => resolve(res.data))
       .catch((err) => reject(err))
@@ -41,7 +41,7 @@ export const markAllAsRead = (subscriberId) => {
     axios({
       headers: HEADERS,
       method: 'patch',
-      url: `${BASE_URL}/subscribers/${subscriberId}/notifications/markasread`
+      url: `${API_URL}/subscribers/${subscriberId}/notifications/markasread`
     })
       .then((res) => resolve(res.data))
       .catch((err) => reject(err))
@@ -53,7 +53,7 @@ export const markAsRead = (subscriberId, notificationId) => {
     axios({
       headers: HEADERS,
       method: 'patch',
-      url: `${BASE_URL}/subscribers/${subscriberId}/notifications/${notificationId}/markasread`
+      url: `${API_URL}/subscribers/${subscriberId}/notifications/${notificationId}/markasread`
     })
       .then((res) => resolve(res.data))
       .catch((err) => reject(err))
@@ -65,7 +65,7 @@ export const archiveNotification = (subscriberId, data) => {
     axios({
       headers: HEADERS,
       method: 'put',
-      url: `${BASE_URL}/subscribers/${subscriberId}/notifications/archive`,
+      url: `${API_URL}/subscribers/${subscriberId}/notifications/archive`,
       data
     })
       .then((res) => resolve(res.data))
@@ -78,7 +78,7 @@ export const unArchiveNotification = (subscriberId, data) => {
     axios({
       headers: HEADERS,
       method: 'put',
-      url: `${BASE_URL}/subscribers/${subscriberId}/notifications/unarchive`,
+      url: `${API_URL}/subscribers/${subscriberId}/notifications/unarchive`,
       data
     })
       .then((res) => resolve(res.data))
