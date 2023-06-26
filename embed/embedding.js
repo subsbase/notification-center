@@ -7,7 +7,6 @@ function init() {
   sb.p = sb.p || {};
   for (p of sb.s) {
     if (p[0] === "url") sb.url = p[1];
-    if (p[0] === "serverUrl") sb.serverUrl = p[1];
     if (p[0] === "subscriberId") sb.subid = p[1];
     if (p[0] === "realm") sb.realm = p[1];
     if (p[0] === "theme") sb.t = p[1];
@@ -112,7 +111,7 @@ function openNcWindow() {
     notificationWindow.style.height = "0";
     notificationIndexParent.style.display = "none";
   } else {
-    const src = `${sb.url}?subscriberId=${sb.subid}&themeID=${sb.t}&realmHeader=${sb.realm}&allNotifications=${sb.notifRoute}&serverUrl=${sb.serverUrl}`;
+    const src = `${sb.url}?subscriberId=${sb.subid}&themeID=${sb.t}&realmHeader=${sb.realm}&allNotifications=${sb.notifRoute}`;
     notificationWindow.setAttribute("src", src);
     notificationIndexParent.style.display = "block";
     notificationWindow.style.height = "550px";
@@ -134,7 +133,7 @@ function openNcWindow() {
 }
 
 function loadiframeIcon() {
-  const src = `${sb.url}/notificationsicon?subscriberId=${sb.subid}&themeID=${sb.t}&realmHeader=${sb.realm}&allNotifications=${sb.notifRoute}&serverUrl=${sb.serverUrl}`;
+  const src = `${sb.url}/notificationsicon?subscriberId=${sb.subid}&themeID=${sb.t}&realmHeader=${sb.realm}&allNotifications=${sb.notifRoute}`;
   document.getElementById("nc-iframe-icon").setAttribute("src", src);
 }
 

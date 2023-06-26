@@ -16,7 +16,6 @@ import { ref, onBeforeMount } from 'vue'
 import { io } from 'socket.io-client'
 import NotificationList from './NotificationList.vue'
 import { getAllNotifications, getArchivedNotifications } from '@/services/notifications'
-import { BASE_URL } from '@/services/server'
 
 import { getSubscriberId, getRealmHeader, getNotificationsPageURL } from '../utils.js'
 
@@ -28,7 +27,7 @@ const showNotificationWindowTrigger = ref(true)
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
 })
-const socket = io(BASE_URL, {
+const socket = io(import.meta.env.VITE_WEBSOCKET_BASE_URL, {
   extraHeaders: {
     'x-realm': getRealmHeader()
   },
