@@ -1,6 +1,6 @@
 {
   "name": "@subsbase/notification-center-embedding",
-  "version": "1.0.0",
+  "version": "1.0.2-beta.0",
   "description": "This is the script that is used to embed the notification center in your project.",
   "repository": {
     "type": "git",
