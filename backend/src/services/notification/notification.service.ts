@@ -107,12 +107,12 @@ export class NotificationService {
         $group: {
           _id: '$_id',
           id: { $first: '$_id' },
-          notifications: { $push: '$archivedNotifications' },
+          archivedNotifications: { $push: '$archivedNotifications' },
         },
       },
       {
         $project: {
-          notifications: {
+          archivedNotifications: {
             $slice: ['$archivedNotifications', (pageNum - 1) * pageSize, pageSize],
           },
         },
