@@ -31,10 +31,28 @@ function init() {
         );
       }
     }
+    if (p[0] === "attachAllNotificationsPage") {
+      sb.p.allNotifications = sb.p.allNotifications || {};
+      sb.p["allNotifications"]["type"] = p[1];
+      sb.p["allNotifications"][p[1]] = `${p[2]}`;
+      try {
+      } catch (error) {
+        console.warn(
+          `Unable to attach all notifications page to element with ${p[1]} ${p[2]}, make sure your configuration is set properly.`
+        );
+      }
+    }
   }
 }
 
 function createIframe() {
+  if (sb.p?.allNotifications) {
+    const allNotificationsParent =
+      sb.p.allNotifications.type === "id"
+        ? document.getElementById(sb.p.allNotifications.id)
+        : document.getElementsByClassName(sb.p.allNotifications.class)[0];
+    openAllNotificationsPage(allNotificationsParent);
+  }
   const iconParent =
     sb.p.icon?.type === "id"
       ? document.getElementById(sb.p.icon.id)
@@ -133,6 +151,17 @@ function openNcWindow() {
   });
 }
 
+function openAllNotificationsPage(parent) {
+  const src = `${sb.url}/notificationsIndex?subscriberId=${sb.subid}&themeID=${sb.t}&realmHeader=${sb.realm}&serverUrl=${sb.serverUrl}`;
+  const iframeAllNotifications = document.createElement("iframe");
+  iframeAllNotifications.setAttribute("id", "iframeAllNotifications");
+  iframeAllNotifications.setAttribute("src", src);
+  iframeAllNotifications.allowTransparency = "true";
+  iframeAllNotifications.style.border = "0";
+  iframeAllNotifications.style.height = "100%";
+  iframeAllNotifications.style.width = "100%";
+  parent.appendChild(iframeAllNotifications);
+}
 function loadiframeIcon() {
   const src = `${sb.url}/notificationsicon?subscriberId=${sb.subid}&themeID=${sb.t}&realmHeader=${sb.realm}&allNotifications=${sb.notifRoute}&serverUrl=${sb.serverUrl}`;
   document.getElementById("nc-iframe-icon").setAttribute("src", src);
