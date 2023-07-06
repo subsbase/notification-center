@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="notificationsListRef">
     <NotificationList
       :notifications="notifications"
       :archived-notifications="archivedNotifications"
@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from 'vue'
+import { ref, onBeforeMount, onMounted, onUnmounted } from 'vue'
 import NotificationList from '../components/NotificationList.vue'
 import { getAllNotifications, getArchivedNotifications } from '@/services/notifications'
 import { io } from 'socket.io-client'
@@ -20,7 +20,8 @@ import { BASE_URL } from '@/services/server'
 const notifications = ref([])
 const archivedNotifications = ref([])
 const subscriberID = ref('')
-const pageSize = ref(100)
+const pageSize = ref(10)
+const notificationsListRef = ref(null)
 
 const socket = io(BASE_URL, {
   extraHeaders: {
@@ -38,6 +39,21 @@ onBeforeMount(() => {
   fetchArchivedNotifications()
 })
 
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
+
+const handleScroll = () => {
+  const element = notificationsListRef.value
+  if (element.getBoundingClientRect().bottom < window.innerHeight) {
+    pageSize.value += 10
+    fetchAllNotifications()
+  }
+}
 const refreshNotifications = () => {
   fetchAllNotifications()
   fetchArchivedNotifications()
