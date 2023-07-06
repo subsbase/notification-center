@@ -61,7 +61,7 @@ const onArchiveUnArchive = (param) => {
 const showAllNotificationsPage = () => {
   let a = document.createElement('a')
   a.target = '_top'
-  a.href = `http://${getNotificationsPageURL()}`
+  a.href = `${getNotificationsPageURL()}`
   a.click()
 }
 

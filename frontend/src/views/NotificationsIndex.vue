@@ -20,10 +20,11 @@ import { BASE_URL } from '@/services/server'
 const notifications = ref([])
 const archivedNotifications = ref([])
 const subscriberID = ref('')
+const pageSize = ref(100)
 
 const socket = io(BASE_URL, {
   extraHeaders: {
-    'x-realm': getRealmHeader
+    'x-realm': getRealmHeader()
   },
   path: '/notifc/socket'
 })
@@ -43,7 +44,7 @@ const refreshNotifications = () => {
 }
 
 const fetchAllNotifications = () => {
-  getAllNotifications(subscriberID.value)
+  getAllNotifications(subscriberID.value, 1, pageSize.value)
     .then((res) => {
       notifications.value = res
     })
