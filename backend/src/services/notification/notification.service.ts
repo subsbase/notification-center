@@ -30,38 +30,16 @@ export class NotificationService {
     subscriberId: string,
     pageNum: number,
     pageSize: number,
-  ): Promise<Array<Notification> | undefined> {
-    const subscribers = await this.subscribersRepositoryFactory.create(realm).aggregate([
+  ): Promise<{ notifications: Array<Notification> | undefined, totalCount: number }> {
+    const [subscriber] = await this.subscribersRepositoryFactory.create(realm).aggregate([
       { $match: { _id: subscriberId } },
-      {
-        $unwind: '$notifications',
-      },
-      { $sort: { 'notifications.createdAt': -1 } },
-      {
-        $group: {
-          _id: '$_id',
-          id: { $first: '$_id' },
-          notifications: { $push: '$notifications' },
-        },
-      },
-      {
-        $project: {
-          notifications: {
-            $slice: ['$notifications', (pageNum - 1) * pageSize, pageSize],
-          },
-        },
-      },
       { $unwind: '$notifications' },
-      {
-        $group: {
-          _id: '$_id',
-          id: { $first: '$_id' },
-          notifications: { $push: '$notifications' },
-        },
-      },
+      { $sort: { 'notifications.createdAt': -1 } },
+      { $group: { _id: null, totalCount: { $sum: 1 }, notifications: { $push: '$notifications' } } },
+      { $project: { _id: 0, totalCount: 1, notifications: { $slice: ['$notifications', (pageNum - 1) * pageSize, pageSize] } } },
     ]);
 
-    return subscribers[0]?.notifications;
+    return { notifications: subscriber?.notifications, totalCount: subscriber?.totalCount }
   }
 
   async countUnread(realm: string, subscriberId: string) : Promise<number> {
@@ -96,38 +74,16 @@ export class NotificationService {
     subscriberId: string,
     pageNum: number,
     pageSize: number,
-  ): Promise<Array<ArchivedNotification> | undefined> {
-    const subscribers = await this.subscribersRepositoryFactory.create(realm).aggregate([
+  ): Promise<{ archivedNotifications: Array<ArchivedNotification> | undefined, totalCount: number}> {
+    const [subscriber] = await this.subscribersRepositoryFactory.create(realm).aggregate([
       { $match: { _id: subscriberId } },
-      {
-        $unwind: '$archivedNotifications',
-      },
-      { $sort: { 'archivedNotifications.archivedAt': -1 } },
-      {
-        $group: {
-          _id: '$_id',
-          id: { $first: '$_id' },
-          archivedNotifications: { $push: '$archivedNotifications' },
-        },
-      },
-      {
-        $project: {
-          archivedNotifications: {
-            $slice: ['$archivedNotifications', (pageNum - 1) * pageSize, pageSize],
-          },
-        },
-      },
       { $unwind: '$archivedNotifications' },
-      {
-        $group: {
-          _id: '$_id',
-          id: { $first: '$_id' },
-          archivedNotifications: { $push: '$archivedNotifications' },
-        },
-      },
+      { $sort: { 'archivedNotifications.archivedAt': -1 } },
+      { $group: { _id: null, totalCount: { $sum: 1 }, archivedNotifications: { $push: '$archivedNotifications' } } },
+      { $project: { _id: 0, totalCount: 1, archivedNotifications: { $slice: ['$archivedNotifications', (pageNum - 1) * pageSize, pageSize] } } },
     ]);
 
-    return subscribers[0]?.archivedNotifications;
+    return { archivedNotifications: subscriber?.archivedNotifications, totalCount: subscriber?.totalCount }
   }
 
   async archive(realm: string, subscriberId: string, notificationsIds: Array<string>): Promise<UpdatedModel> {

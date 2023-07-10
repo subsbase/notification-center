@@ -22,9 +22,9 @@ export class NotificationManager {
     subscriberId: string,
     pageNum: number,
     pageSize: number,
-  ): Promise<Array<Notification>> {
+  ): Promise<{ notifications: Array<Notification> | undefined, totalCount: number }> {
     const notifications = await this.notificationService.getNotifications(realm, subscriberId, pageNum, pageSize);
-    return notifications ?? new Array();
+    return notifications;
   }
 
   async countUnread(realm: string, subscriberId: string) {
@@ -37,14 +37,14 @@ export class NotificationManager {
     subscriberId: string,
     pageNum: number,
     pageSize: number,
-  ): Promise<Array<ArchivedNotification>> {
-    const notifications = await this.notificationService.getArchivedNotifications(
+  ): Promise<{ archivedNotifications: Array<ArchivedNotification> | undefined, totalCount: number}> {
+    const archivedNotifications = await this.notificationService.getArchivedNotifications(
       realm,
       subscriberId,
       pageNum,
       pageSize,
     );
-    return notifications ?? new Array();
+    return archivedNotifications;
   }
 
   archive(realm: string, subscriberId: string, notificationsIds: Array<string>): Promise<UpdatedModel> {

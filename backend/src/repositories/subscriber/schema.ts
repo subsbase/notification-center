@@ -20,6 +20,8 @@ export class Subscriber extends BaseModel {
 
   @Prop({ type: [ArchivedNotificationSchema], default: new Array<ArchivedNotification>() })
   archivedNotifications?: Array<ArchivedNotification>;
+
+  totalCount: number;
 }
 
 export const SubscriberSchema = SchemaFactory.createForClass(Subscriber);
