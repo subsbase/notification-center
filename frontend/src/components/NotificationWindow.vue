@@ -81,7 +81,6 @@ const fetchAllNotifications = () => {
 const fetchArchivedNotifications = () => {
   getArchivedNotifications(subscriberID.value)
     .then((res) => {
-      console.log(res)
       notifications.value = res?.archivedNotifications ?? []
       totalArchivedCount.value = res?.totalCount
     })
