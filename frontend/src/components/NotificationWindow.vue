@@ -21,6 +21,8 @@ import { getSubscriberId, getRealmHeader, getNotificationsPageURL } from '../uti
 
 const notifications = ref([])
 const subscriberID = ref('')
+const totalArchivedCount = ref(0)
+const totalCount = ref(0)
 
 const showNotificationWindowTrigger = ref(true)
 
@@ -68,7 +70,8 @@ const showAllNotificationsPage = () => {
 const fetchAllNotifications = () => {
   getAllNotifications(subscriberID.value)
     .then((res) => {
-      notifications.value = res
+      notifications.value = res?.notifications ?? []
+      totalCount.value = res?.totalCount
     })
     .catch((err) => {
       console.error(err)
@@ -78,7 +81,9 @@ const fetchAllNotifications = () => {
 const fetchArchivedNotifications = () => {
   getArchivedNotifications(subscriberID.value)
     .then((res) => {
-      notifications.value = res
+      console.log(res)
+      notifications.value = res?.archivedNotifications ?? []
+      totalArchivedCount.value = res?.totalCount
     })
     .catch((err) => {
       console.error(err)
