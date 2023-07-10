@@ -70,7 +70,7 @@ const showAllNotificationsPage = () => {
 const fetchAllNotifications = () => {
   getAllNotifications(subscriberID.value)
     .then((res) => {
-      notifications.value = res?.notifications ?? []
+      notifications.value.splice(0, notifications.value.length, ...res.notifications)
       totalCount.value = res?.totalCount
     })
     .catch((err) => {
@@ -81,7 +81,7 @@ const fetchAllNotifications = () => {
 const fetchArchivedNotifications = () => {
   getArchivedNotifications(subscriberID.value)
     .then((res) => {
-      notifications.value = res?.archivedNotifications ?? []
+      notifications.value.splice(0, notifications.value.length, ...res.archivedNotifications)
       totalArchivedCount.value = res?.totalCount
     })
     .catch((err) => {
