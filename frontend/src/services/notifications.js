@@ -1,12 +1,12 @@
 import axios from 'axios'
 import { API_URL, HEADERS } from './server'
 
-export const getAllNotifications = (subscriberId) => {
+export const getAllNotifications = (subscriberId, pageNum = 1, pageSize = 5) => {
   return new Promise((resolve, reject) => {
     axios({
       headers: HEADERS,
       method: 'get',
-      url: `${API_URL}/subscribers/${subscriberId}/notifications`
+      url: `${API_URL}/subscribers/${subscriberId}/notifications?pageNum=${pageNum}&pageSize=${pageSize}`
     })
       .then((res) => resolve(res.data))
       .catch((err) => reject(err))
@@ -24,12 +24,12 @@ export const getNotificationsUnreadCount = (subscriberId) => {
   })
 }
 
-export const getArchivedNotifications = (subscriberId) => {
+export const getArchivedNotifications = (subscriberId, pageNum = 1, pageSize = 5) => {
   return new Promise((resolve, reject) => {
     axios({
       headers: HEADERS,
       method: 'get',
-      url: `${API_URL}/subscribers/${subscriberId}/notifications/archived`
+      url: `${API_URL}/subscribers/${subscriberId}/notifications/archived?pageNum=${pageNum}&pageSize=${pageSize}`
     })
       .then((res) => resolve(res.data))
       .catch((err) => reject(err))
