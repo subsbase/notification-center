@@ -73,8 +73,13 @@ const showAllNotificationsPage = () => {
 const fetchAllNotifications = () => {
   getAllNotifications(subscriberID.value)
     .then((res) => {
-      notifications.value.splice(0, notifications.value.length, ...res.notifications)
-      totalCount.value = res?.totalCount
+      if (res?.notifications) {
+        notifications.value.splice(0, notifications.value.length, ...res.notifications)
+        totalCount.value = res?.totalCount
+      } else {
+        notifications.value.splice(0, notifications.value.length)
+        totalCount.value = 0
+      }
     })
     .catch((err) => {
       console.error(err)

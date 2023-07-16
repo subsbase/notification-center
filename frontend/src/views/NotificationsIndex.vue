@@ -64,18 +64,27 @@ const handleScroll = () => {
     }
   }
 }
-const refreshNotifications = () => {
-  fetchAllNotifications()
-  fetchArchivedNotifications()
+const refreshNotifications = (param) => {
+  if (param === 'All') {
+    fetchAllNotifications()
+  } else {
+    fetchArchivedNotifications()
+  }
 }
 
 const fetchAllNotifications = () => {
   loading.value = true
   getAllNotifications(subscriberID.value, 1, pageSize.value)
     .then((res) => {
-      notifications.value.splice(0, notifications.value.length, ...res.notifications)
-      totalCount.value = res?.totalCount
-      loading.value = false
+      if (res?.notifications) {
+        notifications.value.splice(0, notifications.value.length, ...res.notifications)
+        totalCount.value = res?.totalCount
+        loading.value = false
+      } else {
+        notifications.value.splice(0, notifications.value.length)
+        totalCount.value = 0
+        loading.value = false
+      }
     })
     .catch((err) => {
       console.error(err)
@@ -86,9 +95,15 @@ const fetchArchivedNotifications = () => {
   loading.value = true
   getArchivedNotifications(subscriberID.value, 1, pageSize.value)
     .then((res) => {
-      notifications.value.splice(0, notifications.value.length, ...res.archivedNotifications)
-      totalCount.value = res?.totalCount
-      loading.value = false
+      if (res?.archivedNotifications) {
+        notifications.value.splice(0, notifications.value.length, ...res.archivedNotifications)
+        totalCount.value = res?.totalCount
+        loading.value = false
+      } else {
+        notifications.value.splice(0, notifications.value.length)
+        totalCount.value = 0
+        loading.value = false
+      }
     })
     .catch((err) => {
       console.error(err)
