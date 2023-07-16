@@ -2,6 +2,7 @@
   <div v-if="showNotificationWindowTrigger" class="notification-window">
     <NotificationList
       :notifications="notifications"
+      :unreadCount="unreadCount"
       @on-click-mark-read="refreshNotifications"
       @on-handle-archive-unarchive="onArchiveUnArchive"
     />
@@ -15,7 +16,7 @@
 import { ref, onBeforeMount } from 'vue'
 import { io } from 'socket.io-client'
 import NotificationList from './NotificationList.vue'
-import { getAllNotifications, getArchivedNotifications } from '@/services/notifications'
+import { getAllNotifications, getArchivedNotifications, getNotificationsUnreadCount } from '@/services/notifications'
 import { BASE_URL } from '@/services/server'
 import { getSubscriberId, getRealmHeader, getNotificationsPageURL } from '../utils.js'
 
@@ -23,6 +24,7 @@ const notifications = ref([])
 const subscriberID = ref('')
 const totalArchivedCount = ref(0)
 const totalCount = ref(0)
+const unreadCount = ref(0)
 
 const showNotificationWindowTrigger = ref(true)
 
@@ -40,6 +42,19 @@ socket.on('connect', function () {
 })
 socket.on('notification', function () {
   fetchAllNotifications()
+  fetchNotificationsUnreadCount()
+})
+
+socket.on('NotificationRead', function () {
+  fetchNotificationsUnreadCount()
+})
+
+socket.on('NotificationsRead', function () {
+  fetchNotificationsUnreadCount()
+})
+
+socket.on('NotificationArchived', function () {
+  fetchNotificationsUnreadCount()
 })
 
 const refreshNotifications = (param) => {
@@ -53,6 +68,7 @@ const refreshNotifications = (param) => {
 onBeforeMount(() => {
   fetchAllNotifications()
   fetchArchivedNotifications()
+  fetchNotificationsUnreadCount()
 })
 
 const onArchiveUnArchive = (param) => {
@@ -96,6 +112,17 @@ const fetchArchivedNotifications = () => {
         notifications.value.splice(0, notifications.value.length)
         totalArchivedCount.value = 0
       }
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+}
+
+const fetchNotificationsUnreadCount = () => {
+  getNotificationsUnreadCount(subscriberID.value)
+    .then((res) => {
+      console.log(res)
+      unreadCount.value = res.count
     })
     .catch((err) => {
       console.error(err)

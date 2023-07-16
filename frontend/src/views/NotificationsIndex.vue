@@ -2,6 +2,7 @@
   <div ref="notificationsListRef">
     <NotificationList
       :notifications="notifications"
+      :unreadCount="unreadCount"
       :source="'page'"
       @on-click-mark-read="refreshNotifications"
       @on-handle-archive-unarchive="onArchiveUnArchive"
@@ -12,7 +13,7 @@
 <script setup>
 import { ref, onBeforeMount, onMounted, onUnmounted } from 'vue'
 import NotificationList from '../components/NotificationList.vue'
-import { getAllNotifications, getArchivedNotifications } from '@/services/notifications'
+import { getAllNotifications, getArchivedNotifications, getNotificationsUnreadCount } from '@/services/notifications'
 import { io } from 'socket.io-client'
 import { getSubscriberId, getRealmHeader } from '../utils.js'
 import { BASE_URL } from '@/services/server'
@@ -24,6 +25,7 @@ const notificationsListRef = ref(null)
 const totalCount = ref(0)
 const loading = ref(false)
 const currentTab = ref('All')
+const unreadCount = ref(0)
 
 const socket = io(BASE_URL, {
   extraHeaders: {
@@ -33,12 +35,26 @@ const socket = io(BASE_URL, {
 })
 socket.on('notification', function () {
   fetchAllNotifications()
+  fetchNotificationsUnreadCount()
+})
+
+socket.on('NotificationRead', function () {
+  fetchNotificationsUnreadCount()
+})
+
+socket.on('NotificationsRead', function () {
+  fetchNotificationsUnreadCount()
+})
+
+socket.on('NotificationArchived', function () {
+  fetchNotificationsUnreadCount()
 })
 
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
   fetchAllNotifications()
   fetchArchivedNotifications()
+  fetchNotificationsUnreadCount()
 })
 
 onMounted(() => {
@@ -118,5 +134,15 @@ const onArchiveUnArchive = (param) => {
     currentTab.value = 'Archived'
     fetchArchivedNotifications()
   }
+}
+const fetchNotificationsUnreadCount = () => {
+  getNotificationsUnreadCount(subscriberID.value)
+    .then((res) => {
+      console.log(res)
+      unreadCount.value = res.count
+    })
+    .catch((err) => {
+      console.error(err)
+    })
 }
 </script>

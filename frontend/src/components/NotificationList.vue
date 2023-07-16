@@ -21,7 +21,7 @@
   <div v-if="selectedFilter === 'All'" class="x-between px-20 font-size-12">
     <p class="mb-10">
       <span>
-        You’ve got <strong> {{ getUnreadCount }} unread</strong> notifications
+        You’ve got <strong> {{ unreadCount }} unread</strong> notifications
       </span>
     </p>
     <p v-if="notifications.length > 0" class="link clickable mt-0 text-right" @click="handleMarkAllAsRead">
@@ -78,7 +78,7 @@
 </template>
 
 <script setup>
-import { defineProps, computed, defineEmits, onBeforeMount, ref } from 'vue'
+import { defineProps, defineEmits, onBeforeMount, ref } from 'vue'
 import moment from 'moment'
 import { archiveNotification, markAllAsRead, markAsRead, unArchiveNotification } from '@/services/notifications'
 
@@ -86,9 +86,10 @@ import { getSubscriberId, getThemeId } from '../utils.js'
 
 const emit = defineEmits(['on-click-mark-read'])
 
-const props = defineProps({
+defineProps({
   notifications: { type: Array, default: () => [] },
-  source: { type: String }
+  source: { type: String },
+  unreadCount: { type: Number }
 })
 
 const subscriberID = ref('')
@@ -96,9 +97,6 @@ const themeID = ref('')
 const selectedFilter = ref('All')
 const filters = ref(['All', 'Archive'])
 
-const getUnreadCount = computed(() => {
-  return props.notifications.filter((notification) => !notification.read).length
-})
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
   themeID.value = getThemeId()
@@ -139,7 +137,7 @@ const handleUnArchiveNotification = (notificationId) => {
 }
 
 const getNotificationTime = (time) => {
-  return moment(time).fromNow()
+  return moment(time).local().fromNow()
 }
 
 const handleMarkAllAsRead = () => {
