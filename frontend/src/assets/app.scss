@@ -215,7 +215,10 @@ body {
         bottom: #{$i}px;
     }
 }
-
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
 .notification-bell {
     position: relative;
 }
