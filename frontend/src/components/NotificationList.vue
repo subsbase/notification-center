@@ -29,7 +29,7 @@
     </p>
   </div>
 
-  <div :class="['px-20', source === 'page' ? '' : 'notification-list']">
+  <div :class="['px-20', source === 'page' ? '' : 'notification-list']" v-if="notifications.length">
     <div
       v-for="notification in notifications"
       :key="notification._id"
@@ -69,6 +69,11 @@
         </p>
       </div>
     </div>
+  </div>
+  <div v-else class="d-flex">
+    <span class="mx-auto font-size-14">{{
+      selectedFilter === 'All' ? 'No notifications' : 'No archived notifications'
+    }}</span>
   </div>
 </template>
 
@@ -114,8 +119,7 @@ const handleArchiveNotification = (notificationId) => {
   payload.push(notificationId)
   archiveNotification(subscriberID.value, payload)
     .then(() => {
-      onChangeFilter('Archive')
-      emit('on-click-mark-read')
+      emit('on-click-mark-read', selectedFilter.value)
     })
     .catch((err) => {
       console.error(err)
@@ -127,8 +131,7 @@ const handleUnArchiveNotification = (notificationId) => {
   payload.push(notificationId)
   unArchiveNotification(subscriberID.value, payload)
     .then(() => {
-      onChangeFilter('All')
-      emit('on-click-mark-read')
+      emit('on-click-mark-read', selectedFilter.value)
     })
     .catch((err) => {
       console.error(err)
@@ -142,7 +145,7 @@ const getNotificationTime = (time) => {
 const handleMarkAllAsRead = () => {
   markAllAsRead(subscriberID.value)
     .then(() => {
-      emit('on-click-mark-read')
+      emit('on-click-mark-read', selectedFilter.value)
     })
     .catch((err) => {
       console.error(err)
@@ -153,7 +156,7 @@ const handleMarkAsRead = (notificationId, actionUrl) => {
   if (selectedFilter.value === 'All') {
     markAsRead(subscriberID.value, notificationId)
       .then(() => {
-        emit('on-click-mark-read')
+        emit('on-click-mark-read', selectedFilter.value)
         window.top.location.href = actionUrl
       })
       .catch((err) => {

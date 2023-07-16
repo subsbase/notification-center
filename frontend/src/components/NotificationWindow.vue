@@ -42,9 +42,12 @@ socket.on('notification', function () {
   fetchAllNotifications()
 })
 
-const refreshNotifications = () => {
-  fetchAllNotifications()
-  fetchArchivedNotifications()
+const refreshNotifications = (param) => {
+  if (param === 'All') {
+    fetchAllNotifications()
+  } else {
+    fetchArchivedNotifications()
+  }
 }
 
 onBeforeMount(() => {
@@ -81,8 +84,13 @@ const fetchAllNotifications = () => {
 const fetchArchivedNotifications = () => {
   getArchivedNotifications(subscriberID.value)
     .then((res) => {
-      notifications.value.splice(0, notifications.value.length, ...res.archivedNotifications)
-      totalArchivedCount.value = res?.totalCount
+      if (res?.archivedNotifications) {
+        notifications.value.splice(0, notifications.value.length, ...res.archivedNotifications)
+        totalArchivedCount.value = res?.totalCount
+      } else {
+        notifications.value.splice(0, notifications.value.length)
+        totalArchivedCount.value = 0
+      }
     })
     .catch((err) => {
       console.error(err)
