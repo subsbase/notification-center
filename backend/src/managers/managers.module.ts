@@ -8,15 +8,32 @@ import { SubscriberManager } from './subscriber/subscriber.manager';
 import { EventsModule } from '../events/events.module';
 import { TerminusModule } from '@nestjs/terminus';
 import { HealthManager } from './health/health.manager';
+import { SchedulerManager } from './scheduler/scheduler.manager';
 
 @Module({})
 export class ManagersModule {
   static withConfig(dbConnection: string): DynamicModule {
     return {
       module: ManagersModule,
-      imports: [ServicesModule.withDbonnection(dbConnection), EventsModule, TerminusModule],
-      providers: [SubjectManager, TopicsManager, NotificationManager, SubscriberManager, AuthManager, HealthManager],
-      exports: [SubjectManager, TopicsManager, NotificationManager, SubscriberManager, AuthManager, HealthManager],
+      imports: [ServicesModule.withDbconnection(dbConnection), EventsModule, TerminusModule],
+      providers: [
+        SubjectManager,
+        TopicsManager,
+        NotificationManager,
+        SubscriberManager,
+        AuthManager,
+        HealthManager,
+        SchedulerManager,
+      ],
+      exports: [
+        SubjectManager,
+        TopicsManager,
+        NotificationManager,
+        SubscriberManager,
+        AuthManager,
+        HealthManager,
+        SchedulerManager,
+      ],
     };
   }
 }
