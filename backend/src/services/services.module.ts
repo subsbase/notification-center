@@ -15,10 +15,13 @@ import { SubscriberEventHandler } from './subscriber/subscriber.event.handler';
 import { TopicProcessor } from './topic/topic.processor';
 import { SubjectProcessor } from './subject/subject.processor';
 import { ArchivedNotificationProcessor } from './archived-notifications/archived.notification.processor';
-
+import { Agenda } from '@hokify/agenda';
+import { SnoozeNotificationsService } from './snoozed-notification/snooze-notifications.service';
 @Module({})
 export class ServicesModule {
-  static withDbonnection(uri: string): DynamicModule {
+  static withDbconnection(uri: string): DynamicModule {
+    const agenda = new Agenda({ db: { address: uri, collection: 'scheduled-jobs' } });
+
     return {
       module: ServicesModule,
       imports: [
@@ -48,6 +51,11 @@ export class ServicesModule {
         RealmService,
         SubscriberEventHandler,
         ArchivedNotificationProcessor,
+        SnoozeNotificationsService,
+        {
+          provide: Agenda,
+          useValue: agenda,
+        },
       ],
       exports: [
         SubjectService,
@@ -57,6 +65,11 @@ export class ServicesModule {
         AuthService,
         ArchiveNotificationService,
         RealmService,
+        SnoozeNotificationsService,
+        {
+          provide: Agenda,
+          useValue: agenda,
+        },
       ],
     };
   }
