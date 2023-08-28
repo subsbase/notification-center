@@ -7,6 +7,7 @@ import { Payload } from '../../types/global-types';
 import { UpdatedModel } from '../../repositories/helper-types';
 import { SubjectService } from '../../services/subject/subject.service';
 import { ArchivedNotification } from '../../repositories/subscriber/archived-notification/schema';
+import { SnoozeNotificationsService } from 'src/services/snoozed-notification/snooze-notifications.service';
 
 @Injectable()
 export class NotificationManager {
@@ -15,6 +16,7 @@ export class NotificationManager {
     private readonly notificationService: NotificationService,
     private readonly topicsService: TopicService,
     private readonly subjectService: SubjectService,
+    private readonly snoozeNotificationsService: SnoozeNotificationsService,
   ) {}
 
   async getAllNotifications(
