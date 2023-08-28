@@ -39,6 +39,7 @@ body {
     border-radius: 12px;
     padding: 12px 12px 0 12px;
     cursor: pointer;
+    min-height: 65px;
 }
 
 .read-notification {
@@ -92,13 +93,14 @@ body {
 .x-between {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .x-row{
     flex-direction: row;
 }
 
-x.column{
+.x-column{
     flex-direction: column;
 }
 

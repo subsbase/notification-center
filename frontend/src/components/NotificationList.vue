@@ -48,19 +48,22 @@
           <p class=" " v-html="notification.message"></p>
         </div>
           <!-- Here we add unarchive icon to archived and archive icon for all-->
-        <div  class="icons-div mr-25 mb-10 ">
-          <div v-if="!multiSelect">
-            <img
+        <div  class="icons-div mr-20 mb-10 ">
+        <div >
+        <div class="d-flex x-row">
+         <div class="icons-time-div">
+          <div class="x-end mr-25">
+          <img
             v-if="notification.archivedAt "
             class="clickable top-1 pos-relative mx-10"
             src="../assets/unarchive-icon.svg"
             @click.stop="handleUnArchiveNotification([notification._id])"
           />
-          <div v-else class="x-end">
+          <div v-else-if="!multiSelect" class="x-end">
             <img
             class="clickable top-1 pos-relative mx-10"
             src="../assets/Snooze.svg"
-            @click.stop=""
+            @click.stop="()=>{snoozeSingle[index]=!snoozeSingle[index]}"
           /> 
           <!-- snooze handler missing -->
             <img
@@ -68,9 +71,26 @@
             src="../assets/archive-icon.svg"
             @click.stop="handleArchiveNotification([notification._id])"
           />
+        </div>
+        <span v-if="!notification.read" class="blue-circle ml-10 mt-10"/>
+        <span v-else></span>
           </div>
+          <p class="light ml-20 mt-10 x-end created-since">
+          {{getNotificationTime(notification.createdAt)}}
+          </p>
+         </div>
+          <div v-if="snoozeSingle[index]" class="snooze-bar d-flex">
+            <input type="number" class="snooze-amount m-5" v-model="snoozeAmount" @click.stop>
+            <select name="snooze-variant" id="snooze-variant" v-model="snoozeVariant" class="snooze-variant m-5" @click.stop >
+              <option value="Minutes" > Minutes</option>              
+              <option value="Hours" > Hours</option>
+              <option value="Days"  > Days</option>
+            </select>
+            <img src="../assets/Remove.svg" alt="Cancel" class="m-5" @click.stop="()=>{snoozeSingle[index]=!snoozeSingle[index]}">
+            <img src="../assets/Done.svg" alt="Confirm" class="m-5" @click.stop="()=>{snoozeSingle[index]=!snoozeSingle[index]; handleSnoozeSingle(notification._id);}">
           </div>
-          <span v-if="!notification.read" class="blue-circle ml-10"/>
+         </div>
+        </div>
         </div>
       </div>
       </div>
@@ -78,9 +98,6 @@
       <div class="x-between font-size-12">
         <p>
           {{ notification.content }}
-        </p>
-        <p class="light mr-25">
-          {{ getNotificationTime(notification.createdAt) }}
         </p>
       </div>
     </div>
@@ -120,6 +137,9 @@ const multiSelect = ref(false);
 const multiActionsAll = ref(['Archive','Snooze','Mark As Read','Mark As Unread'])
 const multiActionsArchive = ref(['Unarchive'])
 const multiActionSelected = ref('')
+const snoozeSingle = ref([])
+const snoozeAmount = ref()
+const snoozeVariant = ref("")
 
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
@@ -210,6 +230,31 @@ const handleChecked = (nId, idx) =>{
   multiSelect.value= selectedNotificList.value.length<=0 ? false : true;
 }
 
+const handleSnoozeSingle =(nId) =>{
+  debugger
+  const result = new Date();
+  const year = result.getUTCFullYear();
+  const month = result.getUTCMonth() + 1; // Months are zero-based, so add 1
+  const day = result.getUTCDate();
+  const hours = result.getUTCHours();
+  const minutes = result.getUTCMinutes();
+  const seconds = result.getUTCSeconds();
+
+  if(snoozeVariant.value==="Minutes"){
+    result.setUTCMinutes(minutes+snoozeAmount.value)
+  }
+  if(snoozeVariant.value==="Hours"){
+    result.setUTCHours(hours+snoozeAmount.value)
+  }
+  if(snoozeVariant.value==="Days"){
+    result.setUTCDate(day+snoozeAmount.value)
+  }
+  console.log(result)
+  //result is the UTC formt time to be passed
+  //snooze endpoint
+  //emit to refresh notifications
+}
+
 const handleSelectedAction = (param) => {
   multiActionSelected.value = param;
 
@@ -282,9 +327,19 @@ const handleSelectedAction = (param) => {
 .icons-div{
     display: flex;
     flex: 2;
-    align-items: center;
+    align-items: right;
     justify-content: flex-end;
 }
+
+.icons-time-div{
+  width: 9.5em;
+  text-align: right;
+}
+
+.created-since{
+  position: absolute;
+}
+
 .check-icon {
   font-family: system-ui, sans-serif;
   font-weight: bold;
@@ -351,8 +406,29 @@ input[type=checkbox]{
   height: 20px;
 }
 
-.selected-notification{
-  // background-color: #EBEFF6;
+.snooze-bar{
+
 }
 
+.snooze-amount{
+  background-color: transparent;
+  -moz-appearance: textfield;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid #181146;
+  text-align: center;
+}
+
+.snooze-amount::-webkit-inner-spin-button,
+.snooze-amount::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0; 
+}
+
+.snooze-variant{
+  background-color: transparent;
+  border-radius: 8px;
+  border: 1px solid #181146;
+}
 </style>
