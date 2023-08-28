@@ -103,4 +103,8 @@ export class NotificationManager {
 
     this.eventsGateway.notifySubscribers(notification, subscribersIds);
   }
+
+  async snooze(realm: string, subscriberId: string, notificationsIds: Array<string>, snoozeUntil: Date) {
+    return this.snoozeNotificationsService.snoozeNotifications(realm, subscriberId, notificationsIds, snoozeUntil);
+  }
 }
