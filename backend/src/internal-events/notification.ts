@@ -14,6 +14,11 @@ export class NotificationArchived extends NotificationEvent {
   }
 }
 
+export class NotificationSnoozed extends NotificationEvent {
+  constructor(subscriberId: string, notificationsIds: Array<string>) {
+    super(subscriberId, notificationsIds);
+  }
+}
 export class NotificationUnarchived extends NotificationEvent {
   constructor(subscriberId: string, notificationsIds: Array<string>) {
     super(subscriberId, notificationsIds);
