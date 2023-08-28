@@ -2,7 +2,7 @@
   <div class="font-dark">
     <div class="x-between px-20 py-20">
     <h4 class="font-size-16 mb-10">
-      <i v-if="source === 'page'" class="fa fa-chevron-left mr-20 clickable" @click="goBack" />
+      <i v-if="source === 'page'" class="fa fa-chevron-left mr-20 clickable" @click="goBack"></i>
       Notifications
     </h4>
   </div>
@@ -38,7 +38,7 @@
     >
     <div class="d-flex font-size-12">
     <div class="x-start checkbox-div mr-10">
-      <input :class="{'checkicon': checked[index] }" type="checkbox" id="checkbox" v-model="checked[index]" @change="handleChecked(notification._id,index)" @click.stop/>
+      <input :class="{'check-icon': checked[index] }" :style="!notification.read ? 'background-color: #EBEFF6' : 'background-color: #ffffff'" type="checkbox" id="checkbox" v-model="checked[index]" @change="handleChecked(notification._id,index)" @click.stop/>
     </div>
     <div class="x-between font-size-12 details-div">
         <div class="my-5 notification-content">
@@ -285,10 +285,62 @@ const handleSelectedAction = (param) => {
     align-items: center;
     justify-content: flex-end;
 }
-.checkicon:active {
-    background-color: white;
-    border-color: black;
-    color: black;
+.check-icon {
+  font-family: system-ui, sans-serif;
+  font-weight: bold;
+  line-height: 1.1;
+  display: grid;
+  grid-template-columns: 1em auto;
+
+}
+input[type="checkbox"]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--form-control-color);
+  background-color: CanvasText;
+  transform-origin: bottom left;
+  clip-path: polygon(17% 50%, 7% 55%, 50% 82%, 98% 5%, 90% 0%, 48% 70%); /* Adjusted clip-path values */
+  
+}
+
+input[type="checkbox"]:checked::before {
+  position: relative;
+  top:1px;
+  left: 0px;
+  transform: scale(1.9) skewX(-10deg) skewY(14deg);
+  z-index: 2;
+  background-color:#181146;
+}
+input[type="checkbox"]:checked::after {
+  content: '';
+  width: 5px;
+  height: 7px;
+  display: block;
+  right: -2px;
+  z-index: 1;
+  top: 1px;
+  background: inherit;
+  position: absolute;
+  transform: skew(0deg,-50deg)
+}
+input[type=checkbox]{
+  -webkit-appearance: none;
+  position: relative;
+  appearance: none;
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.15em solid currentColor;
+  border-radius: 0.15em;
+  display: grid;
+  place-content: center;
+  display: grid;
+  place-content: center;
 }
 .more-btn{
   border-width: 0px;
