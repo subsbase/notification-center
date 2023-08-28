@@ -34,7 +34,7 @@ body {
 }
 
 .notification-row {
-    background: linear-gradient(0deg, rgba(0, 167, 157, 0.05), rgba(0, 167, 157, 0.05)), #ffffff;
+    background: #EBEFF6;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.04);
     border-radius: 12px;
     padding: 12px 12px 0 12px;
@@ -85,10 +85,35 @@ body {
     margin-top: 30px;
 }
 
+.font-dark{
+    color: #181146;
+}
+
 .x-between {
     display: flex;
     justify-content: space-between;
 }
+
+.x-row{
+    flex-direction: row;
+}
+
+x.column{
+    flex-direction: column;
+}
+
+.x-start {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.x-end {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
 
 .clickable {
     cursor: pointer;
@@ -116,6 +141,10 @@ body {
 
 .d-flex {
     display: flex;
+}
+
+.float-left{
+    float: left;
 }
 // ---------------- Font Sizes ----------------
 
