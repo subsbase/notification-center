@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Param, Patch, Post, Put, Query, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { NotificationManager } from '../../managers/notification/notification.manager';
 import { SubscriberManager } from '../../managers/subscriber/subscriber.manager';
 import { Subscriber } from '../../repositories/subscriber/schema';
