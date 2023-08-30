@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 export class SchedulerManager {
   constructor(private readonly agenda: Agenda) {}
 
-  defineJob<TDATA>(name: string, processor: (agendaJob: Job<TDATA>) => Promise<void>) {
+  defineJob<TDATA>(name: string, processor: (agendaJob: Job<TDATA>) => Promise<void>): void {
     this.agenda.define(name, processor);
     this.agenda.start();
   }
