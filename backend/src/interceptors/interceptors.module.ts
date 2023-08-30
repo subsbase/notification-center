@@ -11,7 +11,7 @@ export class InterceptorsModule {
   static withConfig(dbConnection: string): DynamicModule {
     return {
       module: InterceptorsModule,
-      imports: [ServicesModule.withDbonnection(dbConnection)],
+      imports: [ServicesModule.withDbConnection(dbConnection)],
       providers: [
         {
           provide: APP_INTERCEPTOR,

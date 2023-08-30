@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ControllersModule } from './controllers/controllers.module';
 import { InterceptorsModule } from './interceptors/interceptors.module';
 import { BackgroundJobsModule as BackgroundJobsModule } from './background-jobs/cron-jobs.module';
+import { SchedulerModule } from './scheduled-jobs/scheduler.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { BackgroundJobsModule as BackgroundJobsModule } from './background-jobs/
     InterceptorsModule.withConfig(process.env.MONGODB_CONNECTION as string),
     ControllersModule.withConfig(process.env.MONGODB_CONNECTION as string),
     BackgroundJobsModule.withConfig(process.env.MONGODB_CONNECTION as string),
+    SchedulerModule.withConfig(process.env.MONGODB_CONNECTION as string),
   ],
 })
 export class AppModule {}
