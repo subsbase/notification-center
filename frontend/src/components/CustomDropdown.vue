@@ -29,7 +29,7 @@ const handleSelect = (val) => {
   </button>
   <div v-if="dropdownMenu" class="dropdown-menu">
     <div v-for="item of items" :key="item" >
-        <p class="dropdown-item" v-bind:value="item" @click="handleSelect(item)"> {{item}}</p>
+        <div class="dropdown-item" v-bind:value="item" @click="handleSelect(item)"> {{item}}</div>
     </div>
   </div>
   
@@ -51,10 +51,10 @@ const handleSelect = (val) => {
   background-color: white;
   border: 0px;
   box-shadow: 2px 2px 4px 4px rgba(0, 0, 0, 0.04);
-  width: 130px;
+  width: 150px;
   max-height: 108px;
   overflow-y: hidden;
-  border-radius: 5px;
+  border-radius: 10px;
   border-top-right-radius: 0px;
 }
 
@@ -62,9 +62,8 @@ const handleSelect = (val) => {
   padding: 8px 12px;
   cursor: pointer;
   transition: background-color 0.2s;
-  border-bottom: 1px solid #ccc;
-  height: 27px;
-  padding: 3px;
+  border-bottom: 1px solid #ddd;
+  padding: 6px 40px 6px 10px; 
   text-align: left;
 }
 
