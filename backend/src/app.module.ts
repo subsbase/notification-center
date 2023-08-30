@@ -13,7 +13,7 @@ import { SchedulerModule } from './scheduled-jobs/scheduler.module';
     InterceptorsModule.withConfig(process.env.MONGODB_CONNECTION as string),
     ControllersModule.withConfig(process.env.MONGODB_CONNECTION as string),
     BackgroundJobsModule.withConfig(process.env.MONGODB_CONNECTION as string),
-    SchedulerModule.forRoot(process.env.MONGODB_CONNECTION as string),
+    SchedulerModule.withConfig(process.env.MONGODB_CONNECTION as string),
   ],
 })
 export class AppModule {}
