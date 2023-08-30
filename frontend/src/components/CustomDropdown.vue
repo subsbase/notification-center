@@ -52,10 +52,11 @@ const handleSelect = (val) => {
   border: 0px;
   box-shadow: 2px 2px 4px 4px rgba(0, 0, 0, 0.04);
   width: 150px;
-  max-height: 108px;
+  max-height: 112px;
   overflow-y: hidden;
   border-radius: 10px;
   border-top-right-radius: 0px;
+  padding: 5px 0px 5px 0px ;
 }
 
 .dropdown-item {
