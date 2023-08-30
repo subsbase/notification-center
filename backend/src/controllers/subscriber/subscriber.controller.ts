@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Param, Patch, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Patch, Post, Put, Query, UsePipes } from '@nestjs/common';
 import { NotificationManager } from '../../managers/notification/notification.manager';
 import { SubscriberManager } from '../../managers/subscriber/subscriber.manager';
 import { Subscriber } from '../../repositories/subscriber/schema';
@@ -9,7 +9,7 @@ import { Authorize } from '../decorators/authorize.decorator';
 import { REQUEST } from '@nestjs/core';
 import { FastifyRequest } from '../../types/global-types';
 import { SnoozedNotificationDto } from './snooze.notification.dto';
-
+import { ParseAndValidateDatePipe } from '../pipes/date-validator.pipe-transform';
 @Controller('subscribers')
 export class SubscribersController extends BaseController {
   constructor(
@@ -130,13 +130,17 @@ export class SubscribersController extends BaseController {
   }
 
   @Post(':subscriberId/notifications/snooze')
-  async snooze(@Param('subscriberId') subscriberId: string, @Body() snoozedNotificationsDto: SnoozedNotificationDto) {
-    const snoozeUntilDate = new Date(snoozedNotificationsDto.snoozeUntil);
+  async snooze(
+    @Param('subscriberId')
+    subscriberId: string,
+    @Body(new ParseAndValidateDatePipe(['snoozeUntil']))
+    snoozedNotificationsDto: SnoozedNotificationDto,
+  ): Promise<IActionResult> {
     const result = await this.notificationManager.snooze(
       this.Realm,
       subscriberId,
       snoozedNotificationsDto.notificationsIds,
-      snoozeUntilDate,
+      snoozedNotificationsDto.snoozeUntil,
     );
     if (!result.success) {
       return this.badRequest(result);
