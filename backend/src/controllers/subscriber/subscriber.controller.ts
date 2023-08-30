@@ -9,7 +9,7 @@ import { Authorize } from '../decorators/authorize.decorator';
 import { REQUEST } from '@nestjs/core';
 import { FastifyRequest } from '../../types/global-types';
 import { SnoozedNotificationDto } from './snooze.notification.dto';
-import { ParseAndValidateDatePipe } from '../pipes/date-validator.pipe-transform';
+import { ParseDatePipe } from '../pipes/date.pipe-transform';
 @Controller('subscribers')
 export class SubscribersController extends BaseController {
   constructor(
@@ -133,7 +133,7 @@ export class SubscribersController extends BaseController {
   async snooze(
     @Param('subscriberId')
     subscriberId: string,
-    @Body(new ParseAndValidateDatePipe(['snoozeUntil']))
+    @Body(new ParseDatePipe(['snoozeUntil']))
     snoozedNotificationsDto: SnoozedNotificationDto,
   ): Promise<IActionResult> {
     const result = await this.notificationManager.snooze(

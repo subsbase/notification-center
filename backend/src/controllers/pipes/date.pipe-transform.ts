@@ -1,7 +1,7 @@
 import { PipeTransform, Injectable } from '@nestjs/common';
 
 @Injectable()
-export class ParseAndValidateDatePipe implements PipeTransform {
+export class ParseDatePipe implements PipeTransform {
   constructor(private readonly dateProperties: Array<string>) {}
 
   transform(value: any) {
