@@ -15,7 +15,7 @@ export class ManagersModule {
   static withConfig(dbConnection: string): DynamicModule {
     return {
       module: ManagersModule,
-      imports: [ServicesModule.withDbconnection(dbConnection), EventsModule, TerminusModule],
+      imports: [ServicesModule.withDbConnection(dbConnection), EventsModule, TerminusModule],
       providers: [
         SubjectManager,
         TopicsManager,

@@ -19,7 +19,7 @@ import { Agenda } from '@hokify/agenda';
 import { SnoozeNotificationsService } from './snoozed-notification/snooze-notifications.service';
 @Module({})
 export class ServicesModule {
-  static withDbconnection(uri: string): DynamicModule {
+  static withDbConnection(uri: string): DynamicModule {
     const agenda = new Agenda({ db: { address: uri, collection: 'scheduled-jobs' } });
 
     return {
