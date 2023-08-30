@@ -20,7 +20,7 @@
     </div>
     <div v-if="selectedFilter === 'All'">
     <CustomDropdown v-if="multiSelect" class="more-btn" :items="multiActionsAll" @on-selected="handleSelectedAction"/>
-    <p v-else-if="notifications.length > 0" class="link clickable mt-0 text-right" @click="handleMarkAllAsRead">
+    <p v-else-if="notifications.length > 0" class="link clickable mt-0 text-right mark-all-read-link" @click="handleMarkAllAsRead">
       Mark all as read
     </p>
     </div>
@@ -222,12 +222,15 @@ const handleMarkAsUnread = (notificationId, actionUrl) => {
 }
 
 const handleChecked = (nId, idx) =>{
+  debugger
   if(checked.value[idx]){
     selectedNotificList.value.push(nId)
   }else{
-    selectedNotificList.value.splice(nId)
+    const toDelete = selectedNotificList.value.findIndex((i) => i===nId)
+    selectedNotificList.value.splice(toDelete, 1)
   }
   multiSelect.value= selectedNotificList.value.length<=0 ? false : true;
+  console.log(multiSelect.value)
 }
 
 const handleSnoozeSingle =(nId) =>{
@@ -295,6 +298,10 @@ const handleSelectedAction = (param) => {
   color: v-bind(themeID);
   text-decoration: underline;
   font-weight: 500;
+}
+.mark-all-read-link{
+  text-decoration: none;
+  font-weight: 800;
 }
 .blue-circle {
   background-color: v-bind(themeID);
