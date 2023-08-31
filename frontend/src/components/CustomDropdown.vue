@@ -27,11 +27,11 @@ const handleSelect = (val) => {
   <button @click="openDropdownMenu" class="more-btn" > 
     <img src="../assets/more.svg" alt="more-icon">
   </button>
-  <div v-if="dropdownMenu" class="dropdown-menu">
-    <div v-for="item of items" :key="item" >
+  <ul v-if="dropdownMenu" class="dropdown-menu">
+    <li v-for="item of items" :key="item" >
         <div class="dropdown-item" v-bind:value="item" @click="handleSelect(item)"> {{item}}</div>
-    </div>
-  </div>
+    </li>
+  </ul>
   
 </div>
 </template>

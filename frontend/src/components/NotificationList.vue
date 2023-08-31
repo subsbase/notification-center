@@ -38,7 +38,7 @@
     >
     <div class="d-flex font-size-12">
     <div class="x-start checkbox-div mr-10">
-      <input :class="{'check-icon': checked[index] }" :style="!notification.read ? 'background-color: #EBEFF6' : 'background-color: #ffffff'" type="checkbox" id="checkbox" v-model="checked[index]" @change="handleChecked(notification._id,index)" @click.stop/>
+      <input :class="{'check-icon': checked[index] , 'unread-notif-bg': !notification.read}" type="checkbox" id="checkbox" v-model="checked[index]" @change="handleChecked(notification._id,index)" @click.stop/>
     </div>
     <div class="x-between font-size-12 details-div">
         <div class="my-5 notification-content">
@@ -254,6 +254,11 @@ const handleSelectedAction = (param) => {
   text-decoration: underline;
   font-weight: 500;
 }
+
+.unread-notif-bg{
+  background-color: #EBEFF6
+}
+
 .mark-all-read-link{
   text-decoration: none;
   font-weight: 800;
@@ -358,8 +363,5 @@ input[type=checkbox]{
   height: 20px;
 }
 
-.selected-notification{
-  // background-color: #EBEFF6;
-}
 
 </style>
