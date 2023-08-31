@@ -1,5 +1,6 @@
 <template>
-  <div class="font-dark">
+  <div class="font-dark parent-container">
+    <!-- <div class="blur-bg"></div> -->
     <div class="x-between px-20 py-20">
     <h4 class="font-size-16 mb-10">
       <i v-if="source === 'page'" class="fa fa-chevron-left mr-20 clickable" @click="goBack"></i>
@@ -79,7 +80,7 @@
           {{getNotificationTime(notification.createdAt)}}
           </p>
          </div>
-          <div v-if="snoozeSingle[index]" class="snooze-bar d-flex">
+          <div v-if="snoozeSingle[index] && !multiSelect" class="snooze-bar d-flex">
             <input type="number" class="snooze-amount m-5" v-model="snoozeAmount" @click.stop>
             <select name="snooze-variant" id="snooze-variant" v-model="snoozeVariant" class="snooze-variant m-5" @click.stop >
               <option value="Minutes" > Minutes</option>              
@@ -107,19 +108,23 @@
       selectedFilter === 'All' ? 'No notifications' : 'No archived notifications'
     }}</span>
   </div>
-  </div>
+  <SnoozePopup  v-if="snoozeMulti" class="popup"
+  @multi-snooze-input="(param) =>{snoozeAmountMulti=param[0]; snoozeVariantMulti=param[1]}"
+  @hide-snooze-popup="()=> {snoozeMulti=false}"
+  ></SnoozePopup>
+</div>
 
 </template>
 
 <script setup>
 import { defineProps, defineEmits, onBeforeMount, ref, watch} from 'vue'
 import moment from 'moment'
-import { archiveNotification, markAllAsRead, markAsRead, unArchiveNotification, markAsUnread } from '@/services/notifications'
+import { archiveNotification, markAllAsRead, markAsRead, unArchiveNotification, markAsUnread, snoozeNotification } from '@/services/notifications'
 import { getSubscriberId, getThemeId } from '../utils.js'
 import CustomDropdown from './CustomDropdown.vue';
+import SnoozePopup from './SnoozePopup.vue';
 
-const emit = defineEmits(['on-click-mark-read','on-click-mark-unread'])
-
+const emit = defineEmits(['on-click-mark-read','on-click-mark-unread','on-snooze-notific'])
 
 const props = defineProps({
   notifications: { type: Array, default: () => [] },
@@ -138,8 +143,11 @@ const multiActionsAll = ref(['Archive','Snooze','Mark As Read','Mark As Unread']
 const multiActionsArchive = ref(['Unarchive'])
 const multiActionSelected = ref('')
 const snoozeSingle = ref([])
-const snoozeAmount = ref()
-const snoozeVariant = ref("")
+const snoozeAmount = ref(null)
+const snoozeVariant = ref(null)
+const snoozeMulti = ref(false)
+const snoozeAmountMulti = ref()
+const snoozeVariantMulti = ref("")
 
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
@@ -222,7 +230,6 @@ const handleMarkAsUnread = (notificationId, actionUrl) => {
 }
 
 const handleChecked = (nId, idx) =>{
-  debugger
   if(checked.value[idx]){
     selectedNotificList.value.push(nId)
   }else{
@@ -233,8 +240,7 @@ const handleChecked = (nId, idx) =>{
   console.log(multiSelect.value)
 }
 
-const handleSnoozeSingle =(nId) =>{
-  debugger
+const calculateUTC = (amount,variant) => {
   const result = new Date();
   const year = result.getUTCFullYear();
   const month = result.getUTCMonth() + 1; // Months are zero-based, so add 1
@@ -243,25 +249,50 @@ const handleSnoozeSingle =(nId) =>{
   const minutes = result.getUTCMinutes();
   const seconds = result.getUTCSeconds();
 
-  if(snoozeVariant.value==="Minutes"){
-    result.setUTCMinutes(minutes+snoozeAmount.value)
+  if(variant.value==="Minutes"){
+    result.setUTCMinutes(minutes+amount)
   }
-  if(snoozeVariant.value==="Hours"){
-    result.setUTCHours(hours+snoozeAmount.value)
+  if(variant.value==="Hours"){
+    result.setUTCHours(hours+amount)
   }
-  if(snoozeVariant.value==="Days"){
-    result.setUTCDate(day+snoozeAmount.value)
+  if(variant.value==="Days"){
+    result.setUTCDate(day+amount)
   }
+  return result.toISOString();
+}
 
+const handleSnoozeSingle =(nId) =>{
+  const result = calculateUTC(snoozeAmount.value,snoozeVariant.value)
   const data={
     "NotificationsIds":[nId],
-    "snoozeUntil":`${result.getUTCFullYear}-${result.getUTCMonth}-${result.getUTCDate}T${result.getUTCHours}:${result.getUTCMinutes}:${result.getUTCSeconds}`
+    "snoozeUntil": result
   }
-  snoozeNotification(subscriberId.value, data)
-  console.log(result)
-  //result is the UTC formt time to be passed
-  //snooze endpoint
-  //emit to refresh notifications
+  snoozeNotification(subscriberID.value, data) // this part handles the unarchive
+    .then(() => {
+      emit('on-snooze-notific', selectedFilter.value) // this part emits change to the parent which will fetch the changed data
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+  console.log(result.toISOString())
+  snoozeAmount.value=null
+  snoozeVariant.value=null
+
+}
+
+const handleSnoozeMulti = (notifications) =>{
+  const snoozeMultiDate = calculateUTC(snoozeAmountMulti,snoozeVariantMulti);
+  const payload = {
+    "notificationsIds": notifications,
+    "snoozeUntil": snoozeMultiDate
+  }
+  snoozeNotification(subscriberID.value, payload) // this part handles the unarchive
+    .then(() => {
+      emit('on-snooze-notific', selectedFilter.value) // this part emits change to the parent which will fetch the changed data
+    })
+    .catch((err) => {
+      console.error(err)
+    })
 }
 
 const handleSelectedAction = (param) => {
@@ -274,7 +305,9 @@ const handleSelectedAction = (param) => {
     handleUnArchiveNotification(selectedNotificList.value)
   }
   if(multiActionSelected.value=='Snooze'){
-    //to be implemented
+    snoozeMulti.value=true
+    handleSnoozeMulti(selectedNotificList.value)
+    
   }
   if(multiActionSelected.value=='Mark As Read'){
     let notification
@@ -294,7 +327,6 @@ const handleSelectedAction = (param) => {
   checked.value = []
   selectedNotificList.value = [];
 }
-
 
 </script>
 
@@ -424,11 +456,6 @@ input[type=checkbox]{
   height: 20px;
 }
 
-
-// .snooze-bar{
-
-// }
-
 .snooze-amount{
   background-color: transparent;
   -moz-appearance: textfield;
@@ -450,4 +477,33 @@ input[type=checkbox]{
   border-radius: 8px;
   border: 1px solid #181146;
 }
+
+.parent-container{
+  position: relative; /* Make sure it's relative for absolute positioning of the shadow */
+  width: 100%;
+  height: 100%;
+}
+
+.blur-bg{
+  position: absolute; /* Required for positioning the ::before pseudo-element */
+  width: 300px; /* Adjust the width as needed */
+  height: 200px; /* Adjust the height as needed */
+  z-index: 0;
+}
+.blur-bg::before{
+  content: ""; /* Required for the pseudo-element to generate content */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5); /* Translucent white color */
+  z-index: -1; /* Place the shadow behind the content */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Adjust the shadow properties as needed */
+}
+
+.popup{
+  z-index: 2;
+}
+
 </style>
