@@ -97,3 +97,16 @@ export const unArchiveNotification = (subscriberId, data) => {
       .catch((err) => reject(err))
   })
 }
+
+export const snoozeNotification = (subscriberId, data) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      headers: HEADERS,
+      method: 'put',
+      url: `${API_URL}/subscribers/${subscriberId}/notifications/snooze`,
+      data
+    })
+      .then((res) => resolve(res.data))
+      .catch((err) => reject(err))
+  })
+}

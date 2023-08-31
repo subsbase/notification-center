@@ -27,11 +27,11 @@ const handleSelect = (val) => {
   <button @click="openDropdownMenu" class="more-btn" > 
     <img src="../assets/more.svg" alt="more-icon">
   </button>
-  <div v-if="dropdownMenu" class="dropdown-menu">
-    <div v-for="item of items" :key="item" >
+  <ul v-if="dropdownMenu" class="dropdown-menu">
+    <li v-for="item of items" :key="item" >
         <div class="dropdown-item" v-bind:value="item" @click="handleSelect(item)"> {{item}}</div>
-    </div>
-  </div>
+    </li>
+  </ul>
   
 </div>
 </template>
@@ -52,10 +52,11 @@ const handleSelect = (val) => {
   border: 0px;
   box-shadow: 2px 2px 4px 4px rgba(0, 0, 0, 0.04);
   width: 150px;
-  max-height: 108px;
+  max-height: 112px;
   overflow-y: hidden;
   border-radius: 10px;
   border-top-right-radius: 0px;
+  padding: 5px 0px 5px 0px ;
 }
 
 .dropdown-item {
