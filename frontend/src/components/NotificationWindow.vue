@@ -11,6 +11,10 @@
     <div>
       <p class="medium clickable view-all-btn py-30" @click="showAllNotificationsPage()">View all notifications</p>
     </div>
+    <!-- <SnoozePopup class="popup"
+    @multi-snooze-input="(param) =>{snoozeAmountMulti=param[0]; snoozeVariantMulti=param[1]}"
+    @hide-snooze-popup="()=> {snoozeMulti=false}"
+    ></SnoozePopup> -->
   </div>
 </template>
 

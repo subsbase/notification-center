@@ -102,7 +102,7 @@ export const snoozeNotification = (subscriberId, data) => {
   return new Promise((resolve, reject) => {
     axios({
       headers: HEADERS,
-      method: 'put',
+      method: 'POST',
       url: `${API_URL}/subscribers/${subscriberId}/notifications/snooze`,
       data
     })

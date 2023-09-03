@@ -34,7 +34,7 @@ const handleSnoozeInput = () => {
 .snooze-bar-m{
   position: absolute;
   top: 50%;
-  left: 38%;
+  left: 50%;
   background: #fff;
   width: fit-content;
   padding: 15px 45px 15px 45px;

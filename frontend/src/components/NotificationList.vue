@@ -1,6 +1,6 @@
 <template>
   <div class="font-dark parent-container">
-    <!-- <div class="blur-bg"></div> -->
+    <div v-if="snoozeMulti" class="blur-bg"></div>
     <div class="x-between px-20 py-20">
     <h4 class="font-size-16 mb-10">
       <i v-if="source === 'page'" class="fa fa-chevron-left mr-20 clickable" @click="goBack"></i>
@@ -64,7 +64,7 @@
             <img
             class="clickable top-1 pos-relative mx-10"
             src="../assets/Snooze.svg"
-            @click.stop="()=>{snoozeSingle[index]=!snoozeSingle[index]}"
+            @click.stop="()=>{CurrentsnoozeSingle = index}"
           /> 
           <!-- snooze handler missing -->
             <img
@@ -80,15 +80,15 @@
           {{getNotificationTime(notification.createdAt)}}
           </p>
          </div>
-          <div v-if="snoozeSingle[index] && !multiSelect" class="snooze-bar d-flex">
+          <div v-if="CurrentsnoozeSingle===index && !multiSelect" class="snooze-bar d-flex">
             <input type="number" class="snooze-amount m-5" v-model="snoozeAmount" @click.stop>
-            <select name="snooze-variant" id="snooze-variant" v-model="snoozeVariant" class="snooze-variant m-5" @click.stop >
-              <option value="Minutes" > Minutes</option>              
-              <option value="Hours" > Hours</option>
-              <option value="Days"  > Days</option>
+            <select class="snooze-variant m-5 listMenu" name="snooze-variant" id="snooze-variant" v-model="snoozeVariant" @click.stop >
+              <option class="listItem" value="Minutes" > Minutes</option>              
+              <option class="listItem" value="Hours" > Hours</option>
+              <option class="listItem" value="Days"  > Days</option>
             </select>
-            <img src="../assets/Remove.svg" alt="Cancel" class="m-5" @click.stop="()=>{snoozeSingle[index]=!snoozeSingle[index]}">
-            <img src="../assets/Done.svg" alt="Confirm" class="m-5" @click.stop="()=>{snoozeSingle[index]=!snoozeSingle[index]; handleSnoozeSingle(notification._id);}">
+            <img src="../assets/Remove.svg" alt="Cancel" class="m-5" @click.stop="()=>{CurrentsnoozeSingle=-1}">
+            <img src="../assets/Done.svg" alt="Confirm" class="m-5" @click.stop="()=>{handleSnoozeSingle(index, notification._id);}">
           </div>
          </div>
         </div>
@@ -109,7 +109,7 @@
     }}</span>
   </div>
   <SnoozePopup  v-if="snoozeMulti" class="popup"
-  @multi-snooze-input="(param) =>{snoozeAmountMulti=param[0]; snoozeVariantMulti=param[1]}"
+  @multi-snooze-input="(param) =>{console.log(selectedNotificList);handleSnoozeMulti(param, selectedNotificList)}"
   @hide-snooze-popup="()=> {snoozeMulti=false}"
   ></SnoozePopup>
 </div>
@@ -120,7 +120,7 @@
 import { defineProps, defineEmits, onBeforeMount, ref, watch} from 'vue'
 import moment from 'moment'
 import { archiveNotification, markAllAsRead, markAsRead, unArchiveNotification, markAsUnread, snoozeNotification } from '@/services/notifications'
-import { getSubscriberId, getThemeId } from '../utils.js'
+import { getSubscriberId, getThemeId, getRealmHeader } from '../utils.js'
 import SnoozePopup from './SnoozePopup.vue';
 import Dropdown from './Dropdown.vue';
 
@@ -142,8 +142,8 @@ const multiSelect = ref(false);
 const multiActionsAll = ref(['Archive','Snooze','Mark As Read','Mark As Unread'])
 const multiActionsArchive = ref(['Unarchive'])
 const multiActionSelected = ref('')
-const snoozeSingle = ref([])
-const snoozeAmount = ref(null)
+const CurrentsnoozeSingle = ref()
+const snoozeAmount = ref(0)
 const snoozeVariant = ref(null)
 const snoozeMulti = ref(false)
 const snoozeAmountMulti = ref()
@@ -230,6 +230,7 @@ const handleMarkAsUnread = (notificationId, actionUrl) => {
 }
 
 const handleChecked = (nId, idx) =>{
+  console.log(getRealmHeader())
   if(checked.value[idx]){
     selectedNotificList.value.push(nId)
   }else{
@@ -240,6 +241,7 @@ const handleChecked = (nId, idx) =>{
 }
 
 const calculateUTC = (amount,variant) => {
+
   const result = new Date();
   const year = result.getUTCFullYear();
   const month = result.getUTCMonth() + 1; // Months are zero-based, so add 1
@@ -248,22 +250,24 @@ const calculateUTC = (amount,variant) => {
   const minutes = result.getUTCMinutes();
   const seconds = result.getUTCSeconds();
 
-  if(variant.value==="Minutes"){
+  console.log()
+  if(variant==="Minutes"){
     result.setUTCMinutes(minutes+amount)
   }
-  if(variant.value==="Hours"){
+  if(variant==="Hours"){
     result.setUTCHours(hours+amount)
   }
-  if(variant.value==="Days"){
+  if(variant==="Days"){
     result.setUTCDate(day+amount)
   }
   return result.toISOString();
 }
 
-const handleSnoozeSingle =(nId) =>{
+const handleSnoozeSingle =(idx,nId) =>{
+  CurrentsnoozeSingle.value=-1;
   const result = calculateUTC(snoozeAmount.value,snoozeVariant.value)
   const data={
-    "NotificationsIds":[nId],
+    "notificationsIds":[nId],
     "snoozeUntil": result
   }
   snoozeNotification(subscriberID.value, data) // this part handles the unarchive
@@ -277,8 +281,13 @@ const handleSnoozeSingle =(nId) =>{
   snoozeVariant.value=null
 }
 
-const handleSnoozeMulti = (notifications) =>{
-  const snoozeMultiDate = calculateUTC(snoozeAmountMulti,snoozeVariantMulti);
+const handleSnoozeMulti = (param, notifications) =>{
+  snoozeAmountMulti.value=param[0];
+  snoozeVariantMulti.value=param[1];
+  console.log(snoozeAmountMulti.value, snoozeVariantMulti.value)
+  const snoozeMultiDate = calculateUTC(snoozeAmountMulti.value,snoozeVariantMulti.value);
+  console.log(snoozeMultiDate)
+  console.log(notifications)
   const payload = {
     "notificationsIds": notifications,
     "snoozeUntil": snoozeMultiDate
@@ -290,6 +299,8 @@ const handleSnoozeMulti = (notifications) =>{
     .catch((err) => {
       console.error(err)
     })
+  // checked.value = []
+  // multiSelect.value = false
 }
 
 const handleSelectedAction = (param) => {
@@ -297,14 +308,18 @@ const handleSelectedAction = (param) => {
 
   if(multiActionSelected.value=='Archive'){
     handleArchiveNotification(selectedNotificList.value)
+    checked.value = []
+  multiSelect.value = false
+  selectedNotificList.value = [];
   }
   if(multiActionSelected.value=='Unarchive'){
     handleUnArchiveNotification(selectedNotificList.value)
+    checked.value = []
+  multiSelect.value = false
+  selectedNotificList.value = [];
   }
   if(multiActionSelected.value=='Snooze'){
     snoozeMulti.value=true
-    handleSnoozeMulti(selectedNotificList.value)
-    
   }
   if(multiActionSelected.value=='Mark As Read'){
     let notification
@@ -312,6 +327,9 @@ const handleSelectedAction = (param) => {
       notification = props.notifications.filter((notif) => notif._id == notifId)[0]
       handleMarkAsRead(notifId, notification.actionUrl)
     }
+    checked.value = []
+  multiSelect.value = false
+  selectedNotificList.value = [];
   }
   if(multiActionSelected.value=='Mark As Unread'){
     let notification
@@ -319,10 +337,10 @@ const handleSelectedAction = (param) => {
       notification = props.notifications.filter((notif) => notif._id == notifId)[0]
       handleMarkAsUnread(notifId, notification.actionUrl)
     }
-  }
+    checked.value = []
   multiSelect.value = false
-  checked.value = []
   selectedNotificList.value = [];
+  }
 }
 
 </script>
@@ -469,12 +487,6 @@ input[type=checkbox]{
   margin: 0; 
 }
 
-.snooze-variant{
-  background-color: transparent;
-  border-radius: 8px;
-  border: 1px solid #181146;
-}
-
 .parent-container{
   position: relative; /* Make sure it's relative for absolute positioning of the shadow */
   width: 100%;
@@ -483,8 +495,8 @@ input[type=checkbox]{
 
 .blur-bg{
   position: absolute; /* Required for positioning the ::before pseudo-element */
-  width: 300px; /* Adjust the width as needed */
-  height: 200px; /* Adjust the height as needed */
+  width: 100%; /* Adjust the width as needed */
+  height: 100%; /* Adjust the height as needed */
   z-index: 0;
 }
 .blur-bg::before{
@@ -494,13 +506,37 @@ input[type=checkbox]{
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.5); /* Translucent white color */
-  z-index: -1; /* Place the shadow behind the content */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Adjust the shadow properties as needed */
+  background-color: rgba(255, 255, 255, 0.795); /* Translucent white color */
+  z-index: -2; /* Place the shadow behind the content */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.185); /* Adjust the shadow properties as needed */
+}
+
+.blur-icons{
+  background-color:#1811468f;
 }
 
 .popup{
   z-index: 2;
+}
+
+.listItem{
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #ddd;
+  padding: 6px 40px 6px 10px; 
+  text-align: left;
+}
+
+.listMenu{
+  background-color: transparent;
+  border-radius: 8px;
+  border: 1px solid #181146;
+  box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.04);
+  width: 100px;
+  max-height: 112px;
+  overflow-y: hidden;
+  padding: 5px 0px 5px 0px ;
 }
 
 </style>
