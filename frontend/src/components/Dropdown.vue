@@ -25,7 +25,7 @@ const handleSelect = (val) => {
 <template>
 <div>
   <button @click="openDropdownMenu" class="more-btn" > 
-    <img src="../assets/more.svg" alt="more-icon">
+    <!-- <img src="../assets/more.svg" alt="more-icon"> -->
   </button>
   <ul v-if="dropdownMenu" class="dropdown-menu">
     <li v-for="item of items" :key="item" >
