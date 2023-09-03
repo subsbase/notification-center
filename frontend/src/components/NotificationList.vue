@@ -59,7 +59,7 @@
           <div v-else class="x-end">
             <img
             class="clickable top-1 pos-relative mx-10"
-            src="../assets/Snooze.svg"
+            src="../assets/snooze.svg"
             @click.stop=""
           /> 
           <!-- snooze handler missing -->
