@@ -18,7 +18,7 @@ export class AgendaScheduler implements OnModuleInit {
       'unsnooze',
       async (job: Job<{ realm: string; subscriberId: string; notification: Notification }>) => {
         const data = job.attrs.data;
-        Logger.log('Job ', data);
+        Logger.log('Job ' + data);
         const notification = data.notification;
 
         let res = await this.notificationManager.notify(
