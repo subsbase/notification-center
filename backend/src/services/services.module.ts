@@ -22,9 +22,9 @@ export class ServicesModule {
   static withDbConnection(uri: string): DynamicModule {
     const agenda = new Agenda({
       db: { address: uri, collection: 'scheduled-jobs' },
-      ensureIndex: true,
-      sort: { priority: -1 },
     });
+
+    agenda.db.collection.createIndex({ nextRunAt: 1, priority: -1 });
 
     return {
       module: ServicesModule,
