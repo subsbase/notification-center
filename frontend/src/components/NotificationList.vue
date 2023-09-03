@@ -99,7 +99,7 @@ import { defineProps, defineEmits, onBeforeMount, ref, watch} from 'vue'
 import moment from 'moment'
 import { archiveNotification, markAllAsRead, markAsRead, unArchiveNotification, markAsUnread } from '@/services/notifications'
 import { getSubscriberId, getThemeId } from '../utils.js'
-import CustomDropdown from './CustomDropdown.vue';
+import CustomDropdown from './Dropdown.vue';
 
 const emit = defineEmits(['on-click-mark-read','on-click-mark-unread'])
 
@@ -202,7 +202,6 @@ const handleMarkAsUnread = (notificationId, actionUrl) => {
 }
 
 const handleChecked = (nId, idx) =>{
-  debugger
   if(checked.value[idx]){
     selectedNotificList.value.push(nId)
   }else{
@@ -210,7 +209,6 @@ const handleChecked = (nId, idx) =>{
     selectedNotificList.value.splice(toDelete, 1)
   }
   multiSelect.value= selectedNotificList.value.length<=0 ? false : true;
-  console.log(multiSelect.value)
 }
 
 const handleSelectedAction = (param) => {
