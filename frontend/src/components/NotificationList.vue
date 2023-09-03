@@ -20,13 +20,13 @@
       </div>
     </div>
     <div v-if="selectedFilter === 'All'">
-    <CustomDropdown v-if="multiSelect" class="more-btn" :items="multiActionsAll" @on-selected="handleSelectedAction"/>
+    <Dropdown v-if="multiSelect" class="more-btn" :items="multiActionsAll" @on-selected="handleSelectedAction"/>
     <p v-else-if="notifications.length > 0" class="link clickable mt-0 text-right mark-all-read-link" @click="handleMarkAllAsRead">
       Mark all as read
     </p>
     </div>
     <div v-else class="x-row">
-    <CustomDropdown v-if="multiSelect" class="more-btn" :items="multiActionsArchive" @on-selected="handleSelectedAction"/>
+    <Dropdown v-if="multiSelect" class="more-btn" :items="multiActionsArchive" @on-selected="handleSelectedAction"/>
   </div>
  </div>
 
@@ -121,8 +121,8 @@ import { defineProps, defineEmits, onBeforeMount, ref, watch} from 'vue'
 import moment from 'moment'
 import { archiveNotification, markAllAsRead, markAsRead, unArchiveNotification, markAsUnread, snoozeNotification } from '@/services/notifications'
 import { getSubscriberId, getThemeId } from '../utils.js'
-import CustomDropdown from './CustomDropdown.vue';
 import SnoozePopup from './SnoozePopup.vue';
+import Dropdown from './Dropdown.vue';
 
 const emit = defineEmits(['on-click-mark-read','on-click-mark-unread','on-snooze-notific'])
 
@@ -237,7 +237,6 @@ const handleChecked = (nId, idx) =>{
     selectedNotificList.value.splice(toDelete, 1)
   }
   multiSelect.value= selectedNotificList.value.length<=0 ? false : true;
-  console.log(multiSelect.value)
 }
 
 const calculateUTC = (amount,variant) => {
@@ -274,10 +273,8 @@ const handleSnoozeSingle =(nId) =>{
     .catch((err) => {
       console.error(err)
     })
-  console.log(result.toISOString())
   snoozeAmount.value=null
   snoozeVariant.value=null
-
 }
 
 const handleSnoozeMulti = (notifications) =>{
