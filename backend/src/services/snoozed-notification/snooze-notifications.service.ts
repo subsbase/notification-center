@@ -52,7 +52,7 @@ export class SnoozeNotificationsService {
       .then((aggregationResult) => {
         var notificationsToSnooze = aggregationResult[0]?.notifications?.flat();
 
-        if (!notificationsToSnooze) {
+        if (!notificationsToSnooze || notificationsToSnooze.length == 0) {
           return { success: false, message: 'no notification found with provided ids' };
         }
 
@@ -91,8 +91,8 @@ export class SnoozeNotificationsService {
             { setDefaultsOnInsert: true },
           )
           .then((updateResult) => {
-            if (updateResult.modifiedCount === 0) {
-              return { success: false, message: 'no notification found with provided ids' };
+            if (!updateResult || updateResult.modifiedCount == 0) {
+              return { success: false, message: 'unable to snooze' };
             }
 
             this.eventEmitter.emit('notification.snoozed', new NotificationSnoozed(subscriberId, notificationsIds));
