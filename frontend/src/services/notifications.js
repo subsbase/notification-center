@@ -60,6 +60,18 @@ export const markAsRead = (subscriberId, notificationId) => {
   })
 }
 
+export const markAsUnread = (subscriberId, notificationId) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      headers: HEADERS,
+      method: 'patch',
+      url: `${API_URL}/subscribers/${subscriberId}/notifications/${notificationId}/markasunread`
+    })
+      .then((res) => resolve(res.data))
+      .catch((err) => reject(err))
+  })
+}
+
 export const archiveNotification = (subscriberId, data) => {
   return new Promise((resolve, reject) => {
     axios({
@@ -79,6 +91,19 @@ export const unArchiveNotification = (subscriberId, data) => {
       headers: HEADERS,
       method: 'put',
       url: `${API_URL}/subscribers/${subscriberId}/notifications/unarchive`,
+      data
+    })
+      .then((res) => resolve(res.data))
+      .catch((err) => reject(err))
+  })
+}
+
+export const snoozeNotification = (subscriberId, data) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      headers: HEADERS,
+      method: 'put',
+      url: `${API_URL}/subscribers/${subscriberId}/notifications/snooze`,
       data
     })
       .then((res) => resolve(res.data))
