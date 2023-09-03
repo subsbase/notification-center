@@ -57,11 +57,6 @@
             @click.stop="handleUnArchiveNotification([notification._id])"
           />
           <div v-else class="x-end">
-            <img
-            class="clickable top-1 pos-relative mx-10"
-            src="../assets/snooze.svg"
-            @click.stop=""
-          /> 
           <!-- snooze handler missing -->
             <img
             class="clickable top-1 pos-relative"
