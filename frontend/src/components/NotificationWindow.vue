@@ -5,7 +5,6 @@
       :unreadCount="unreadCount"
       @on-click-mark-read="refreshNotifications"
       @on-handle-archive-unarchive="onArchiveUnArchive"
-      @on-click-mark-unread="refreshNotifications"
     />
     <div>
       <p class="medium clickable view-all-btn py-30" @click="showAllNotificationsPage()">View all notifications</p>
