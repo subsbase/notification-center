@@ -60,7 +60,7 @@ const handleSelect = (val) => {
 </script>
 
 <style>
-/* Style the dropdown container */
+
 .snooze-bar-m {
   background: #fff;
   width: fit-content;
@@ -69,7 +69,6 @@ const handleSelect = (val) => {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Style the snooze amount input */
 .snooze-amount-m {
   background-color: transparent;
   -moz-appearance: textfield;
@@ -81,14 +80,12 @@ const handleSelect = (val) => {
   text-align: center;
 }
 
-/* Remove the up and down arrows in the snooze amount input */
 .snooze-amount-m::-webkit-inner-spin-button,
 .snooze-amount-m::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Style the snooze variant dropdown button */
 .snooze-variant-m {
   position: relative;
   background-color: transparent;
@@ -99,8 +96,8 @@ const handleSelect = (val) => {
   height: 30px;
   padding: 0 10px;
   display: flex;
-  justify-content: space-between; /* Add space between text and arrow */
-  align-items: center; /* Vertically center content */
+  justify-content: space-between; 
+  align-items: center; 
 }
 
 .btn {
@@ -109,7 +106,7 @@ const handleSelect = (val) => {
 
 .dropdown-menu-snooze {
   position: absolute;
-  top: 50px; /* Adjust the top position to be just below the button */
+  top: 50px; 
   right: 110px;
   z-index: 1;
   background-color: white;
@@ -128,9 +125,9 @@ const handleSelect = (val) => {
   border-bottom: 1px solid #ddd;
   padding: 3px 2px 3px 5px; 
   text-align: left;
-  background-color: #fff; /* Background color of the options */
-  color: #181146; /* Text color of the options */
-  padding: 3px 5px; /* Spacing inside each option */
+  background-color: #fff;
+  color: #181146; 
+  padding: 3px 5px; 
   height: 25px;
 }
 
@@ -141,7 +138,5 @@ const handleSelect = (val) => {
 .no-border{
   border: 0px;
 }
-
-/* Style the dropdown list options */
 
 </style>

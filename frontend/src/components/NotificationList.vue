@@ -4,7 +4,6 @@
     <div v-if="snoozeMulti" class="blur-bg"></div>
     <div class="x-between px-20 py-20">
     <h4 class="font-size-16 mb-10">
-      <!-- <i v-if="source === 'page'" class="fa fa-chevron-left mr-20 clickable" @click="goBack"></i> -->
       <chevron v-if="source === 'page'" class="mr-20 back-btn clickable" @click="goBack"></chevron>
       Notifications
     </h4>
@@ -50,7 +49,6 @@
           </p>
           <p class=" " v-html="notification.message"></p>
         </div>
-          <!-- Here we add unarchive icon to archived and archive icon for all-->
         <div  class="icons-div mr-20 mb-10 ">
         <div >
         <div class="d-flex x-row">
@@ -68,7 +66,6 @@
             src="../assets/Snooze.svg"
             @click.stop="()=>{CurrentsnoozeSingle = index}"
           /> 
-          <!-- snooze handler missing -->
             <img
             class="clickable top-1 pos-relative"
             src="../assets/archive-icon.svg"
@@ -84,11 +81,6 @@
          </div>
           <div v-if="CurrentsnoozeSingle===index && !multiSelect" class="snooze-bar d-flex">
             <input type="number" class="snooze-amount m-5" v-model="snoozeAmount" @click.stop>
-            <!-- <select class="snooze-variant m-5 listMenu" name="snooze-variant" id="snooze-variant" v-model="snoozeVariant" @click.stop >
-              <option class="listItem" value="Minutes" > Minutes</option>              
-              <option class="listItem" value="Hours" > Hours</option>
-              <option class="listItem" value="Days"  > Days</option>
-            </select> -->
             <div class="m-5 rel">
             <button @click.stop="snoozeDropdown=!snoozeDropdown" class="btn snooze-variant-m" > 
               <div class="selector"> {{ snoozeVariant }} </div>
@@ -187,14 +179,14 @@ const onChangeFilter = (filterType) => {
   multiSelect.value = false
   checked.value = []
   selectedNotificList.value = [];
-  emit('on-handle-archive-unarchive', filterType) //  this is where we emit the filter change and in response the parent component fetches the filtered notifications
+  emit('on-handle-archive-unarchive', filterType) 
 }
 
 const handleArchiveNotification = (notifications) => {
   const payload = notifications
-  archiveNotification(subscriberID.value, payload) // this part handles the archive
+  archiveNotification(subscriberID.value, payload) 
     .then(() => {
-      emit('on-click-mark-read', selectedFilter.value) // this part emits change to the parent which will fetch the changed data
+      emit('on-click-mark-read', selectedFilter.value) 
     })
     .catch((err) => {
       console.error(err)
@@ -203,9 +195,9 @@ const handleArchiveNotification = (notifications) => {
 
 const handleUnArchiveNotification = (notifications) => {
   const payload = notifications
-  unArchiveNotification(subscriberID.value, payload) // this part handles the unarchive
+  unArchiveNotification(subscriberID.value, payload) 
     .then(() => {
-      emit('on-click-mark-read', selectedFilter.value) // this part emits change to the parent which will fetch the changed data
+      emit('on-click-mark-read', selectedFilter.value) 
     })
     .catch((err) => {
       console.error(err)
@@ -263,7 +255,7 @@ const calculateUTC = (amount,variant) => {
 
   const result = new Date();
   const year = result.getUTCFullYear();
-  const month = result.getUTCMonth() + 1; // Months are zero-based, so add 1
+  const month = result.getUTCMonth() + 1; 
   const day = result.getUTCDate();
   const hours = result.getUTCHours();
   const minutes = result.getUTCMinutes();
@@ -289,9 +281,9 @@ const handleSnoozeSingle =(idx,nId) =>{
     "notificationsIds":[nId],
     "snoozeUntil": result
   }
-  snoozeNotification(subscriberID.value, data) // this part handles the unarchive
+  snoozeNotification(subscriberID.value, data) 
     .then(() => {
-      emit('on-snooze-notific', selectedFilter.value) // this part emits change to the parent which will fetch the changed data
+      emit('on-snooze-notific', selectedFilter.value) 
     })
     .catch((err) => {
       console.error(err)
@@ -299,7 +291,7 @@ const handleSnoozeSingle =(idx,nId) =>{
   snoozeAmount.value=null
   snoozeVariant.value=null
   // $delete(notifications, idx);
-  slideNotification.value[idx]=true
+  // slideNotification.value[idx]=true
 }
 
 const handleSnoozeMulti = (param, notifications) =>{
@@ -313,15 +305,13 @@ const handleSnoozeMulti = (param, notifications) =>{
     "notificationsIds": notifications,
     "snoozeUntil": snoozeMultiDate
   }
-  snoozeNotification(subscriberID.value, payload) // this part handles the unarchive
+  snoozeNotification(subscriberID.value, payload) 
     .then(() => {
-      emit('on-snooze-notific', selectedFilter.value) // this part emits change to the parent which will fetch the changed data
+      emit('on-snooze-notific', selectedFilter.value) 
     })
     .catch((err) => {
       console.error(err)
     })
-  // checked.value = []
-  // multiSelect.value = false
 }
 
 const handleSelectedAction = (param) => {
@@ -502,9 +492,8 @@ input[type="checkbox"]:checked::after {
 }
 
 input[type="checkbox"]:disabled {
-  opacity: 0.2; /* Reduce opacity to indicate it's disabled */
-  cursor:auto ; /* Change cursor to indicate it's not clickable */
-  /* Add more styles as needed */
+  opacity: 0.2; 
+  cursor:auto ; 
 }
 
 .more-btn{
@@ -537,7 +526,6 @@ input[type="checkbox"]:disabled {
   margin: 0; 
 }
 
-/* Style the snooze variant dropdown button */
 .snooze-variant-m {
   position: relative;
   background-color: transparent;
@@ -548,8 +536,8 @@ input[type="checkbox"]:disabled {
   height: 30px;
   padding: 0 10px;
   display: flex;
-  justify-content: space-between; /* Add space between text and arrow */
-  align-items: center; /* Vertically center content */
+  justify-content: space-between; 
+  align-items: center; 
 }
 
 .btn {
@@ -558,7 +546,7 @@ input[type="checkbox"]:disabled {
 
 .dropdown-menu-snooze {
   position: absolute;
-  top: 100%; /* Adjust the top position to be just below the button */
+  top: 100%; 
   right: 0%;
   z-index: 1;
   background-color: white;
@@ -577,9 +565,9 @@ input[type="checkbox"]:disabled {
   border-bottom: 1px solid #ddd;
   padding: 3px 2px 3px 5px; 
   text-align: left;
-  background-color: #fff; /* Background color of the options */
-  color: #181146; /* Text color of the options */
-  padding: 3px 5px; /* Spacing inside each option */
+  background-color: #fff; 
+  color: #181146; 
+  padding: 3px 5px; 
   height: 25px;
 }
 
@@ -594,21 +582,21 @@ input[type="checkbox"]:disabled {
 
 
 .blur-bg{
-  position: absolute; /* Required for positioning the ::before pseudo-element */
-  width: 100%; /* Adjust the width as needed */
-  height: 100%; /* Adjust the height as needed */
+  position: absolute; 
+  width: 100%; 
+  height: 100%; 
   z-index: 0;
 }
 .blur-bg::before{
-  content: ""; /* Required for the pseudo-element to generate content */
+  content: ""; 
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.795); /* Translucent white color */
-  z-index: 2; /* Place the shadow behind the content */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.185); /* Adjust the shadow properties as needed */
+  background-color: rgba(255, 255, 255, 0.795); 
+  z-index: 2; 
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.185); 
 }
 
 

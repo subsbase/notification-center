@@ -38,7 +38,7 @@ const handleSelect = (val) => {
 <style>
 
 .parent-container{
-  position: relative; /* Make sure it's relative for absolute positioning of the shadow */
+  position: relative; 
   width: 100%;
   height: 100%;
 }
@@ -51,7 +51,7 @@ const handleSelect = (val) => {
 
 .dropdown-menu {
   position: absolute;
-  top: 20px; /* Adjust the top position to be just below the button */
+  top: 20px; 
   right: 17px;
   z-index: 100;
   background-color: white;
