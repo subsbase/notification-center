@@ -4,7 +4,8 @@
     <div v-if="snoozeMulti" class="blur-bg"></div>
     <div class="x-between px-20 py-20">
     <h4 class="font-size-16 mb-10">
-      <i v-if="source === 'page'" class="fa fa-chevron-left mr-20 clickable" @click="goBack"></i>
+      <!-- <i v-if="source === 'page'" class="fa fa-chevron-left mr-20 clickable" @click="goBack"></i> -->
+      <chevron v-if="source === 'page'" class="mr-20 back-btn clickable" @click="goBack"></chevron>
       Notifications
     </h4>
   </div>
@@ -31,11 +32,11 @@
   </div>
  </div>
 
-  <div :class="['px-20', source === 'page' ? '' : 'notification-list']" v-if="notifications.length">
+  <div :class="['px-20', source === 'page' ? '' : 'notification-list', slideNotification ? 'slide-transition' : '']" v-if="notifications.length">
     <div
       v-for="(notification, index) in notifications"
       :key="notification._id"
-      :class="['notification-row my-20', { 'read-notification': notification.read }, { 'selected-notification' : checked[index]}]"
+      :class="['notification-row my-20', { 'read-notification': notification.read }, { 'selected-notification' : checked[index]}, {'slide-transition' : slideNotification}]"
       @click="handleMarkAsRead(notification._id, notification.actionUrl)"
     >
     <div class="d-flex font-size-12">
@@ -83,11 +84,24 @@
          </div>
           <div v-if="CurrentsnoozeSingle===index && !multiSelect" class="snooze-bar d-flex">
             <input type="number" class="snooze-amount m-5" v-model="snoozeAmount" @click.stop>
-            <select class="snooze-variant m-5 listMenu" name="snooze-variant" id="snooze-variant" v-model="snoozeVariant" @click.stop >
+            <!-- <select class="snooze-variant m-5 listMenu" name="snooze-variant" id="snooze-variant" v-model="snoozeVariant" @click.stop >
               <option class="listItem" value="Minutes" > Minutes</option>              
               <option class="listItem" value="Hours" > Hours</option>
               <option class="listItem" value="Days"  > Days</option>
-            </select>
+            </select> -->
+            <div class="m-5 rel">
+            <button @click.stop="snoozeDropdown=!snoozeDropdown" class="btn snooze-variant-m" > 
+              <div class="selector"> {{ snoozeVariant }} </div>
+              <chevron></chevron>
+            </button>
+              <ul v-if="snoozeDropdown" class="dropdown-menu-snooze">
+                <li v-for="(snoozeItem, index) of snoozeItems" :key="snoozeItem" >
+                  <div class="dropdown-item-snooze" :class="{'no-border': index === snoozeItems.length - 1 }" 
+                  v-bind:value="snoozeItem" @click.stop="{ snoozeVariant = snoozeItem; snoozeDropdown=false;}"> 
+                  {{snoozeItem}} </div>
+                </li>
+              </ul>
+            </div>
             <img src="../assets/Remove.svg" alt="Cancel" class="m-5 snooze-icons" @click.stop="()=>{CurrentsnoozeSingle=-1}">
             <img src="../assets/Done.svg" alt="Confirm" class="m-5 snooze-icons" @click.stop="()=>{handleSnoozeSingle(index, notification._id);}">
           </div>
@@ -124,6 +138,7 @@ import { archiveNotification, markAllAsRead, markAsRead, unArchiveNotification, 
 import { getSubscriberId, getThemeId, getRealmHeader } from '../utils.js'
 import SnoozePopup from './SnoozePopup.vue';
 import Dropdown from './Dropdown.vue';
+import chevron from '@/icons/chevron.vue';
 
 const emit = defineEmits(['on-click-mark-read','on-click-mark-unread','on-snooze-notific'])
 
@@ -145,10 +160,13 @@ const multiActionsArchive = ref(['Unarchive'])
 const multiActionSelected = ref('')
 const CurrentsnoozeSingle = ref()
 const snoozeAmount = ref(0)
-const snoozeVariant = ref(null)
+const snoozeVariant = ref()
 const snoozeMulti = ref(false)
 const snoozeAmountMulti = ref()
 const snoozeVariantMulti = ref("")
+const slideNotification= ref([])
+const snoozeDropdown = ref(false)
+const snoozeItems = ref(['Minutes','Hours','Days']);
 
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
@@ -280,6 +298,8 @@ const handleSnoozeSingle =(idx,nId) =>{
     })
   snoozeAmount.value=null
   snoozeVariant.value=null
+  // $delete(notifications, idx);
+  slideNotification.value[idx]=true
 }
 
 const handleSnoozeMulti = (param, notifications) =>{
@@ -310,14 +330,14 @@ const handleSelectedAction = (param) => {
   if(multiActionSelected.value=='Archive'){
     handleArchiveNotification(selectedNotificList.value)
     checked.value = []
-  multiSelect.value = false
-  selectedNotificList.value = [];
+    multiSelect.value = false
+    selectedNotificList.value = [];
   }
   if(multiActionSelected.value=='Unarchive'){
     handleUnArchiveNotification(selectedNotificList.value)
     checked.value = []
-  multiSelect.value = false
-  selectedNotificList.value = [];
+    multiSelect.value = false
+    selectedNotificList.value = [];
   }
   if(multiActionSelected.value=='Snooze'){
     snoozeMulti.value=true
@@ -329,8 +349,8 @@ const handleSelectedAction = (param) => {
       handleMarkAsRead(notifId, notification.actionUrl)
     }
     checked.value = []
-  multiSelect.value = false
-  selectedNotificList.value = [];
+    multiSelect.value = false
+    selectedNotificList.value = [];
   }
   if(multiActionSelected.value=='Mark As Unread'){
     let notification
@@ -339,8 +359,8 @@ const handleSelectedAction = (param) => {
       handleMarkAsUnread(notifId, notification.actionUrl)
     }
     checked.value = []
-  multiSelect.value = false
-  selectedNotificList.value = [];
+    multiSelect.value = false
+    selectedNotificList.value = [];
   }
 }
 
@@ -352,6 +372,10 @@ const handleSelectedAction = (param) => {
   position:relative;
   height: 100%;
   width: 100%;
+}
+
+.back-btn{
+  transform: rotate(90deg);
 }
 
 .link {
@@ -513,6 +537,62 @@ input[type="checkbox"]:disabled {
   margin: 0; 
 }
 
+/* Style the snooze variant dropdown button */
+.snooze-variant-m {
+  position: relative;
+  background-color: transparent;
+  border-radius: 8px;
+  border: 1px solid #181146;
+  color: #181146;
+  width: 95px;
+  height: 30px;
+  padding: 0 10px;
+  display: flex;
+  justify-content: space-between; /* Add space between text and arrow */
+  align-items: center; /* Vertically center content */
+}
+
+.btn {
+  cursor: pointer;
+}
+
+.dropdown-menu-snooze {
+  position: absolute;
+  top: 100%; /* Adjust the top position to be just below the button */
+  right: 0%;
+  z-index: 1;
+  background-color: white;
+  border: 0px;
+  box-shadow: 2px 2px 4px 4px rgba(0, 0, 0, 0.04);
+  width: 100px;
+  max-height: 78px;
+  overflow-y: hidden;
+  border-radius: 10px;
+  padding: 2px 0px 2px 0px ;
+}
+
+.dropdown-item-snooze {
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #ddd;
+  padding: 3px 2px 3px 5px; 
+  text-align: left;
+  background-color: #fff; /* Background color of the options */
+  color: #181146; /* Text color of the options */
+  padding: 3px 5px; /* Spacing inside each option */
+  height: 25px;
+}
+
+.dropdown-item-snooze:hover {
+  background-color: #f0f0f0;
+}
+
+.no-border{
+  border: 0px;
+}
+
+
+
 .blur-bg{
   position: absolute; /* Required for positioning the ::before pseudo-element */
   width: 100%; /* Adjust the width as needed */
@@ -560,4 +640,20 @@ input[type="checkbox"]:disabled {
   padding: 5px 0px 5px 0px ;
 }
 
+.slide-transition {
+  -webkit-animation: slide 0.5s forwards;
+  -webkit-animation-delay: 2s;
+  animation: slide 0.5s forwards;
+  animation-delay: 2s;
+}
+
+@-webkit-keyframes slide {
+    100% { left: 0; }
+}
+
+@keyframes slide {
+    100% { left: 0; }
+}
+
 </style>
+

@@ -145,6 +145,10 @@ body {
     display: flex;
 }
 
+.rel{
+    position: relative;
+}
+
 // ---------------- Font Sizes ----------------
 
 @for $i from 6 through 32 {
