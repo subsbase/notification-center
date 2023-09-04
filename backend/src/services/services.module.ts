@@ -20,11 +20,14 @@ import { SnoozeNotificationsService } from './snoozed-notification/snooze-notifi
 @Module({})
 export class ServicesModule {
   static withDbConnection(uri: string): DynamicModule {
-    const agenda = new Agenda({
-      db: { address: uri, collection: 'scheduled-jobs' },
-    });
-
-    agenda.db.collection.createIndex({ nextRunAt: 1, priority: -1 });
+    const agenda = new Agenda();
+    agenda.database(uri, 'scheduled-jobs').then((agenda => {
+      agenda.db.collection.createIndex({
+         nextRunAt: 1,
+         priority: -1 
+        },
+        { name: 'findAndLockNextJobIndex' })
+    }));
 
     return {
       module: ServicesModule,
