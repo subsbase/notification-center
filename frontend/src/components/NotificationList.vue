@@ -1,4 +1,5 @@
 <template>
+  <div class="d-flex">
   <div class="font-dark parent-container">
     <div v-if="snoozeMulti" class="blur-bg"></div>
     <div class="x-between px-20 py-20">
@@ -39,7 +40,7 @@
     >
     <div class="d-flex font-size-12">
     <div class="x-start checkbox-div mr-10">
-      <input :class="{'check-icon': checked[index] , 'unread-notif-bg': !notification.read}" type="checkbox" id="checkbox" v-model="checked[index]" @change="handleChecked(notification._id,index)" @click.stop/>
+      <input :disabled="snoozeMulti" :class="{'check-icon': checked[index] , 'unread-notif-bg': !notification.read}" type="checkbox" id="checkbox" v-model="checked[index]" @change="handleChecked(notification._id,index)" @click.stop/>
     </div>
     <div class="x-between font-size-12 details-div">
         <div class="my-5 notification-content">
@@ -76,7 +77,7 @@
         <span v-if="!notification.read" class="blue-circle ml-10 mt-10"/>
         <span v-else></span>
           </div>
-          <p class="light ml-20 mt-10 x-end created-since">
+          <p class="light ml-20 mt-10 mr-20 x-end created-since">
           {{getNotificationTime(notification.createdAt)}}
           </p>
          </div>
@@ -87,8 +88,8 @@
               <option class="listItem" value="Hours" > Hours</option>
               <option class="listItem" value="Days"  > Days</option>
             </select>
-            <img src="../assets/Remove.svg" alt="Cancel" class="m-5" @click.stop="()=>{CurrentsnoozeSingle=-1}">
-            <img src="../assets/Done.svg" alt="Confirm" class="m-5" @click.stop="()=>{handleSnoozeSingle(index, notification._id);}">
+            <img src="../assets/Remove.svg" alt="Cancel" class="m-5 snooze-icons" @click.stop="()=>{CurrentsnoozeSingle=-1}">
+            <img src="../assets/Done.svg" alt="Confirm" class="m-5 snooze-icons" @click.stop="()=>{handleSnoozeSingle(index, notification._id);}">
           </div>
          </div>
         </div>
@@ -108,12 +109,12 @@
       selectedFilter === 'All' ? 'No notifications' : 'No archived notifications'
     }}</span>
   </div>
-  <SnoozePopup  v-if="snoozeMulti" class="popup"
+</div>
+<SnoozePopup  v-if="snoozeMulti" class="popup"
   @multi-snooze-input="(param) =>{console.log(selectedNotificList);handleSnoozeMulti(param, selectedNotificList)}"
   @hide-snooze-popup="()=> {snoozeMulti=false}"
-  ></SnoozePopup>
+></SnoozePopup>
 </div>
-
 </template>
 
 <script setup>
@@ -347,6 +348,12 @@ const handleSelectedAction = (param) => {
 
 <style lang="scss">
 
+.parent-container{
+  position:relative;
+  height: 100%;
+  width: 100%;
+}
+
 .link {
   color: v-bind(themeID);
   text-decoration: underline;
@@ -396,13 +403,17 @@ const handleSelectedAction = (param) => {
     justify-content: flex-end;
 }
 
+.created-since{
+  white-space: nowrap;
+}
+
+.snooze-icons{
+  height: 22px;
+}
+
 .icons-time-div{
   width: 9.5em;
   text-align: right;
-}
-
-.created-since{
-  position: absolute;
 }
 
 .check-icon {
@@ -411,8 +422,26 @@ const handleSelectedAction = (param) => {
   line-height: 1.1;
   display: grid;
   grid-template-columns: 1em auto;
-
 }
+
+
+input[type=checkbox]{
+  -webkit-appearance: none;
+  position: relative;
+  appearance: none;
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.15em solid currentColor;
+  border-radius: 0.15em;
+  display: grid;
+  place-content: center;
+  display: grid;
+  place-content: center;
+}
+
 input[type="checkbox"]::before {
   content: "";
   width: 0.65em;
@@ -431,37 +460,29 @@ input[type="checkbox"]:checked::before {
   top:1px;
   left: 0px;
   transform: scale(1.9) skewX(-10deg) skewY(14deg);
-  z-index: 2;
+  z-index: 1;
   background-color:#181146;
 }
+
 input[type="checkbox"]:checked::after {
-  content: '';
+  content: "";
   width: 5px;
   height: 7px;
   display: block;
   right: -2px;
-  z-index: 1;
+  z-index: 0;
   top: 1px;
   background: inherit;
   position: absolute;
   transform: skew(0deg,-50deg)
 }
-input[type=checkbox]{
-  -webkit-appearance: none;
-  position: relative;
-  appearance: none;
-  margin: 0;
-  font: inherit;
-  color: currentColor;
-  width: 1.15em;
-  height: 1.15em;
-  border: 0.15em solid currentColor;
-  border-radius: 0.15em;
-  display: grid;
-  place-content: center;
-  display: grid;
-  place-content: center;
+
+input[type="checkbox"]:disabled {
+  opacity: 0.2; /* Reduce opacity to indicate it's disabled */
+  cursor:auto ; /* Change cursor to indicate it's not clickable */
+  /* Add more styles as needed */
 }
+
 .more-btn{
   border-width: 0px;
   background-color: white;
@@ -469,6 +490,11 @@ input[type=checkbox]{
 .more-icon{
   width: 20px;
   height: 20px;
+}
+
+.snooze-bar{
+  display: flex;
+  align-items: center;
 }
 
 .snooze-amount{
@@ -487,12 +513,6 @@ input[type=checkbox]{
   margin: 0; 
 }
 
-.parent-container{
-  position: relative; /* Make sure it's relative for absolute positioning of the shadow */
-  width: 100%;
-  height: 100%;
-}
-
 .blur-bg{
   position: absolute; /* Required for positioning the ::before pseudo-element */
   width: 100%; /* Adjust the width as needed */
@@ -507,16 +527,17 @@ input[type=checkbox]{
   width: 100%;
   height: 100%;
   background-color: rgba(255, 255, 255, 0.795); /* Translucent white color */
-  z-index: -2; /* Place the shadow behind the content */
+  z-index: 2; /* Place the shadow behind the content */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.185); /* Adjust the shadow properties as needed */
 }
 
-.blur-icons{
-  background-color:#1811468f;
-}
 
 .popup{
+  position: absolute;
+  top: 50%;
+  left: 50%;
   z-index: 2;
+  transform: translate(-50%, -50%);
 }
 
 .listItem{

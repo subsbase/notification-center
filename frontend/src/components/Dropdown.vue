@@ -23,20 +23,26 @@ const handleSelect = (val) => {
 </script>
 
 <template>
-<div>
+<div class="parent-container">
   <button @click="openDropdownMenu" class="more-btn" > 
     <img src="../assets/more.svg" alt="more-icon">
   </button>
   <ul v-if="dropdownMenu" class="dropdown-menu">
-    <li v-for="item of items" :key="item" >
-        <div class="dropdown-item" v-bind:value="item" @click="handleSelect(item)"> {{item}}</div>
+    <li v-for="(item, index) of items" :key="item" >
+        <div class="dropdown-item" :class="{'no-border': index === items.length - 1 }" v-bind:value="item" @click="handleSelect(item)"> {{item}}</div>
     </li>
   </ul>
-  
 </div>
 </template>
 
 <style>
+
+.parent-container{
+  position: relative; /* Make sure it's relative for absolute positioning of the shadow */
+  width: 100%;
+  height: 100%;
+}
+
 .more-btn {
   border: none;
   background-color: white;
@@ -45,8 +51,8 @@ const handleSelect = (val) => {
 
 .dropdown-menu {
   position: absolute;
-  top: 90px; /* Adjust the top position to be just below the button */
-  right: 35px;
+  top: 20px; /* Adjust the top position to be just below the button */
+  right: 17px;
   z-index: 100;
   background-color: white;
   border: 0px;
@@ -71,4 +77,10 @@ const handleSelect = (val) => {
 .dropdown-item:hover {
   background-color: #f0f0f0;
 }
+
+.no-border{
+  border: 0px;
+}
+
+
 </style>
