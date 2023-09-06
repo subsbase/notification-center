@@ -31,11 +31,11 @@
   </div>
  </div>
 
-  <div :class="['px-20', source === 'page' ? '' : 'notification-list', slideNotification ? 'slide-transition' : '']" v-if="notifications.length">
+  <div :class="['px-20', source === 'page' ? '' : 'notification-list']" v-if="notifications.length">
     <div
       v-for="(notification, index) in notifications"
       :key="notification._id"
-      :class="['notification-row my-20', { 'read-notification': notification.read }, { 'selected-notification' : checked[index]}, {'slide-transition' : slideNotification}]"
+      :class="['notification-row my-20', { 'read-notification': notification.read }, { 'selected-notification' : checked[index]}, {'slide-transition' : slideNotification[index]}]"
       @click="handleMarkAsRead(notification._id, notification.actionUrl)"
     >
     <div class="d-flex font-size-12">
@@ -117,7 +117,7 @@
   </div>
 </div>
 <SnoozePopup  v-if="snoozeMulti" class="popup"
-  @multi-snooze-input="(param) =>{console.log(selectedNotificList);handleSnoozeMulti(param, selectedNotificList)}"
+  @multi-snooze-input="(param) =>{console.log(selectedNotificList); handleSnoozeMulti(param, selectedNotificList)}"
   @hide-snooze-popup="()=> {snoozeMulti=false}"
 ></SnoozePopup>
 </div>
@@ -284,17 +284,19 @@ const handleSnoozeSingle =(idx,nId) =>{
   snoozeNotification(subscriberID.value, data) 
     .then(() => {
       emit('on-snooze-notific', selectedFilter.value) 
-    })
+      slideNotification.value[idx] = true;
+      setTimeout(() => {
+        props.notifications.splice(idx, 1);
+        slideNotification.value=[]; }, 650);
+      })
     .catch((err) => {
       console.error(err)
     })
   snoozeAmount.value=null
   snoozeVariant.value=null
-  // $delete(notifications, idx);
-  // slideNotification.value[idx]=true
 }
 
-const handleSnoozeMulti = (param, notifications) =>{
+const handleSnoozeMulti = (param, notifications, notifIdx) =>{
   snoozeAmountMulti.value=param[0];
   snoozeVariantMulti.value=param[1];
   console.log(snoozeAmountMulti.value, snoozeVariantMulti.value)
@@ -308,6 +310,9 @@ const handleSnoozeMulti = (param, notifications) =>{
   snoozeNotification(subscriberID.value, payload) 
     .then(() => {
       emit('on-snooze-notific', selectedFilter.value) 
+      notifIdx.forEach(idx => {
+        
+      });
     })
     .catch((err) => {
       console.error(err)
@@ -629,19 +634,19 @@ input[type="checkbox"]:disabled {
 }
 
 .slide-transition {
-  -webkit-animation: slide 0.5s forwards;
-  -webkit-animation-delay: 2s;
-  animation: slide 0.5s forwards;
-  animation-delay: 2s;
+  animation: slide-right 0.3s forwards;
+  animation-delay: 0.3s;
 }
 
-@-webkit-keyframes slide {
-    100% { left: 0; }
+@keyframes slide-right {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%); /* Adjust the distance as needed */
+  }
 }
 
-@keyframes slide {
-    100% { left: 0; }
-}
 
 </style>
 
