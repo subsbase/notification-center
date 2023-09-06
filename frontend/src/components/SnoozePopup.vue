@@ -106,8 +106,8 @@ const handleSelect = (val) => {
 
 .dropdown-menu-snooze {
   position: absolute;
-  top: 50px; 
-  right: 10px;
+  top: 75%; 
+  right: 35%;
   z-index: 1;
   background-color: white;
   border: 0px;

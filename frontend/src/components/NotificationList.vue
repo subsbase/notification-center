@@ -110,7 +110,7 @@
                   <div class="selector">{{ snoozeVariant}}</div>
                   <chevron></chevron>
                 </button>
-                <ul v-if="snoozeDropdown" class="dropdown-menu-snooze">
+                <ul v-if="snoozeDropdown" class="dropdown-menu-snooze-n">
                   <li v-for="(snoozeItem, index) of snoozeItems" :key="snoozeItem">
                     <div
                       class="dropdown-item-snooze"
@@ -595,7 +595,7 @@ input[type='checkbox']:disabled {
   cursor: pointer;
 }
 
-.dropdown-menu-snooze {
+.dropdown-menu-snooze-n {
   position: absolute;
   top: 100%;
   right: 0%;
