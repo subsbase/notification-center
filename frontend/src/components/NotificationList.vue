@@ -52,11 +52,12 @@
           ]"
           @click="handleMarkAsRead(notification._id, notification.actionUrl)"
         >
-          <div class="d-flex font-size-12">
+
+          <div class=" x-wrap d-flex font-size-12">
             <div class="x-start checkbox-div mr-10">
               <input
                 :disabled="snoozeMulti"
-                :class="{ 'check-icon': checked[index], 'unread-notif-bg': !notification.read }"
+                :class="['ml-10',{ 'check-icon': checked[index], 'unread-notif-bg': !notification.read }]"
                 type="checkbox"
                 id="checkbox"
                 v-model="checked[index]"
@@ -65,19 +66,13 @@
               />
             </div>
             <div class="x-between font-size-12 details-div">
-              <div class="my-5 notification-title">
-                <p class="bold m-0 ml-0">
+              <div class="notification-content">
+                <p class="bold font-size-12">
                   {{ notification.title }}
                 </p>
-                <p class=" " v-html="notification.message"></p>
+                <p class="mt-2" v-html="notification.message"></p>
               </div>
-              <div class="x-between font-size-12 notification-content">
-              <p>
-              {{ notification.content }}
-              </p>
-              </div>
-              <div class="mr-20 mb-10 icons-snooze-div">
-                <div class="icons-time-div">
+                <div class="mr-20 icons-time-div">
                   <div class="d-flex x-row x-end">
                     <div class="icons-div">
                       <img
@@ -105,15 +100,14 @@
                     {{ getNotificationTime(notification.createdAt) }}
                   </p>
                 </div>
-
-              </div>
             </div>
             
-            <div v-if="CurrentsnoozeSingle === index && !multiSelect" class="snooze-bar d-flex">
-              <input type="number" class="snooze-amount m-5" v-model="snoozeAmount" @click.stop />
+            <div v-if="CurrentsnoozeSingle === index && !multiSelect" class="snooze-bar d-flex x-between my-10">
+              <div class="d-flex snooze-inputs x-row">
+                <input type="number" class="snooze-amount m-5" v-model="snoozeAmount" @click.stop />
               <div class="m-5 rel">
                 <button @click.stop="snoozeDropdown = !snoozeDropdown" class="btn snooze-variant-m">
-                  <div class="selector">{{ snoozeVariant }}</div>
+                  <div class="selector">{{ snoozeVariant}}</div>
                   <chevron></chevron>
                 </button>
                 <ul v-if="snoozeDropdown" class="dropdown-menu-snooze">
@@ -129,7 +123,9 @@
                   </li>
                 </ul>
               </div>
-              <img
+              </div>
+            <div class="snooze-icons d-flex">
+            <img
                 src="../assets/Remove.svg"
                 alt="Cancel"
                 class="m-5 snooze-cancel"
@@ -142,6 +138,7 @@
                 @click.stop="
                   () => {handleSnoozeSingle(index, notification._id);}"
               />
+            </div>
             </div>
 
           </div>
@@ -182,7 +179,7 @@ import {
   markAsUnread,
   snoozeNotification
 } from '@/services/notifications'
-import { getSubscriberId, getThemeId, getRealmHeader } from '../utils.js'
+import { getSubscriberId, getThemeId } from '../utils.js'
 import SnoozePopup from './SnoozePopup.vue'
 import Dropdown from './Dropdown.vue'
 import chevron from '@/icons/chevron.vue'
@@ -207,7 +204,7 @@ const multiActionsArchive = ref(['Unarchive'])
 const multiActionSelected = ref('')
 const CurrentsnoozeSingle = ref()
 const snoozeAmount = ref(0)
-const snoozeVariant = ref()
+const snoozeVariant = ref('Minutes')
 const snoozeMulti = ref(false)
 const snoozeAmountMulti = ref()
 const snoozeVariantMulti = ref('')
@@ -307,12 +304,9 @@ const handleChecked = (nId, idx) => {
 
 const calculateUTC = (amount, variant) => {
   const result = new Date()
-  const year = result.getUTCFullYear()
-  const month = result.getUTCMonth() + 1
   const day = result.getUTCDate()
   const hours = result.getUTCHours()
   const minutes = result.getUTCMinutes()
-  const seconds = result.getUTCSeconds()
 
   console.log()
   if (variant === 'Minutes') {
@@ -453,17 +447,19 @@ const handleSelectedAction = (param) => {
   flex-grow: 1;
 }
 
-.notification-title {
-  flex-grow: 6;
-}
-
 .notification-content {
-  width: 50%;
+  flex-grow: 7;
+  width: 65%;
 }
 
 .details-div {
-  flex-grow: 8;
+  flex-grow: 9;
   width: 80%;
+}
+
+.icons-time-div{
+  flex-grow: 2;
+  width: 15%;
 }
 
 .icons-div {
@@ -474,6 +470,7 @@ const handleSelectedAction = (param) => {
 
 .created-since {
   white-space: nowrap;
+  font-weight: 400;
 }
 
 .snooze-cancel {
@@ -565,6 +562,7 @@ input[type='checkbox']:disabled {
 .snooze-bar {
   display: flex;
   align-items: center;
+  flex: 1 1 0;
 }
 
 .snooze-amount {

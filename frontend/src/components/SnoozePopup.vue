@@ -37,7 +37,7 @@ import { defineEmits, ref } from "vue";
 import chevron from '../icons/chevron.vue'
 
 const snoozeAmount = ref(0);
-const snoozeVariant = ref();
+const snoozeVariant = ref('Minutes');
 const items = ref(['Minutes','Hours','Days']);
 const dropdownMenu = ref(false);
 
@@ -107,7 +107,7 @@ const handleSelect = (val) => {
 .dropdown-menu-snooze {
   position: absolute;
   top: 50px; 
-  right: 110px;
+  right: 10px;
   z-index: 1;
   background-color: white;
   border: 0px;

@@ -137,6 +137,10 @@ x.column{
     align-items: center;
 }
 
+.x-wrap{
+    display: flex;
+    flex-wrap: wrap;
+}
 
 .clickable {
     cursor: pointer;
