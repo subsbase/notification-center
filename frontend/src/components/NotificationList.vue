@@ -208,7 +208,6 @@ const snoozeVariant = ref('Minutes')
 const snoozeMulti = ref(false)
 const snoozeAmountMulti = ref()
 const snoozeVariantMulti = ref('')
-const slideNotification = ref([])
 const snoozeDropdown = ref(false)
 const snoozeItems = ref(['Minutes', 'Hours', 'Days'])
 
@@ -337,8 +336,6 @@ const handleSnoozeSingle = (idx, nId) => {
     })
   snoozeAmount.value = null
   snoozeVariant.value = null
-  // $delete(notifications, idx);
-  // slideNotification.value[idx]=true
 }
 
 const handleSnoozeMulti = (param, notifications) => {
@@ -444,21 +441,20 @@ const handleSelectedAction = (param) => {
   }
 }
 .checkbox-div {
-  flex-grow: 1;
+  width: 5%;
+}
+
+.details-div {
+  flex: 9 0 0%
 }
 
 .notification-content {
   flex-grow: 7;
-  width: 65%;
-}
-
-.details-div {
-  flex-grow: 9;
-  width: 80%;
+  width: 85%;
 }
 
 .icons-time-div{
-  flex-grow: 2;
+  flex-grow: 1;
   width: 15%;
 }
 
@@ -471,14 +467,6 @@ const handleSelectedAction = (param) => {
 .created-since {
   white-space: nowrap;
   font-weight: 400;
-}
-
-.snooze-cancel {
-  height: 22px;
-}
-
-.snooze-done {
-  height: 19px;
 }
 
 .icons-time-div {
@@ -562,7 +550,7 @@ input[type='checkbox']:disabled {
 .snooze-bar {
   display: flex;
   align-items: center;
-  flex: 1 1 0;
+  flex: 1 1 0%;
 }
 
 .snooze-amount {
@@ -593,6 +581,14 @@ input[type='checkbox']:disabled {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.snooze-cancel {
+  height: 22px;
+}
+
+.snooze-done {
+  height: 19px;
 }
 
 .btn {
@@ -680,22 +676,4 @@ input[type='checkbox']:disabled {
   padding: 5px 0px 5px 0px;
 }
 
-.slide-transition {
-  -webkit-animation: slide 0.5s forwards;
-  -webkit-animation-delay: 2s;
-  animation: slide 0.5s forwards;
-  animation-delay: 2s;
-}
-
-@-webkit-keyframes slide {
-  100% {
-    left: 0;
-  }
-}
-
-@keyframes slide {
-  100% {
-    left: 0;
-  }
-}
 </style>
