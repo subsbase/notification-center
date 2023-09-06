@@ -8,7 +8,8 @@ import { IActionResult } from '../response-helpers/action-result.interface';
 import { Authorize } from '../decorators/authorize.decorator';
 import { REQUEST } from '@nestjs/core';
 import { FastifyRequest } from '../../types/global-types';
-
+import { SnoozedNotificationDto } from './snooze.notification.dto';
+import { ParseDatePipe } from '../pipes/date.pipe-transform';
 @Controller('subscribers')
 export class SubscribersController extends BaseController {
   constructor(
@@ -46,9 +47,9 @@ export class SubscribersController extends BaseController {
   }
 
   @Get(':subscriberId/notifications/countunread')
-  async countUnreadNotifications(@Param('subscriberId') subscriberId: string) : Promise<IActionResult> {
-    const result = this.notificationManager.countUnread(this.Realm, subscriberId)
-    return this.ok(result)
+  async countUnreadNotifications(@Param('subscriberId') subscriberId: string): Promise<IActionResult> {
+    const result = this.notificationManager.countUnread(this.Realm, subscriberId);
+    return this.ok(result);
   }
 
   @Get(':subscriberId/notifications/archived')
@@ -125,6 +126,25 @@ export class SubscribersController extends BaseController {
   @Put(':subscriberId/notifications/unarchive')
   async unarchive(@Param('subscriberId') subscriberId: string, @Body() archivedNotificationsIds: Array<string>) {
     const result = await this.notificationManager.unarchive(this.Realm, subscriberId, archivedNotificationsIds);
+    return this.ok(result);
+  }
+
+  @Post(':subscriberId/notifications/snooze')
+  async snooze(
+    @Param('subscriberId')
+    subscriberId: string,
+    @Body(new ParseDatePipe(['snoozeUntil']))
+    snoozedNotificationsDto: SnoozedNotificationDto,
+  ): Promise<IActionResult> {
+    const result = await this.notificationManager.snooze(
+      this.Realm,
+      subscriberId,
+      snoozedNotificationsDto.notificationsIds,
+      snoozedNotificationsDto.snoozeUntil,
+    );
+    if (!result.success) {
+      return this.badRequest(result);
+    }
     return this.ok(result);
   }
 }
