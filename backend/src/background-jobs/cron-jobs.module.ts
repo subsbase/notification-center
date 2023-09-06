@@ -8,7 +8,7 @@ export class BackgroundJobsModule {
   static withConfig(dbConnection: string): DynamicModule {
     return {
       module: BackgroundJobsModule,
-      imports: [ScheduleModule.forRoot(), ServicesModule.withDbonnection(dbConnection)],
+      imports: [ScheduleModule.forRoot(), ServicesModule.withDbConnection(dbConnection)],
       providers: [ArchiveNotificationsTask],
     };
   }

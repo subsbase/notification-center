@@ -4,9 +4,10 @@ import { Notification } from '../../repositories/subscriber/notification/schema'
 import { NotificationService } from '../../services/notification/notification.service';
 import { TopicService } from '../../services/topic/topic.service';
 import { Payload } from '../../types/global-types';
-import { UpdatedModel } from '../../repositories/helper-types';
+import { OperationResult, UpdatedModel } from '../../repositories/helper-types';
 import { SubjectService } from '../../services/subject/subject.service';
 import { ArchivedNotification } from '../../repositories/subscriber/archived-notification/schema';
+import { SnoozeNotificationsService } from '../../services/snoozed-notification/snooze-notifications.service';
 
 @Injectable()
 export class NotificationManager {
@@ -15,6 +16,7 @@ export class NotificationManager {
     private readonly notificationService: NotificationService,
     private readonly topicsService: TopicService,
     private readonly subjectService: SubjectService,
+    private readonly snoozeNotificationsService: SnoozeNotificationsService,
   ) {}
 
   async getAllNotifications(
@@ -22,7 +24,7 @@ export class NotificationManager {
     subscriberId: string,
     pageNum: number,
     pageSize: number,
-  ): Promise<{ notifications: Array<Notification> | undefined, totalCount: number }> {
+  ): Promise<{ notifications: Array<Notification> | undefined; totalCount: number }> {
     const notifications = await this.notificationService.getNotifications(realm, subscriberId, pageNum, pageSize);
     return notifications;
   }
@@ -37,7 +39,7 @@ export class NotificationManager {
     subscriberId: string,
     pageNum: number,
     pageSize: number,
-  ): Promise<{ archivedNotifications: Array<ArchivedNotification> | undefined, totalCount: number}> {
+  ): Promise<{ archivedNotifications: Array<ArchivedNotification> | undefined; totalCount: number }> {
     const archivedNotifications = await this.notificationService.getArchivedNotifications(
       realm,
       subscriberId,
@@ -95,12 +97,33 @@ export class NotificationManager {
     //gets or creates topic by the topicId
     const topic = await this.topicsService.getOrCreate(realm, topicId, subject);
 
-    const [titleTemplate, messageTemplate] = this.topicsService.getNotificationTemplate(topic, title, message, templateId)
+    const [titleTemplate, messageTemplate] = this.topicsService.getNotificationTemplate(
+      topic,
+      title,
+      message,
+      templateId,
+    );
 
-    const notification = this.notificationService.buildNotification(subject, topicId, titleTemplate, messageTemplate, actionUrl, payload);
+    const notification = this.notificationService.buildNotification(
+      subject,
+      topicId,
+      titleTemplate,
+      messageTemplate,
+      actionUrl,
+      payload,
+    );
 
     await this.notificationService.notifyAll(realm, subscribersIds, notification);
 
     this.eventsGateway.notifySubscribers(notification, subscribersIds);
+  }
+
+  async snooze(
+    realm: string,
+    subscriberId: string,
+    notificationsIds: Array<string>,
+    snoozeUntil: Date,
+  ): Promise<OperationResult> {
+    return this.snoozeNotificationsService.snoozeNotifications(realm, subscriberId, notificationsIds, snoozeUntil);
   }
 }

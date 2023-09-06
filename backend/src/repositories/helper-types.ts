@@ -17,3 +17,8 @@ export type CreatedModel = {
   id: string;
   created: boolean;
 };
+
+export type OperationResult = {
+  success: boolean;
+  message: string;
+};
