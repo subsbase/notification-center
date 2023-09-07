@@ -305,6 +305,8 @@ const handleChecked = (nId, idx) => {
   } else {
     const toDelete = selectedNotificList.value.findIndex((i) => i === nId)
     selectedNotificList.value.splice(toDelete, 1)
+    selectedIdxs.value.splice(
+      selectedIdxs.value.findIndex((i) => i === idx),1)
   }
   multiSelect.value = selectedNotificList.value.length <= 0 ? false : true
 }
