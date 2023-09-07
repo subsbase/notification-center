@@ -235,7 +235,12 @@ const handleArchiveNotification = (notifications) => {
   const payload = notifications
   archiveNotification(subscriberID.value, payload)
     .then(() => {
-      emit('on-click-mark-read', selectedFilter.value)
+      slideNotification.value[idx] = true;
+      emit('on-handle-archive-unarchive', selectedFilter.value)
+      // setTimeout(() => {
+      //   props.notifications.splice(idx, 1);
+      //   slideNotification.value=[]; 
+      //   emit('on-handle-archive-unarchive', selectedFilter.value)}, 650);
     })
     .catch((err) => {
       console.error(err)
@@ -246,7 +251,11 @@ const handleUnArchiveNotification = (notifications) => {
   const payload = notifications
   unArchiveNotification(subscriberID.value, payload)
     .then(() => {
-      emit('on-click-mark-read', selectedFilter.value)
+      slideNotification.value[idx] = true;
+      setTimeout(() => {
+        props.notifications.splice(idx, 1);
+        slideNotification.value=[]; }, 650);
+      // emit('on-click-mark-read', selectedFilter.value)
     })
     .catch((err) => {
       console.error(err)
