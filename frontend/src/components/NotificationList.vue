@@ -37,8 +37,6 @@
         v-if="notifications.length > 0"
         :class="['px-20', source === 'page' ? '' : 'notification-list']"
       >
-      {{ selectedNotificList }}
-      {{ selectedIdxs }}
         <div
           v-for="(notification, index) in notifications"
           :key="notification._id"
@@ -124,7 +122,7 @@
               </div>
             <div class="snooze-icons d-flex">
             <img
-                src="../assets/Remove.svg"
+                src="../assets/remove.svg"
                 alt="Cancel"
                 class="m-5 snooze-cancel"
                 @click.stop="() => {currentsnoozeIndex = -1;}"
