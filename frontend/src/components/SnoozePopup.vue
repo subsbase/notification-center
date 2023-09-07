@@ -13,7 +13,7 @@
       </button>
       <ul v-if="dropdownMenu" class="dropdown-menu-snooze">
         <li v-for="(item, index) of items" :key="item" >
-          <div class="dropdown-item-snooze" :class="{'no-border': index === items.length - 1 }" v-bind:value="item" @click="handleSelect(item)"> {{item}}</div>
+          <div class="dropdown-item-snooze" :class="{'no-border': index === items.length - 1 }" :value="item" @click="handleSelect(item)"> {{item}}</div>
         </li>
       </ul>
     </div>
