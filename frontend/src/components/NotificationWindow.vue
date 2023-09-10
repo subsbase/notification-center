@@ -122,7 +122,6 @@ const fetchArchivedNotifications = () => {
 const fetchNotificationsUnreadCount = () => {
   getNotificationsUnreadCount(subscriberID.value)
     .then((res) => {
-      console.log(res)
       unreadCount.value = res.count
     })
     .catch((err) => {
