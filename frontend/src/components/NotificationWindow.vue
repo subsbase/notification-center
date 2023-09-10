@@ -4,8 +4,10 @@
       :notifications="notifications"
       :unreadCount="unreadCount"
       @on-click-mark-read="refreshNotifications"
-      @on-handle-archive-unarchive="onArchiveUnArchive"
+      @on-change-filter="refreshNotifications"
       @on-click-mark-unread="refreshNotifications"
+      @on-handle-snooze="updateNotificationsList"
+      @on-handle-archive-unarchive="updateNotificationsList"
     />
     <div>
       <p class="medium clickable view-all-btn py-30" @click="showAllNotificationsPage()">View all notifications</p>
@@ -59,20 +61,6 @@ socket.on('NotificationArchived', function () {
 })
 
 const refreshNotifications = (param) => {
-  if (param === 'All') {
-    fetchAllNotifications()
-  } else {
-    fetchArchivedNotifications()
-  }
-}
-
-onBeforeMount(() => {
-  fetchAllNotifications()
-  fetchArchivedNotifications()
-  fetchNotificationsUnreadCount()
-})
-
-const onArchiveUnArchive = (param) => {
   console.log('listener', param)
   if (param === 'All') {
     fetchAllNotifications()
@@ -80,6 +68,17 @@ const onArchiveUnArchive = (param) => {
     fetchArchivedNotifications()
   }
 }
+
+const updateNotificationsList = (idx) => {
+  console.log('updating notifications...', idx)
+  notifications.value.splice(idx, 1)
+}
+
+onBeforeMount(() => {
+  fetchAllNotifications()
+  fetchArchivedNotifications()
+  fetchNotificationsUnreadCount()
+})
 
 const showAllNotificationsPage = () => {
   let a = document.createElement('a')
