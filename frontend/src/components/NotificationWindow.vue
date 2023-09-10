@@ -73,6 +73,7 @@ onBeforeMount(() => {
 })
 
 const onArchiveUnArchive = (param) => {
+  console.log('listener', param)
   if (param === 'All') {
     fetchAllNotifications()
   } else {

@@ -190,7 +190,7 @@ import SnoozePopup from './SnoozePopup.vue'
 import Dropdown from './Dropdown.vue'
 import chevron from '@/icons/chevron.vue'
 
-const emit = defineEmits(['on-click-mark-read', 'on-click-mark-unread'])
+const emit = defineEmits(['on-click-mark-read', 'on-click-mark-unread', 'on-handle-archive-unarchive'])
 
 const props = defineProps({
   notifications: { type: Array, default: () => [] },
@@ -238,6 +238,7 @@ const onChangeFilter = (filterType) => {
   multiSelect.value = false
   checked.value = []
   selectedNotificList.value = []
+  console.log('before emit', filterType)
   emit('on-handle-archive-unarchive', filterType)
 }
 
