@@ -33,10 +33,7 @@
           <Dropdown v-if="multiSelect" class="more-btn" :items="['Unarchive']" @on-selected="handleSelectedAction" />
         </div>
       </div>
-      <div
-        v-if="notifications.length > 0"
-        :class="['px-20', source === 'page' ? '' : 'notification-list']"
-      >
+      <div v-if="notifications.length > 0" :class="['px-20', source === 'page' ? '' : 'notification-list']">
         <div
           v-for="(notification, index) in notifications"
           :key="notification._id"
@@ -47,12 +44,11 @@
           ]"
           @click="handleMarkAsRead(notification._id, notification.actionUrl)"
         >
-
-          <div class=" x-wrap d-flex font-size-12">
+          <div class="x-wrap d-flex font-size-12">
             <div class="x-start checkbox-div mr-10">
               <input
                 :disabled="snoozeMulti"
-                :class="['ml-10',{ 'check-icon': checked[index], 'unread-notif-bg': !notification.read }]"
+                :class="['ml-10', { 'check-icon': checked[index], 'unread-notif-bg': !notification.read }]"
                 type="checkbox"
                 id="checkbox"
                 v-model="checked[index]"
@@ -67,76 +63,91 @@
                 </p>
                 <p class="mt-2" v-html="notification.message"></p>
               </div>
-                <div class="mr-20 icons-time-div">
-                  <div class="d-flex x-row x-end">
-                    <div class="icons-div">
+              <div class="mr-20 icons-time-div">
+                <div class="d-flex x-row x-end">
+                  <div class="icons-div">
+                    <img
+                      v-if="notification.archivedAt"
+                      class="clickable top-1 pos-relative mx-10"
+                      src="../assets/unarchive-icon.svg"
+                      @click.stop="handleUnArchiveNotification([notification._id], [index])"
+                    />
+                    <div v-else-if="!multiSelect" class="x-end">
                       <img
-                        v-if="notification.archivedAt"
                         class="clickable top-1 pos-relative mx-10"
-                        src="../assets/unarchive-icon.svg"
-                        @click.stop="handleUnArchiveNotification([notification._id], [index])"
+                        src="../assets/snooze.svg"
+                        @click.stop="
+                          () => {
+                            currentsnoozeIndex = index
+                          }
+                        "
                       />
-                      <div v-else-if="!multiSelect" class="x-end">
-                        <img
-                          class="clickable top-1 pos-relative mx-10"
-                          src="../assets/snooze.svg"
-                          @click.stop="() => {currentsnoozeIndex = index;}"
-                        />
-                        <img
-                          class="clickable top-1 pos-relative"
-                          src="../assets/archive-icon.svg"
-                          @click.stop="handleArchiveNotification([notification._id], [index])"
-                          />
-                      </div>
+                      <img
+                        class="clickable top-1 pos-relative"
+                        src="../assets/archive-icon.svg"
+                        @click.stop="handleArchiveNotification([notification._id], [index])"
+                      />
                     </div>
-                        <span v-if="!notification.read" class="blue-circle ml-10" />
                   </div>
-                  <p class="light ml-20 mt-10 x-end created-since">
-                    {{ getNotificationTime(notification.createdAt) }}
-                  </p>
+                  <span v-if="!notification.read" class="blue-circle ml-10" />
                 </div>
-            </div>
-            
-            <div v-if="currentsnoozeIndex === index && !multiSelect" class="snooze-bar d-flex x-between my-10">
-              <div class="d-flex snooze-inputs x-row">
-                <input type="number" @change="invalidInput = false" v-model="snoozeAmount"
-                :class="['snooze-amount m-5', {'invalid-input' : invalidInput}]" @click.stop />
-              <div class="m-5 rel">
-                <button @click.stop="snoozeDropdown = !snoozeDropdown" class="btn snooze-variant-m">
-                  <div class="selector">{{ snoozeVariant}}</div>
-                  <chevron></chevron>
-                </button>
-                <ul v-if="snoozeDropdown" class="dropdown-menu-snooze-n">
-                  <li v-for="(snoozeItem, index) of snoozeItems" :key="snoozeItem">
-                    <div
-                      class="dropdown-item-snooze"
-                      :class="{ 'no-border': index === snoozeItems.length - 1 }"
-                      :value="snoozeItem"
-                      @click.stop="handleVariantChoice(snoozeItem)"
-                    >
-                      {{ snoozeItem }}
-                    </div>
-                  </li>
-                </ul>
+                <p class="light ml-20 mt-10 x-end created-since">
+                  {{ getNotificationTime(notification.createdAt) }}
+                </p>
               </div>
-              </div>
-            <div class="snooze-icons d-flex">
-            <img
-                src="../assets/remove.svg"
-                alt="Cancel"
-                class="m-5 snooze-cancel"
-                @click.stop="() => {currentsnoozeIndex = -1;}"
-              />
-              <img
-                src="../assets/done.svg"
-                alt="Confirm"
-                class="m-5 snooze-done"
-                @click.stop="
-                  () => {handleSnooze([notification._id],[index], null);}"
-              />
-            </div>
             </div>
 
+            <div v-if="currentsnoozeIndex === index && !multiSelect" class="snooze-bar d-flex x-between my-10">
+              <div class="d-flex snooze-inputs x-row">
+                <input
+                  type="number"
+                  @change="invalidInput = false"
+                  v-model="snoozeAmount"
+                  :class="['snooze-amount m-5', { 'invalid-input': invalidInput }]"
+                  @click.stop
+                />
+                <div class="m-5 rel">
+                  <button @click.stop="snoozeDropdown = !snoozeDropdown" class="btn snooze-variant-m">
+                    <div class="selector">{{ snoozeVariant }}</div>
+                    <chevron></chevron>
+                  </button>
+                  <ul v-if="snoozeDropdown" class="dropdown-menu-snooze-n">
+                    <li v-for="(snoozeItem, index) of snoozeItems" :key="snoozeItem">
+                      <div
+                        class="dropdown-item-snooze"
+                        :class="{ 'no-border': index === snoozeItems.length - 1 }"
+                        :value="snoozeItem"
+                        @click.stop="handleVariantChoice(snoozeItem)"
+                      >
+                        {{ snoozeItem }}
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="snooze-icons d-flex">
+                <img
+                  src="../assets/remove.svg"
+                  alt="Cancel"
+                  class="m-5 snooze-cancel"
+                  @click.stop="
+                    () => {
+                      currentsnoozeIndex = -1
+                    }
+                  "
+                />
+                <img
+                  src="../assets/done.svg"
+                  alt="Confirm"
+                  class="m-5 snooze-done"
+                  @click.stop="
+                    () => {
+                      handleSnooze([notification._id], [index], null)
+                    }
+                  "
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -149,8 +160,16 @@
     <SnoozePopup
       v-if="snoozeMulti"
       class="popup"
-      @multi-snooze-input="(param) => {handleSnooze(selectedNotificList, selectedIdxs, param)}"
-      @hide-snooze-popup="() => {snoozeMulti = false}"
+      @multi-snooze-input="
+        (param) => {
+          handleSnooze(selectedNotificList, selectedIdxs, param)
+        }
+      "
+      @hide-snooze-popup="
+        () => {
+          snoozeMulti = false
+        }
+      "
     ></SnoozePopup>
   </div>
 </template>
@@ -222,27 +241,29 @@ const onChangeFilter = (filterType) => {
   emit('on-handle-archive-unarchive', filterType)
 }
 
-const handleChecked = (nId,idx) => {
+const handleChecked = (nId, idx) => {
   const toDelete = selectedNotificList.value.findIndex((i) => i === nId)
-  if(toDelete > -1) {
+  if (toDelete > -1) {
     selectedNotificList.value.splice(toDelete, 1)
     selectedIdxs.value.splice(
-      selectedIdxs.value.findIndex((i) => i === idx),1)
+      selectedIdxs.value.findIndex((i) => i === idx),
+      1
+    )
   } else {
     selectedNotificList.value.push(nId)
-    multiSelect.value=true
+    multiSelect.value = true
     selectedIdxs.value.push(idx)
-  }  
+  }
   multiSelect.value = selectedNotificList.value.length <= 0 ? false : true
 }
-
 
 const handleArchiveNotification = (notifications, notifIdxs) => {
   const payload = notifications
   archiveNotification(subscriberID.value, payload)
     .then(() => {
-      notifIdxs.forEach(idx => {
-        props.notifications.splice(idx,1)});
+      notifIdxs.forEach((idx) => {
+        props.notifications.splice(idx, 1)
+      })
     })
     .catch((err) => {
       console.error(err)
@@ -253,8 +274,9 @@ const handleUnArchiveNotification = (notifications, notifIdxs) => {
   const payload = notifications
   unArchiveNotification(subscriberID.value, payload)
     .then(() => {
-      notifIdxs.forEach(idx => {
-        props.notifications.splice(idx,1)});
+      notifIdxs.forEach((idx) => {
+        props.notifications.splice(idx, 1)
+      })
     })
     .catch((err) => {
       console.error(err)
@@ -302,8 +324,6 @@ const calculateUTC = (amount, variant) => {
   const day = result.getUTCDate()
   const hours = result.getUTCHours()
   const minutes = result.getUTCMinutes()
-
-  console.log()
   if (variant === 'Minutes') {
     result.setUTCMinutes(minutes + amount)
   }
@@ -317,18 +337,17 @@ const calculateUTC = (amount, variant) => {
 }
 
 const handleVariantChoice = (snoozeItem) => {
-  snoozeVariant.value = snoozeItem; 
-  snoozeDropdown.value = false;
+  snoozeVariant.value = snoozeItem
+  snoozeDropdown.value = false
 }
 
-const handleSnooze = (notifIds, notifIdxs, snoozeInputs=null) =>{
-  if(snoozeInputs && multiSelect){
+const handleSnooze = (notifIds, notifIdxs, snoozeInputs = null) => {
+  if (snoozeInputs && multiSelect) {
     snoozeAmount.value = snoozeInputs[0]
     snoozeVariant.value = snoozeInputs[1]
-  }
-  else if(snoozeAmount.value<=0){
-    invalidInput.value=true
-    return;
+  } else if (snoozeAmount.value <= 0) {
+    invalidInput.value = true
+    return
   }
   const result = calculateUTC(snoozeAmount.value, snoozeVariant.value)
   const data = {
@@ -337,23 +356,23 @@ const handleSnooze = (notifIds, notifIdxs, snoozeInputs=null) =>{
   }
   snoozeNotification(subscriberID.value, data)
     .then(() => {
-      notifIdxs.forEach(idx => {
-        props.notifications.splice(idx,1)});
+      notifIdxs.forEach((idx) => {
+        props.notifications.splice(idx, 1)
+      })
     })
     .catch((err) => {
       console.error(err)
     })
   snoozeAmount.value = 0
   snoozeVariant.value = 'Minutes'
-  debugger
-  if(multiSelect){
+  if (multiSelect) {
     selectedNotificList.value = []
     selectedIdxs.value = []
-    multiSelect.value=false
-    checked.value=[]
+    multiSelect.value = false
+    checked.value = []
   }
   currentsnoozeIndex.value = -1
-} 
+}
 
 const handleSelectedAction = (param) => {
   multiActionSelected.value = param
@@ -446,7 +465,7 @@ const handleSelectedAction = (param) => {
 }
 
 .details-div {
-  flex: 9 0 0%
+  flex: 9 0 0%;
 }
 
 .notification-content {
@@ -454,7 +473,7 @@ const handleSelectedAction = (param) => {
   width: 85%;
 }
 
-.icons-time-div{
+.icons-time-div {
   flex-grow: 1;
   width: 15%;
 }
@@ -676,8 +695,7 @@ input[type='checkbox']:disabled {
   padding: 5px 0px 5px 0px;
 }
 
-.invalid-input{
+.invalid-input {
   border: 2px solid red;
 }
-
 </style>
