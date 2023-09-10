@@ -80,6 +80,7 @@ const handleScroll = () => {
     }
   }
 }
+
 const refreshNotifications = (param) => {
   if (param === 'All') {
     fetchAllNotifications()

@@ -208,14 +208,11 @@ const selectedIdxs = ref([])
 const selectedNotificList = ref([])
 const multiSelect = ref(false)
 const multiActionsAll = ref(['Archive', 'Snooze', 'Mark As Read', 'Mark As Unread'])
-const multiActionsArchive = ref(['Unarchive'])
 const multiActionSelected = ref('')
 const currentsnoozeIndex = ref()
 const snoozeAmount = ref(0)
 const snoozeVariant = ref('Minutes')
 const snoozeMulti = ref(false)
-const snoozeAmountMulti = ref()
-const snoozeVariantMulti = ref('')
 const snoozeDropdown = ref(false)
 const snoozeItems = ref(['Minutes', 'Hours', 'Days'])
 const slideNotification = ref([])
@@ -266,7 +263,7 @@ const handleArchiveNotification = (notifications, notifIdxs) => {
       notifIdxs.forEach((idx) => {
         slideNotification.value[idx] = true
         setTimeout(() => {
-          props.notifications.splice(idx, 1)
+          // props.notifications.splice(idx, 1)
           slideNotification.value = []
         }, 650)
       })
@@ -283,7 +280,7 @@ const handleUnArchiveNotification = (notifications, notifIdxs) => {
       notifIdxs.forEach((idx) => {
         slideNotification.value[idx] = true
         setTimeout(() => {
-          props.notifications.splice(idx, 1)
+          // props.notifications.splice(idx, 1)
           slideNotification.value = []
         }, 650)
       })
@@ -367,10 +364,9 @@ const handleSnooze = (notifIds, notifIdxs, snoozeInputs = null) => {
   snoozeNotification(subscriberID.value, data)
     .then(() => {
       notifIdxs.forEach((idx) => {
-        props.notifications.splice(idx, 1)
         slideNotification.value[idx] = true
         setTimeout(() => {
-          props.notifications.splice(idx, 1)
+          // props.notifications.splice(idx, 1)
           slideNotification.value = []
         }, 650)
       })
@@ -380,7 +376,7 @@ const handleSnooze = (notifIds, notifIdxs, snoozeInputs = null) => {
     })
   snoozeAmount.value = 0
   snoozeVariant.value = 'Minutes'
-  if (multiSelect) {
+  if (multiSelect.value) {
     selectedNotificList.value = []
     selectedIdxs.value = []
     multiSelect.value = false
@@ -715,6 +711,12 @@ input[type='checkbox']:disabled {
   animation-delay: 0.3s;
 }
 
+.invalid-input {
+  border: 2px solid red;
+  -webkit-animation: shake-horizontal 0.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+  animation: shake-horizontal 0.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+}
+
 @keyframes slide-right {
   0% {
     transform: translateX(0);
@@ -724,7 +726,72 @@ input[type='checkbox']:disabled {
   }
 }
 
-.invalid-input {
-  border: 2px solid red;
+@-webkit-keyframes slide-right {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+  100% {
+    -webkit-transform: translateX(100%); /* Adjust the distance as needed */
+    transform: translateX(100%);
+  }
+}
+
+@-webkit-keyframes shake-horizontal {
+  0%,
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70% {
+    -webkit-transform: translateX(-8px);
+    transform: translateX(-8px);
+  }
+  20%,
+  40%,
+  60% {
+    -webkit-transform: translateX(8px);
+    transform: translateX(8px);
+  }
+  80% {
+    -webkit-transform: translateX(5px);
+    transform: translateX(5px);
+  }
+  90% {
+    -webkit-transform: translateX(-5px);
+    transform: translateX(-5px);
+  }
+}
+
+@keyframes shake-horizontal {
+  0%,
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70% {
+    -webkit-transform: translateX(-8px);
+    transform: translateX(-8px);
+  }
+  20%,
+  40%,
+  60% {
+    -webkit-transform: translateX(8px);
+    transform: translateX(8px);
+  }
+  80% {
+    -webkit-transform: translateX(5px);
+    transform: translateX(5px);
+  }
+  90% {
+    -webkit-transform: translateX(-8px);
+    transform: translateX(-8px);
+  }
 }
 </style>
