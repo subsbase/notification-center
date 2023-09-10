@@ -2,8 +2,9 @@
   <div class="snooze-bar-m d-flex">
     <input
       type="number"
-      class="snooze-amount-m m-5"
+      :class="['snooze-amount-m m-5', {'invalid-input' : invalidInput}]"
       v-model="snoozeAmount"
+      @change="invalidInput = false"
       @click.stop
     />
     <div class="m-5">
@@ -13,18 +14,18 @@
       </button>
       <ul v-if="dropdownMenu" class="dropdown-menu-snooze">
         <li v-for="(item, index) of items" :key="item" >
-          <div class="dropdown-item-snooze" :class="{'no-border': index === items.length - 1 }" v-bind:value="item" @click="handleSelect(item)"> {{item}}</div>
+          <div class="dropdown-item-snooze" :class="{'no-border': index === items.length - 1 }" :value="item" @click="handleSelect(item)"> {{item}}</div>
         </li>
       </ul>
     </div>
     <img
-      src="../assets/Remove.svg"
+      src="../assets/remove.svg"
       alt="Cancel"
       class="btn m-5"
       @click.stop="{ emit('hide-snooze-popup');}"
     />
     <img
-      src="../assets/Done.svg"
+      src="../assets/done.svg"
       alt="Confirm"
       class="btn m-5"
       @click.stop="handleSnoozeInput"
@@ -40,15 +41,18 @@ const snoozeAmount = ref(0);
 const snoozeVariant = ref('Minutes');
 const items = ref(['Minutes','Hours','Days']);
 const dropdownMenu = ref(false);
+const invalidInput = ref(false)
 
 const emit = defineEmits(['multi-snooze-input', 'hide-snooze-popup']);
 
 const handleSnoozeInput = () => {
-  if (!snoozeAmount || !snoozeVariant) {
-    //show a warning message!
-  } else {
+  if (snoozeAmount.value<=0) {
+    invalidInput.value = true
+    } else {
     emit('hide-snooze-popup');
     emit('multi-snooze-input', [snoozeAmount.value, snoozeVariant.value]);
+    snoozeAmount.value = 0
+    snoozeVariant.value = 'Minutes'
   }
 };
 
@@ -79,6 +83,7 @@ const handleSelect = (val) => {
   color: #181146;
   text-align: center;
 }
+
 
 .snooze-amount-m::-webkit-inner-spin-button,
 .snooze-amount-m::-webkit-outer-spin-button {
@@ -132,11 +137,15 @@ const handleSelect = (val) => {
 }
 
 .dropdown-item-snooze:hover {
-  background-color: #f0f0f0;
+  background-color: #d4dbf3;
 }
 
 .no-border{
   border: 0px;
+}
+
+.invalid-input{
+  border: 2px solid red;
 }
 
 </style>
