@@ -48,24 +48,26 @@ export const markAllAsRead = (subscriberId) => {
   })
 }
 
-export const markAsRead = (subscriberId, notificationId) => {
+export const markManyAsRead = (subscriberId, data) => {
   return new Promise((resolve, reject) => {
     axios({
       headers: HEADERS,
       method: 'patch',
-      url: `${API_URL}/subscribers/${subscriberId}/notifications/${notificationId}/markasread`
+      url: `${API_URL}/subscribers/${subscriberId}/notifications/markmanyasread`,
+      data
     })
       .then((res) => resolve(res.data))
       .catch((err) => reject(err))
   })
 }
 
-export const markAsUnread = (subscriberId, notificationId) => {
+export const markManyAsUnread = (subscriberId, data) => {
   return new Promise((resolve, reject) => {
     axios({
       headers: HEADERS,
       method: 'patch',
-      url: `${API_URL}/subscribers/${subscriberId}/notifications/${notificationId}/markasunread`
+      url: `${API_URL}/subscribers/${subscriberId}/notifications/markmanyasunread`,
+      data
     })
       .then((res) => resolve(res.data))
       .catch((err) => reject(err))
