@@ -5,7 +5,10 @@
       :unreadCount="unreadCount"
       :source="'page'"
       @on-click-mark-read="refreshNotifications"
-      @on-handle-archive-unarchive="onArchiveUnArchive"
+      @on-click-mark-unread="refreshNotifications"
+      @on-change-filter="onArchiveUnArchive"
+      @on-handle-snooze="updateNotificationsList"
+      @on-handle-archive-unarchive="updateNotificationsList"
     />
   </div>
 </template>
@@ -68,7 +71,7 @@ onUnmounted(() => {
 const handleScroll = () => {
   const element = notificationsListRef.value
   if (
-    element.getBoundingClientRect().bottom <= window.innerHeight &&
+    element.getBoundingClientRect().bottom - 25 <= window.innerHeight &&
     totalCount.value > pageSize.value &&
     !loading.value
   ) {
@@ -80,6 +83,11 @@ const handleScroll = () => {
     }
   }
 }
+
+const updateNotificationsList = (idx) => {
+  notifications.value.splice(idx, 1)
+}
+
 const refreshNotifications = (param) => {
   if (param === 'All') {
     fetchAllNotifications()
