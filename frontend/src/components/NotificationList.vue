@@ -271,7 +271,7 @@ const handleArchiveNotification = (notifications, notifIdxs) => {
         setTimeout(() => {
           emit('on-handle-archive-unarchive', idx)
           slideNotification.value = []
-        }, 650)
+        }, 430)
       })
     })
     .catch((err) => {
@@ -288,7 +288,7 @@ const handleUnArchiveNotification = (notifications, notifIdxs) => {
         setTimeout(() => {
           emit('on-handle-archive-unarchive', idx)
           slideNotification.value = []
-        }, 650)
+        }, 430)
       })
     })
     .catch((err) => {
@@ -390,7 +390,7 @@ const handleSnooze = (notifIds, notifIdxs, snoozeInputs = null) => {
         setTimeout(() => {
           emit('on-handle-snooze', idx)
           slideNotification.value = []
-        }, 650)
+        }, 430)
       })
     })
     .catch((err) => {
@@ -724,7 +724,7 @@ input[type='checkbox']:disabled {
 
 .slide-transition {
   animation: slide-right 0.3s forwards;
-  animation-delay: 0.3s;
+  animation-delay: 0.1s;
 }
 
 .invalid-input {
