@@ -3,8 +3,8 @@
     <NotificationList
       :notifications="notifications"
       :unreadCount="unreadCount"
-      @on-click-mark-read="refreshNotifications"
       @on-change-filter="refreshNotifications"
+      @on-click-mark-read="refreshNotifications"
       @on-click-mark-unread="refreshNotifications"
       @on-handle-snooze="updateNotificationsList"
       @on-handle-archive-unarchive="updateNotificationsList"
@@ -61,7 +61,6 @@ socket.on('NotificationArchived', function () {
 })
 
 const refreshNotifications = (param) => {
-  console.log('listener', param)
   if (param === 'All') {
     fetchAllNotifications()
   } else {
@@ -70,7 +69,6 @@ const refreshNotifications = (param) => {
 }
 
 const updateNotificationsList = (idx) => {
-  console.log('updating notifications...', idx)
   notifications.value.splice(idx, 1)
 }
 

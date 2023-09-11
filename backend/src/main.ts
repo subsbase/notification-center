@@ -9,7 +9,14 @@ import { InvalidArgumentErrorFilter } from './filters/invalid-argument-error.fil
 import { NotificationCenterSocketAdapter } from './events/notification.center.socket.adapter';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ logger: true }));
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter({
+      logger: {
+        timestamp: () => `, "timestamp": "${new Date().toISOString()}"`,
+      },
+    }),
+  );
 
   app
     .setGlobalPrefix('notifc', {
