@@ -572,7 +572,7 @@ input[type='checkbox']:disabled {
 
 .more-btn {
   border-width: 0px;
-  background-color: white;
+  background-color: transparent;
 }
 .more-icon {
   width: 20px;
