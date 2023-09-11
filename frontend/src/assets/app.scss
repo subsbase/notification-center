@@ -49,6 +49,7 @@ body {
 .notification-list {
     max-height: 300px;
     overflow-y: auto;
+    overflow-x: hidden;
     /*
  * Sidebar scrollbar styling for Chrome & Safari
  */
