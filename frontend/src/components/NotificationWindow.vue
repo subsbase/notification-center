@@ -61,7 +61,6 @@ socket.on('NotificationArchived', function () {
 })
 
 const refreshNotifications = (param) => {
-  console.log('listener', param)
   if (param === 'All') {
     fetchAllNotifications()
   } else {
@@ -70,7 +69,6 @@ const refreshNotifications = (param) => {
 }
 
 const updateNotificationsList = (idx) => {
-  console.log('updating notifications...', idx)
   notifications.value.splice(idx, 1)
 }
 

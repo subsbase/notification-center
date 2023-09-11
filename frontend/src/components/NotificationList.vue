@@ -247,7 +247,6 @@ const onChangeFilter = (filterType) => {
   multiSelect.value = false
   checked.value = []
   selectedNotificList.value = []
-  console.log('before emit', filterType)
   emit('on-change-filter', filterType)
 }
 
