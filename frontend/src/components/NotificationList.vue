@@ -20,7 +20,12 @@
           </div>
         </div>
         <div v-if="selectedFilter === 'All'">
-          <Dropdown v-if="multiSelect" class="more-btn" :items="multiActionsAll" @on-selected="handleSelectedAction" />
+          <Dropdown
+            v-if="multiSelect"
+            class="more-btn"
+            :items="['Archive', 'Snooze', 'Mark As Read', 'Mark As Unread']"
+            @on-selected="handleSelectedAction"
+          />
           <p
             v-else-if="notifications.length > 0"
             class="link clickable mt-0 text-right mark-all-read-link"
@@ -30,12 +35,7 @@
           </p>
         </div>
         <div v-else>
-          <Dropdown
-            v-if="multiSelect"
-            class="more-btn"
-            :items="multiActionsArchive"
-            @on-selected="handleSelectedAction"
-          />
+          <Dropdown v-if="multiSelect" class="more-btn" :items="['Unarchive']" @on-selected="handleSelectedAction" />
         </div>
       </div>
       <div v-if="notifications.length > 0" :class="['px-20', source === 'page' ? '' : 'notification-list']">
@@ -214,8 +214,6 @@ const checked = ref([])
 const selectedIdxs = ref([])
 const selectedNotificList = ref([])
 const multiSelect = ref(false)
-const multiActionsAll = ref(['Archive', 'Snooze', 'Mark As Read', 'Mark As Unread'])
-const multiActionsArchive = ref(['Unarchive'])
 const multiActionSelected = ref('')
 const currentsnoozeIndex = ref()
 const snoozeAmount = ref(0)
