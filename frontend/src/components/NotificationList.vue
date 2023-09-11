@@ -425,6 +425,7 @@ const handleSelectedAction = (param) => {
     selectedIdxs.value = []
   }
   if (multiActionSelected.value == 'Snooze') {
+    invalidInput.value = false
     snoozeMulti.value = true
   }
   if (multiActionSelected.value == 'Mark As Read') {
@@ -730,83 +731,5 @@ input[type='checkbox']:disabled {
   border: 2px solid red;
   -webkit-animation: shake-horizontal 0.7s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
   animation: shake-horizontal 0.7s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
-}
-
-@keyframes slide-right {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-@-webkit-keyframes slide-right {
-  0% {
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
-  }
-  100% {
-    -webkit-transform: translateX(100%);
-    transform: translateX(100%);
-  }
-}
-
-@-webkit-keyframes shake-horizontal {
-  0%,
-  100% {
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
-  }
-  10%,
-  30%,
-  50%,
-  70% {
-    -webkit-transform: translateX(-8px);
-    transform: translateX(-8px);
-  }
-  20%,
-  40%,
-  60% {
-    -webkit-transform: translateX(8px);
-    transform: translateX(8px);
-  }
-  80% {
-    -webkit-transform: translateX(5px);
-    transform: translateX(5px);
-  }
-  90% {
-    -webkit-transform: translateX(-5px);
-    transform: translateX(-5px);
-  }
-}
-
-@keyframes shake-horizontal {
-  0%,
-  100% {
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
-  }
-  10%,
-  30%,
-  50%,
-  70% {
-    -webkit-transform: translateX(-8px);
-    transform: translateX(-8px);
-  }
-  20%,
-  40%,
-  60% {
-    -webkit-transform: translateX(8px);
-    transform: translateX(8px);
-  }
-  80% {
-    -webkit-transform: translateX(5px);
-    transform: translateX(5px);
-  }
-  90% {
-    -webkit-transform: translateX(-8px);
-    transform: translateX(-8px);
-  }
 }
 </style>

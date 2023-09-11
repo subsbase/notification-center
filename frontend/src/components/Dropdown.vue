@@ -30,7 +30,7 @@ const handleSelect = (val) => {
         <div
           class="dropdown-item"
           :class="{ 'no-border': index === items.length - 1 }"
-          v-bind:value="item"
+          :value="item"
           @click="handleSelect(item)"
         >
           {{ item }}
