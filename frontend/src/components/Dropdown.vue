@@ -1,57 +1,61 @@
-<script setup >
-
-import { defineProps, defineEmits, ref } from "vue";
+<script setup>
+import { defineProps, defineEmits, ref } from 'vue'
 
 defineProps({
-    items: { type: Array, default: () => []}
+  items: { type: Array, default: () => [] }
 })
 
 const emit = defineEmits(['on-selected'])
 
-const dropdownMenu = ref(false);
-const selected=ref("");
+const dropdownMenu = ref(false)
+const selected = ref('')
 
 const openDropdownMenu = () => {
-    dropdownMenu.value = !dropdownMenu.value;
+  dropdownMenu.value = !dropdownMenu.value
 }
 const handleSelect = (val) => {
-    selected.value = val;
-    dropdownMenu.value = false;
-    emit('on-selected', selected.value)
+  selected.value = val
+  dropdownMenu.value = false
+  emit('on-selected', selected.value)
 }
-
 </script>
 
 <template>
-<div class="parent-container">
-  <button @click="openDropdownMenu" class="more-btn" > 
-    <img src="../assets/more.svg" alt="more-icon">
-  </button>
-  <ul v-if="dropdownMenu" class="dropdown-menu">
-    <li v-for="(item, index) of items" :key="item" >
-        <div class="dropdown-item" :class="{'no-border': index === items.length - 1 }" v-bind:value="item" @click="handleSelect(item)"> {{item}}</div>
-    </li>
-  </ul>
-</div>
+  <div class="parent-container">
+    <button @click="openDropdownMenu" class="more-btn">
+      <img src="../assets/more.svg" alt="more-icon" />
+    </button>
+    <ul v-if="dropdownMenu" class="dropdown-menu">
+      <li v-for="(item, index) of items" :key="item">
+        <div
+          class="dropdown-item"
+          :class="{ 'no-border': index === items.length - 1 }"
+          v-bind:value="item"
+          @click="handleSelect(item)"
+        >
+          {{ item }}
+        </div>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <style>
-
-.parent-container{
-  position: relative; 
+.parent-container {
+  position: relative;
   width: 100%;
   height: 100%;
 }
 
 .more-btn {
   border: none;
-  background-color: white;
+  background-color: transparent;
   cursor: pointer;
 }
 
 .dropdown-menu {
   position: absolute;
-  top: 20px; 
+  top: 20px;
   right: 17px;
   z-index: 100;
   background-color: white;
@@ -62,7 +66,7 @@ const handleSelect = (val) => {
   overflow-y: hidden;
   border-radius: 10px;
   border-top-right-radius: 0px;
-  padding: 5px 0px 5px 0px ;
+  padding: 5px 0px 5px 0px;
 }
 
 .dropdown-item {
@@ -70,7 +74,7 @@ const handleSelect = (val) => {
   cursor: pointer;
   transition: background-color 0.2s;
   border-bottom: 1px solid #ddd;
-  padding: 6px 40px 6px 10px; 
+  padding: 6px 40px 6px 10px;
   text-align: left;
 }
 
@@ -78,9 +82,7 @@ const handleSelect = (val) => {
   background-color: #f0f0f0;
 }
 
-.no-border{
+.no-border {
   border: 0px;
 }
-
-
 </style>
