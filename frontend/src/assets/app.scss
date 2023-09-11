@@ -28,17 +28,19 @@ body {
     background: #ffffff;
     box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.1);
     border-radius: 12px 0px 12px 12px;
-    width: 433px;
     color: #676767;
     font-size: 12px;
 }
 
 .notification-row {
     background: #EBEFF6;
+    background: #EBEFF6;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.04);
     border-radius: 12px;
     padding: 12px 12px 12px 12px;
+    padding: 12px 12px 12px 12px;
     cursor: pointer;
+    min-height: 65px;
 }
 
 .read-notification {
@@ -92,6 +94,7 @@ body {
 .x-between {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .x-row{
@@ -114,6 +117,30 @@ x.column{
     align-items: center;
 }
 
+.x-row{
+    flex-direction: row;
+}
+
+x.column{
+    flex-direction: column;
+}
+
+.x-start {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.x-end {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.x-wrap{
+    display: flex;
+    flex-wrap: wrap;
+}
 
 .clickable {
     cursor: pointer;
@@ -141,6 +168,10 @@ x.column{
 
 .d-flex {
     display: flex;
+}
+
+.rel{
+    position: relative;
 }
 
 // ---------------- Font Sizes ----------------
