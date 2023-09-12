@@ -280,7 +280,7 @@ const handleArchiveNotification = (notifications, notifIdxs) => {
   archiveNotification(subscriberID.value, payload)
     .then(() => {
       notifIdxs.forEach((idx) => {
-        emit('on-handle-archive-unarchive', idx)
+        emit('on-handle-archive-unarchive', [idx, selectedFilter.value])
       })
     })
     .catch((err) => {
@@ -294,7 +294,7 @@ const handleUnArchiveNotification = (notifications, notifIdxs) => {
   unArchiveNotification(subscriberID.value, payload)
     .then(() => {
       notifIdxs.forEach((idx) => {
-        emit('on-handle-archive-unarchive', idx)
+        emit('on-handle-archive-unarchive', [idx, selectedFilter.value])
       })
     })
     .catch((err) => {
@@ -387,7 +387,7 @@ const handleSnooze = (notifIds, notifIdxs, snoozeInputs = null) => {
   snoozeNotification(subscriberID.value, data)
     .then(() => {
       notifIdxs.forEach((idx) => {
-        emit('on-handle-snooze', idx)
+        emit('on-handle-snooze', [idx, selectedFilter.value])
       })
     })
     .catch((err) => {
