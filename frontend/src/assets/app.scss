@@ -49,6 +49,7 @@ body {
 .notification-list {
     max-height: 300px;
     overflow-y: auto;
+    overflow-x: hidden;
     /*
  * Sidebar scrollbar styling for Chrome & Safari
  */
@@ -173,6 +174,87 @@ x.column{
 .rel{
     position: relative;
 }
+
+// ---------------- Animation keyframes ----------------------
+
+
+@keyframes slide-right {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  
+  @-webkit-keyframes slide-right {
+    0% {
+      -webkit-transform: translateX(0);
+      transform: translateX(0);
+    }
+    100% {
+      -webkit-transform: translateX(100%);
+      transform: translateX(100%);
+    }
+  }
+  
+  @-webkit-keyframes shake-horizontal {
+    0%,
+    100% {
+      -webkit-transform: translateX(0);
+      transform: translateX(0);
+    }
+    10%,
+    30%,
+    50%,
+    70% {
+      -webkit-transform: translateX(-8px);
+      transform: translateX(-8px);
+    }
+    20%,
+    40%,
+    60% {
+      -webkit-transform: translateX(8px);
+      transform: translateX(8px);
+    }
+    80% {
+      -webkit-transform: translateX(5px);
+      transform: translateX(5px);
+    }
+    90% {
+      -webkit-transform: translateX(-5px);
+      transform: translateX(-5px);
+    }
+  }
+  
+  @keyframes shake-horizontal {
+    0%,
+    100% {
+      -webkit-transform: translateX(0);
+      transform: translateX(0);
+    }
+    10%,
+    30%,
+    50%,
+    70% {
+      -webkit-transform: translateX(-8px);
+      transform: translateX(-8px);
+    }
+    20%,
+    40%,
+    60% {
+      -webkit-transform: translateX(8px);
+      transform: translateX(8px);
+    }
+    80% {
+      -webkit-transform: translateX(5px);
+      transform: translateX(5px);
+    }
+    90% {
+      -webkit-transform: translateX(-8px);
+      transform: translateX(-8px);
+    }
+  }
 
 // ---------------- Font Sizes ----------------
 

@@ -71,6 +71,7 @@ const handleSelect = (val) => {
 .snooze-amount-m {
   background-color: transparent;
   -moz-appearance: textfield;
+  appearance: textfield;
   width: 40px;
   height: 30px;
   border-radius: 8px;
@@ -140,5 +141,7 @@ const handleSelect = (val) => {
 
 .invalid-input {
   border: 2px solid red;
+  -webkit-animation: shake-horizontal 0.7s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+  animation: shake-horizontal 0.7s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
 }
 </style>

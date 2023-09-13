@@ -20,7 +20,12 @@
           </div>
         </div>
         <div v-if="selectedFilter === 'All'">
-          <Dropdown v-if="multiSelect" class="more-btn" :items="multiActionsAll" @on-selected="handleSelectedAction" />
+          <Dropdown
+            v-if="multiSelect"
+            class="more-btn"
+            :items="['Archive', 'Snooze', 'Mark As Read', 'Mark As Unread']"
+            @on-selected="handleSelectedAction"
+          />
           <p
             v-else-if="notifications.length > 0"
             class="link clickable mt-0 text-right mark-all-read-link"
@@ -30,12 +35,7 @@
           </p>
         </div>
         <div v-else>
-          <Dropdown
-            v-if="multiSelect"
-            class="more-btn"
-            :items="multiActionsArchive"
-            @on-selected="handleSelectedAction"
-          />
+          <Dropdown v-if="multiSelect" class="more-btn" :items="['Unarchive']" @on-selected="handleSelectedAction" />
         </div>
       </div>
       <div v-if="notifications.length > 0" :class="['px-20', source === 'page' ? '' : 'notification-list']">
@@ -45,7 +45,8 @@
           :class="[
             'notification-row my-20',
             { 'read-notification': notification.read },
-            { 'selected-notification': checked[index] }
+            { 'selected-notification': checked[index] },
+            { 'slide-transition': slideNotification[index] }
           ]"
           @click="handleMarkAsRead(notification._id, notification.actionUrl)"
         >
@@ -88,11 +89,7 @@
                       <img
                         class="clickable top-1 pos-relative mx-10"
                         src="../assets/snooze.svg"
-                        @click.stop="
-                          () => {
-                            currentsnoozeIndex = index
-                          }
-                        "
+                        @click.stop="openSnoozeInput(index)"
                       />
                       <img
                         class="clickable top-1 pos-relative"
@@ -224,8 +221,6 @@ const checked = ref([])
 const selectedIdxs = ref([])
 const selectedNotificList = ref([])
 const multiSelect = ref(false)
-const multiActionsAll = ref(['Archive', 'Snooze', 'Mark As Read', 'Mark As Unread'])
-const multiActionsArchive = ref(['Unarchive'])
 const multiActionSelected = ref('')
 const currentsnoozeIndex = ref()
 const snoozeAmount = ref(0)
@@ -233,6 +228,7 @@ const snoozeVariant = ref('Minutes')
 const snoozeMulti = ref(false)
 const snoozeDropdown = ref(false)
 const snoozeItems = ref(['Minutes', 'Hours', 'Days'])
+const slideNotification = ref([])
 const invalidInput = ref(false)
 
 onBeforeMount(() => {
@@ -280,7 +276,11 @@ const handleArchiveNotification = (notifications, notifIdxs) => {
   archiveNotification(subscriberID.value, payload)
     .then(() => {
       notifIdxs.forEach((idx) => {
-        emit('on-handle-archive-unarchive', [idx, selectedFilter.value])
+        slideNotification.value[idx] = true
+        setTimeout(() => {
+          emit('on-handle-archive-unarchive', [idx, selectedFilter.value])
+          slideNotification.value = []
+        }, 430)
       })
     })
     .catch((err) => {
@@ -294,7 +294,11 @@ const handleUnArchiveNotification = (notifications, notifIdxs) => {
   unArchiveNotification(subscriberID.value, payload)
     .then(() => {
       notifIdxs.forEach((idx) => {
-        emit('on-handle-archive-unarchive', [idx, selectedFilter.value])
+        slideNotification.value[idx] = true
+        setTimeout(() => {
+          emit('on-handle-archive-unarchive', [idx, selectedFilter.value])
+          slideNotification.value = []
+        }, 430)
       })
     })
     .catch((err) => {
@@ -371,6 +375,11 @@ const handleVariantChoice = (snoozeItem) => {
   snoozeDropdown.value = false
 }
 
+const openSnoozeInput = (index) => {
+  currentsnoozeIndex.value = index
+  invalidInput.value = false
+}
+
 const handleSnooze = (notifIds, notifIdxs, snoozeInputs = null) => {
   if (snoozeInputs && multiSelect) {
     snoozeAmount.value = snoozeInputs[0]
@@ -387,7 +396,11 @@ const handleSnooze = (notifIds, notifIdxs, snoozeInputs = null) => {
   snoozeNotification(subscriberID.value, data)
     .then(() => {
       notifIdxs.forEach((idx) => {
-        emit('on-handle-snooze', [idx, selectedFilter.value])
+        slideNotification.value[idx] = true
+        setTimeout(() => {
+          emit('on-handle-snooze', [idx, selectedFilter.value])
+          slideNotification.value = []
+        }, 430)
       })
     })
     .catch((err) => {
@@ -422,6 +435,7 @@ const handleSelectedAction = (param) => {
     selectedIdxs.value = []
   }
   if (multiActionSelected.value == 'Snooze') {
+    invalidInput.value = false
     snoozeMulti.value = true
   }
   if (multiActionSelected.value == 'Mark As Read') {
@@ -724,7 +738,14 @@ input[type='checkbox']:disabled {
   padding: 5px 0px 5px 0px;
 }
 
+.slide-transition {
+  animation: slide-right 0.3s forwards;
+  animation-delay: 0.1s;
+}
+
 .invalid-input {
   border: 2px solid red;
+  -webkit-animation: shake-horizontal 0.7s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+  animation: shake-horizontal 0.7s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
 }
 </style>

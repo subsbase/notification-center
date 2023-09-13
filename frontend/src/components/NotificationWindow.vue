@@ -3,8 +3,8 @@
     <NotificationList
       :notifications="notifications"
       :unreadCount="unreadCount"
-      @on-click-mark-read="refreshNotifications"
       @on-change-filter="refreshNotifications"
+      @on-click-mark-read="refreshNotifications"
       @on-click-mark-unread="refreshNotifications"
       @on-handle-snooze="updateNotificationsList"
       @on-handle-archive-unarchive="updateNotificationsList"
