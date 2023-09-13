@@ -2,11 +2,11 @@
   <div ref="notificationsListRef">
     <NotificationList
       :notifications="notifications"
-      :unreadCount="unreadCount"
+      :unread-count="unreadCount"
       :source="'page'"
-      @on-click-mark-read="refreshNotifications"
-      @on-click-mark-unread="refreshNotifications"
-      @on-change-filter="onArchiveUnArchive"
+      :loading="loading"
+      @refresh-notifications="refreshNotifications"
+      @on-change-filter="updateFilter"
       @on-handle-snooze="updateNotificationsList"
       @on-handle-archive-unarchive="updateNotificationsList"
     />
@@ -21,12 +21,12 @@ import { io } from 'socket.io-client'
 import { getSubscriberId, getRealmHeader } from '../utils.js'
 import { BASE_URL } from '@/services/server'
 
-const notifications = ref([])
+const notifications = ref([null])
 const subscriberID = ref('')
 const pageSize = ref(10)
 const notificationsListRef = ref(null)
 const totalCount = ref(0)
-const loading = ref(false)
+const loading = ref(true)
 const currentTab = ref('All')
 const unreadCount = ref(0)
 
@@ -55,8 +55,6 @@ socket.on('NotificationArchived', function () {
 
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
-  fetchAllNotifications()
-  fetchArchivedNotifications()
   fetchNotificationsUnreadCount()
 })
 
@@ -99,20 +97,22 @@ const refreshNotifications = (param) => {
 
 const fetchAllNotifications = () => {
   loading.value = true
+
   getAllNotifications(subscriberID.value, 1, pageSize.value)
     .then((res) => {
       if (res?.notifications) {
         notifications.value.splice(0, notifications.value.length, ...res.notifications)
         totalCount.value = res?.totalCount
-        loading.value = false
       } else {
         notifications.value.splice(0, notifications.value.length)
         totalCount.value = 0
-        loading.value = false
       }
     })
     .catch((err) => {
       console.error(err)
+    })
+    .finally(() => {
+      loading.value = false
     })
 }
 
@@ -123,19 +123,20 @@ const fetchArchivedNotifications = () => {
       if (res?.archivedNotifications) {
         notifications.value.splice(0, notifications.value.length, ...res.archivedNotifications)
         totalCount.value = res?.totalCount
-        loading.value = false
       } else {
         notifications.value.splice(0, notifications.value.length)
         totalCount.value = 0
-        loading.value = false
       }
     })
     .catch((err) => {
       console.error(err)
     })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
-const onArchiveUnArchive = (param) => {
+const updateFilter = (param) => {
   if (param === 'All') {
     currentTab.value = 'All'
     fetchAllNotifications()

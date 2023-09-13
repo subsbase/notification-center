@@ -38,7 +38,10 @@
           <Dropdown v-if="multiSelect" class="more-btn" :items="['Unarchive']" @on-selected="handleSelectedAction" />
         </div>
       </div>
-      <div v-if="notifications.length > 0" :class="['px-20', source === 'page' ? '' : 'notification-list']">
+      <div
+        v-if="notifications.length > 0 && notifications[0] !== null"
+        :class="['px-20', source === 'page' ? '' : 'notification-list']"
+      >
         <div
           v-for="(notification, index) in notifications"
           :key="notification._id"
@@ -160,10 +163,10 @@
           </div>
         </div>
       </div>
-      <div v-else class="d-flex">
-        <span class="mx-auto font-size-14">{{
-          selectedFilter === 'All' ? 'No notifications' : 'No archived notifications'
-        }}</span>
+      <div v-if="!loading && notifications[0] !== null" class="d-flex">
+        <span class="mx-auto font-size-14">
+          {{ selectedFilter === 'All' ? 'No notifications' : 'No archived notifications' }}
+        </span>
       </div>
     </div>
     <SnoozePopup
@@ -200,8 +203,7 @@ import Dropdown from './Dropdown.vue'
 import chevron from '@/icons/chevron.vue'
 
 const emit = defineEmits([
-  'on-click-mark-read',
-  'on-click-mark-unread',
+  'refresh-notifications',
   'on-change-filter',
   'on-handle-snooze',
   'on-handle-archive-unarchive'
@@ -210,7 +212,8 @@ const emit = defineEmits([
 defineProps({
   notifications: { type: Array, default: () => [] },
   source: { type: String, default: () => {} },
-  unreadCount: { type: Number, default: () => {} }
+  unreadCount: { type: Number, default: () => {} },
+  loading: { type: Boolean, default: () => true }
 })
 
 const subscriberID = ref('')
@@ -230,6 +233,7 @@ const snoozeDropdown = ref(false)
 const snoozeItems = ref(['Minutes', 'Hours', 'Days'])
 const slideNotification = ref([])
 const invalidInput = ref(false)
+const loadingList = ref(true)
 
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
@@ -309,7 +313,7 @@ const handleUnArchiveNotification = (notifications, notifIdxs) => {
 const handleMarkAllAsRead = () => {
   markAllAsRead(subscriberID.value)
     .then(() => {
-      emit('on-click-mark-read', selectedFilter.value)
+      emit('refresh-notifications', selectedFilter.value)
     })
     .catch((err) => {
       console.error(err)
@@ -320,7 +324,7 @@ const handleMarkAsReadMulti = (notificationIds) => {
   if (selectedFilter.value === 'All') {
     markManyAsRead(subscriberID.value, notificationIds)
       .then(() => {
-        emit('on-click-mark-read', selectedFilter.value)
+        emit('refresh-notifications', selectedFilter.value)
       })
       .catch((err) => {
         console.error(err)
@@ -332,7 +336,7 @@ const handleMarkAsRead = (notificationId, actionUrl) => {
   if (selectedFilter.value === 'All') {
     markManyAsRead(subscriberID.value, [notificationId])
       .then(() => {
-        emit('on-click-mark-read', selectedFilter.value)
+        emit('refresh-notifications', selectedFilter.value)
         window.top.location.href = actionUrl
       })
       .catch((err) => {
@@ -345,7 +349,7 @@ const handleMarkAsUnread = (notificationIds) => {
   if (selectedFilter.value === 'All') {
     markManyAsUnread(subscriberID.value, notificationIds)
       .then(() => {
-        emit('on-click-mark-unread', selectedFilter.value)
+        emit('refresh-notifications', selectedFilter.value)
       })
       .catch((err) => {
         console.error(err)
