@@ -37,7 +37,18 @@ socket.on('NotificationsRead', function () {
   fetchNotificationsUnreadCount()
 })
 
+socket.on('NotificationUnread', function () {
+  fetchNotificationsUnreadCount()
+})
+
+socket.on('NotificationSnoozed', function () {
+  fetchNotificationsUnreadCount()
+})
+
 socket.on('NotificationArchived', function () {
+  fetchNotificationsUnreadCount()
+})
+socket.on('NotificationUnarchived', function () {
   fetchNotificationsUnreadCount()
 })
 
