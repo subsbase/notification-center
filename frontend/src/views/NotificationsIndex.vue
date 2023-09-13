@@ -21,12 +21,12 @@ import { io } from 'socket.io-client'
 import { getSubscriberId, getRealmHeader } from '../utils.js'
 import { BASE_URL } from '@/services/server'
 
-const notifications = ref([])
+const notifications = ref([null])
 const subscriberID = ref('')
 const pageSize = ref(10)
 const notificationsListRef = ref(null)
 const totalCount = ref(0)
-const loading = ref(false)
+const loading = ref(true)
 const currentTab = ref('All')
 const unreadCount = ref(0)
 
@@ -97,6 +97,7 @@ const refreshNotifications = (param) => {
 
 const fetchAllNotifications = () => {
   loading.value = true
+
   getAllNotifications(subscriberID.value, 1, pageSize.value)
     .then((res) => {
       if (res?.notifications) {

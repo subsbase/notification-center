@@ -38,7 +38,10 @@
           <Dropdown v-if="multiSelect" class="more-btn" :items="['Unarchive']" @on-selected="handleSelectedAction" />
         </div>
       </div>
-      <div v-if="notifications.length > 0" :class="['px-20', source === 'page' ? '' : 'notification-list']">
+      <div
+        v-if="notifications.length > 0 && notifications[0] !== null"
+        :class="['px-20', source === 'page' ? '' : 'notification-list']"
+      >
         <div
           v-for="(notification, index) in notifications"
           :key="notification._id"
@@ -160,10 +163,10 @@
           </div>
         </div>
       </div>
-      <div v-else class="d-flex">
-        <span class="mx-auto font-size-14">{{
-          selectedFilter === 'All' ? 'No notifications' : 'No archived notifications'
-        }}</span>
+      <div v-if="!loading && notifications[0] !== null" class="d-flex">
+        <span class="mx-auto font-size-14">
+          {{ selectedFilter === 'All' ? 'No notifications' : 'No archived notifications' }}
+        </span>
       </div>
     </div>
     <SnoozePopup
@@ -210,7 +213,7 @@ defineProps({
   notifications: { type: Array, default: () => [] },
   source: { type: String, default: () => {} },
   unreadCount: { type: Number, default: () => {} },
-  loading: { type: Boolean, default: () => false }
+  loading: { type: Boolean, default: () => true }
 })
 
 const subscriberID = ref('')
@@ -230,12 +233,21 @@ const snoozeDropdown = ref(false)
 const snoozeItems = ref(['Minutes', 'Hours', 'Days'])
 const slideNotification = ref([])
 const invalidInput = ref(false)
+const loadingList = ref(true)
 
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
   themeID.value = getThemeId()
   emit('on-change-filter', 'All')
 })
+
+// onCreated(props.loading, () => {
+//   loadingList.value = props.loading
+// })
+
+// watch(props.notifications, async () => {
+//   loadingList.value = props.loading
+// })
 
 const goBack = () => {
   history.back()

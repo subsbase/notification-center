@@ -23,7 +23,7 @@ import { getAllNotifications, getArchivedNotifications, getNotificationsUnreadCo
 import { BASE_URL } from '@/services/server'
 import { getSubscriberId, getRealmHeader, getNotificationsPageURL } from '../utils.js'
 
-const notifications = ref([])
+const notifications = ref([null])
 const subscriberID = ref('')
 const totalArchivedCount = ref(0)
 const loading = ref(false)
