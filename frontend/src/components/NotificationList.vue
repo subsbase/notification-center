@@ -241,14 +241,6 @@ onBeforeMount(() => {
   emit('on-change-filter', 'All')
 })
 
-// onCreated(props.loading, () => {
-//   loadingList.value = props.loading
-// })
-
-// watch(props.notifications, async () => {
-//   loadingList.value = props.loading
-// })
-
 const goBack = () => {
   history.back()
 }
