@@ -47,7 +47,7 @@
           :key="notification._id"
           :class="[
             'notification-row my-20',
-            { 'read-notification': notification.read },
+            { 'read-notification': notification.read || notification.archivedAt },
             { 'selected-notification': checked[index] },
             { 'slide-transition': slideNotification[index] }
           ]"
@@ -101,7 +101,7 @@
                       />
                     </div>
                   </div>
-                  <span v-if="!notification.read" class="blue-circle ml-10" />
+                  <span v-if="!notification.read && !notification.archivedAt" class="blue-circle ml-10" />
                 </div>
                 <p class="light ml-20 mt-10 x-end created-since">
                   {{ getNotificationTime(notification.createdAt) }}
@@ -233,7 +233,6 @@ const snoozeDropdown = ref(false)
 const snoozeItems = ref(['Minutes', 'Hours', 'Days'])
 const slideNotification = ref([])
 const invalidInput = ref(false)
-const loadingList = ref(true)
 
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
