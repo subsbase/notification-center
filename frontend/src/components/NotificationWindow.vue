@@ -1,11 +1,11 @@
 <template>
-  <div v-if="showNotificationWindowTrigger" class="notification-window">
+  <div class="notification-window">
     <NotificationList
       :notifications="notifications"
-      :unreadCount="unreadCount"
+      :unread-count="unreadCount"
+      :loading="loading"
       @on-change-filter="refreshNotifications"
-      @on-click-mark-read="refreshNotifications"
-      @on-click-mark-unread="refreshNotifications"
+      @refresh-notifications="refreshNotifications"
       @on-handle-snooze="updateNotificationsList"
       @on-handle-archive-unarchive="updateNotificationsList"
     />
@@ -26,10 +26,9 @@ import { getSubscriberId, getRealmHeader, getNotificationsPageURL } from '../uti
 const notifications = ref([])
 const subscriberID = ref('')
 const totalArchivedCount = ref(0)
+const loading = ref(false)
 const totalCount = ref(0)
 const unreadCount = ref(0)
-
-const showNotificationWindowTrigger = ref(true)
 
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
@@ -70,13 +69,10 @@ const refreshNotifications = (param) => {
 
 const updateNotificationsList = (param) => {
   notifications.value.splice(param[0], 1)
-  console.log(param[1])
   refreshNotifications(param[1])
 }
 
 onBeforeMount(() => {
-  fetchAllNotifications()
-  fetchArchivedNotifications()
   fetchNotificationsUnreadCount()
 })
 
@@ -88,6 +84,7 @@ const showAllNotificationsPage = () => {
 }
 
 const fetchAllNotifications = () => {
+  loading.value = true
   getAllNotifications(subscriberID.value)
     .then((res) => {
       if (res?.notifications) {
@@ -101,9 +98,13 @@ const fetchAllNotifications = () => {
     .catch((err) => {
       console.error(err)
     })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 const fetchArchivedNotifications = () => {
+  loading.value = true
   getArchivedNotifications(subscriberID.value)
     .then((res) => {
       if (res?.archivedNotifications) {
@@ -117,15 +118,22 @@ const fetchArchivedNotifications = () => {
     .catch((err) => {
       console.error(err)
     })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 const fetchNotificationsUnreadCount = () => {
+  loading.value = true
   getNotificationsUnreadCount(subscriberID.value)
     .then((res) => {
       unreadCount.value = res.count
     })
     .catch((err) => {
       console.error(err)
+    })
+    .finally(() => {
+      loading.value = false
     })
 }
 </script>

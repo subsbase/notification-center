@@ -2,11 +2,11 @@
   <div ref="notificationsListRef">
     <NotificationList
       :notifications="notifications"
-      :unreadCount="unreadCount"
+      :unread-count="unreadCount"
       :source="'page'"
-      @on-click-mark-read="refreshNotifications"
-      @on-click-mark-unread="refreshNotifications"
-      @on-change-filter="onArchiveUnArchive"
+      :loading="loading"
+      @refresh-notifications="refreshNotifications"
+      @on-change-filter="updateFilter"
       @on-handle-snooze="updateNotificationsList"
       @on-handle-archive-unarchive="updateNotificationsList"
     />
@@ -55,8 +55,6 @@ socket.on('NotificationArchived', function () {
 
 onBeforeMount(() => {
   subscriberID.value = getSubscriberId()
-  fetchAllNotifications()
-  fetchArchivedNotifications()
   fetchNotificationsUnreadCount()
 })
 
@@ -104,15 +102,16 @@ const fetchAllNotifications = () => {
       if (res?.notifications) {
         notifications.value.splice(0, notifications.value.length, ...res.notifications)
         totalCount.value = res?.totalCount
-        loading.value = false
       } else {
         notifications.value.splice(0, notifications.value.length)
         totalCount.value = 0
-        loading.value = false
       }
     })
     .catch((err) => {
       console.error(err)
+    })
+    .finally(() => {
+      loading.value = false
     })
 }
 
@@ -123,19 +122,20 @@ const fetchArchivedNotifications = () => {
       if (res?.archivedNotifications) {
         notifications.value.splice(0, notifications.value.length, ...res.archivedNotifications)
         totalCount.value = res?.totalCount
-        loading.value = false
       } else {
         notifications.value.splice(0, notifications.value.length)
         totalCount.value = 0
-        loading.value = false
       }
     })
     .catch((err) => {
       console.error(err)
     })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
-const onArchiveUnArchive = (param) => {
+const updateFilter = (param) => {
   if (param === 'All') {
     currentTab.value = 'All'
     fetchAllNotifications()

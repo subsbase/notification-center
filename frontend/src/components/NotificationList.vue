@@ -200,8 +200,7 @@ import Dropdown from './Dropdown.vue'
 import chevron from '@/icons/chevron.vue'
 
 const emit = defineEmits([
-  'on-click-mark-read',
-  'on-click-mark-unread',
+  'refresh-notifications',
   'on-change-filter',
   'on-handle-snooze',
   'on-handle-archive-unarchive'
@@ -210,7 +209,8 @@ const emit = defineEmits([
 defineProps({
   notifications: { type: Array, default: () => [] },
   source: { type: String, default: () => {} },
-  unreadCount: { type: Number, default: () => {} }
+  unreadCount: { type: Number, default: () => {} },
+  loading: { type: Boolean, default: () => false }
 })
 
 const subscriberID = ref('')
@@ -309,7 +309,7 @@ const handleUnArchiveNotification = (notifications, notifIdxs) => {
 const handleMarkAllAsRead = () => {
   markAllAsRead(subscriberID.value)
     .then(() => {
-      emit('on-click-mark-read', selectedFilter.value)
+      emit('refresh-notifications', selectedFilter.value)
     })
     .catch((err) => {
       console.error(err)
@@ -320,7 +320,7 @@ const handleMarkAsReadMulti = (notificationIds) => {
   if (selectedFilter.value === 'All') {
     markManyAsRead(subscriberID.value, notificationIds)
       .then(() => {
-        emit('on-click-mark-read', selectedFilter.value)
+        emit('refresh-notifications', selectedFilter.value)
       })
       .catch((err) => {
         console.error(err)
@@ -332,7 +332,7 @@ const handleMarkAsRead = (notificationId, actionUrl) => {
   if (selectedFilter.value === 'All') {
     markManyAsRead(subscriberID.value, [notificationId])
       .then(() => {
-        emit('on-click-mark-read', selectedFilter.value)
+        emit('refresh-notifications', selectedFilter.value)
         window.top.location.href = actionUrl
       })
       .catch((err) => {
@@ -345,7 +345,7 @@ const handleMarkAsUnread = (notificationIds) => {
   if (selectedFilter.value === 'All') {
     markManyAsUnread(subscriberID.value, notificationIds)
       .then(() => {
-        emit('on-click-mark-unread', selectedFilter.value)
+        emit('refresh-notifications', selectedFilter.value)
       })
       .catch((err) => {
         console.error(err)
