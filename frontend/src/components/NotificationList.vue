@@ -56,7 +56,14 @@
                 id="checkbox"
                 v-model="checked[index]"
                 :disabled="snoozeMulti"
-                :class="['ml-10', { 'check-icon': checked[index], 'unread-notif-bg': !notification.read }]"
+                :class="[
+                  'ml-10',
+                  {
+                    'check-icon': checked[index],
+                    'unread-notif-bg': !notification.read,
+                    'read-notif-bg': notification.read
+                  }
+                ]"
                 type="checkbox"
                 @change="handleChecked(notification._id, index)"
                 @click.stop
@@ -243,6 +250,7 @@ const onChangeFilter = (filterType) => {
   multiSelect.value = false
   checked.value = []
   selectedNotificList.value = []
+  currentsnoozeIndex.value = -1
   emit('on-change-filter', filterType)
 }
 
@@ -260,6 +268,7 @@ const handleChecked = (nId, idx) => {
     selectedIdxs.value.push(idx)
   }
   multiSelect.value = selectedNotificList.value.length <= 0 ? false : true
+  currentsnoozeIndex.value = -1
 }
 
 const handleArchiveNotification = (notifications, notifIdxs) => {
@@ -269,7 +278,7 @@ const handleArchiveNotification = (notifications, notifIdxs) => {
       notifIdxs.forEach((idx) => {
         slideNotification.value[idx] = true
         setTimeout(() => {
-          emit('on-handle-archive-unarchive', idx)
+          emit('on-handle-archive-unarchive', [idx, selectedFilter.value])
           slideNotification.value = []
         }, 430)
       })
@@ -277,6 +286,7 @@ const handleArchiveNotification = (notifications, notifIdxs) => {
     .catch((err) => {
       console.error(err)
     })
+  currentsnoozeIndex.value = -1
 }
 
 const handleUnArchiveNotification = (notifications, notifIdxs) => {
@@ -286,7 +296,7 @@ const handleUnArchiveNotification = (notifications, notifIdxs) => {
       notifIdxs.forEach((idx) => {
         slideNotification.value[idx] = true
         setTimeout(() => {
-          emit('on-handle-archive-unarchive', idx)
+          emit('on-handle-archive-unarchive', [idx, selectedFilter.value])
           slideNotification.value = []
         }, 430)
       })
@@ -388,7 +398,7 @@ const handleSnooze = (notifIds, notifIdxs, snoozeInputs = null) => {
       notifIdxs.forEach((idx) => {
         slideNotification.value[idx] = true
         setTimeout(() => {
-          emit('on-handle-snooze', idx)
+          emit('on-handle-snooze', [idx, selectedFilter.value])
           slideNotification.value = []
         }, 430)
       })
@@ -464,6 +474,10 @@ const handleSelectedAction = (param) => {
 
 .unread-notif-bg {
   background-color: #ebeff6;
+}
+
+.read-notif-bg {
+  background-color: white;
 }
 
 .mark-all-read-link {
@@ -547,6 +561,8 @@ input[type='checkbox'] {
 
 input[type='checkbox']::before {
   content: '';
+  margin-top: 1px;
+  margin-left: -2px;
   width: 0.65em;
   height: 0.65em;
   transform: scale(0);
@@ -569,7 +585,7 @@ input[type='checkbox']:checked::before {
 input[type='checkbox']:checked::after {
   content: '';
   width: 5px;
-  height: 7px;
+  height: 6px;
   display: block;
   right: -2px;
   z-index: 0;
@@ -586,7 +602,7 @@ input[type='checkbox']:disabled {
 
 .more-btn {
   border-width: 0px;
-  background-color: white;
+  background-color: transparent;
 }
 .more-icon {
   width: 20px;

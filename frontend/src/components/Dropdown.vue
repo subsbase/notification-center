@@ -30,7 +30,7 @@ const handleSelect = (val) => {
         <div
           class="dropdown-item"
           :class="{ 'no-border': index === items.length - 1 }"
-          :value="item"
+          v-bind:value="item"
           @click="handleSelect(item)"
         >
           {{ item }}
@@ -49,7 +49,7 @@ const handleSelect = (val) => {
 
 .more-btn {
   border: none;
-  background-color: white;
+  background-color: transparent;
   cursor: pointer;
 }
 
