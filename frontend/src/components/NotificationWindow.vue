@@ -68,8 +68,10 @@ const refreshNotifications = (param) => {
   }
 }
 
-const updateNotificationsList = (idx) => {
-  notifications.value.splice(idx, 1)
+const updateNotificationsList = (param) => {
+  notifications.value.splice(param[0], 1)
+  console.log(param[1])
+  refreshNotifications(param[1])
 }
 
 onBeforeMount(() => {

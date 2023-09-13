@@ -84,8 +84,9 @@ const handleScroll = () => {
   }
 }
 
-const updateNotificationsList = (idx) => {
-  notifications.value.splice(idx, 1)
+const updateNotificationsList = (param) => {
+  notifications.value.splice(param[0], 1)
+  refreshNotifications(param[1])
 }
 
 const refreshNotifications = (param) => {
