@@ -163,7 +163,7 @@
           </div>
         </div>
       </div>
-      <div v-if="!loading && notifications[0] !== null" class="d-flex">
+      <div v-else-if="!loading && notifications[0] !== null" class="d-flex">
         <span class="mx-auto font-size-14">
           {{ selectedFilter === 'All' ? 'No notifications' : 'No archived notifications' }}
         </span>
